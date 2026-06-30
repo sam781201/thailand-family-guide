@@ -1,100 +1,1072 @@
 <!doctype html>
 <html lang="zh-Hant">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#0f766e" />
-  <title>2026 曼谷＋芭達雅 7天6夜｜家族查閱手冊</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>單頁式手機 App 風格 Web App</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+  <style>
+    * { -webkit-tap-highlight-color: transparent; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Noto Sans TC", "Microsoft JhengHei", "Segoe UI", sans-serif; }
+    .phone-shadow { box-shadow: 0 24px 80px rgba(15, 23, 42, .22); }
+    .glass { backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); }
+  </style>
 </head>
-<body>
-  <header class="hero">
-    <div class="hero__bg"></div>
-    <div class="hero__content">
-      <div class="eyebrow">Thailand Family Guide · July 2026</div>
-      <h1>曼谷＋芭達雅<br>7天6夜 家族查閱手冊</h1>
-      <p class="lead">親子友善、分組彈性、Grab/Bolt 可查、每日一頁現場用。</p>
-      <div class="hero__actions">
-        <a class="btn primary" href="#today">看每日行程</a>
-        <a class="btn ghost" href="assets/original-guide.pdf" target="_blank" rel="noreferrer">打開原始 PDF</a>
-      </div>
-    </div>
-  </header>
+<body class="min-h-screen bg-slate-100">
+  <div id="app" :class="theme.body" class="min-h-screen transition-all duration-500">
+    <main class="mx-auto flex min-h-screen max-w-md flex-col px-4 py-5">
+      <!-- Phone App Shell -->
+      <section class="phone-shadow relative flex min-h-[calc(100vh-40px)] flex-col overflow-hidden rounded-[2.2rem] border border-white/30 bg-white/90">
+        <!-- Top background -->
+        <div :class="theme.hero" class="absolute inset-x-0 top-0 h-64"></div>
+        <div class="absolute inset-x-0 top-0 h-64 bg-gradient-to-b from-black/10 to-transparent"></div>
 
-  <main>
-    <section class="quick-panel" aria-label="旅程總覽">
-      <div class="quick-card">
-        <span>團員</span>
-        <strong>三組會師</strong>
-        <small>台灣先發隊、台灣主力隊、新加坡隊</small>
-      </div>
-      <div class="quick-card">
-        <span>交通</span>
-        <strong>Grab/Bolt＋2天包車</strong>
-        <small>7/4 去程、7/6 回程 15人座</small>
-      </div>
-      <div class="quick-card">
-        <span>住宿</span>
-        <strong>曼谷／芭達雅／曼谷</strong>
-        <small>Sukhumvit 2、Somerset、Phayathai</small>
-      </div>
-    </section>
+        <!-- App Header -->
+        <header class="relative z-10 px-5 pb-4 pt-5 text-white">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-xs opacity-80">Mobile Travel App</p>
+              <h1 class="mt-1 text-2xl font-bold tracking-tight">東京親子行程</h1>
+            </div>
+            <button class="rounded-full bg-white/20 px-3 py-2 text-sm font-semibold glass">今日</button>
+          </div>
 
-    <nav class="sticky-nav" aria-label="每日快速跳轉">
-      <a href="#day1">7/2</a>
-      <a href="#day2">7/3</a>
-      <a href="#day3">7/4</a>
-      <a href="#day4">7/5</a>
-      <a href="#day5">7/6</a>
-      <a href="#day6">7/7</a>
-      <a href="#day7">7/8</a>
-      <a href="#spa">SPA</a>
-    </nav>
+          <div class="mt-5 rounded-3xl bg-white/18 p-4 glass">
+            <div class="flex items-start justify-between gap-3">
+              <div>
+                <p class="text-sm opacity-80">東京親子 4 天</p>
+                <p class="mt-1 text-xl font-bold">2 大 1 小｜推車友善</p>
+              </div>
+              <div class="rounded-2xl bg-white/20 px-3 py-2 text-center">
+                <p class="text-xs opacity-80">行程狀態</p>
+                <p class="font-bold">已完成</p>
+              </div>
+            </div>
+            <div class="mt-4 h-2 rounded-full bg-white/20">
+              <div :class="theme.progress" class="h-2 w-full rounded-full"></div>
+            </div>
+          </div>
+        </header>
 
-    <section id="today" class="section intro-card">
-      <h2>使用方式</h2>
-      <p>這份網站是「現場查閱版」，不是死板軍令狀。每天先看「今日主軸」，再看時間表；遇到小孩累、下雨、塞車，就直接啟用備案。</p>
-      <div class="legend">
-        <span>🧒 親子</span><span>🚐 包車</span><span>🚕 Grab/Bolt</span><span>🍽 餐食</span><span>🌧 備案</span><span>🛍 購物</span>
-      </div>
-    </section>
+        <!-- Content -->
+        <section class="relative z-10 flex-1 rounded-t-[2rem] bg-slate-50 px-5 pb-24 pt-5">
+          <!-- 首頁 -->
+          <div v-if="activeTab === 'home'" class="space-y-5">
+            <div class="rounded-[1.7rem] bg-white p-5 shadow-sm ring-1 ring-slate-100">
+              <p class="text-xs font-bold text-sky-600">Tokyo Family Trip</p>
+              <h2 class="mt-2 text-xl font-black text-slate-900">東京親子 4 天 3 夜</h2>
+              <p class="mt-2 text-sm leading-6 text-slate-500">2 大 1 小｜3 歲｜推車｜住宿 Tosei Hotel COCONE Ueno Okachimachi｜全程不搭計程車｜含交通時間、搭幾站、步行地圖、餐食、穿搭、備案與檢查清單</p>
+              <div class="mt-4 grid grid-cols-2 gap-3 text-sm">
+                <div class="rounded-2xl bg-slate-50 p-3">
+                  <p class="text-xs text-slate-400">去程</p>
+                  <p class="mt-1 font-bold text-slate-800">5/12 BR198</p>
+                </div>
+                <div class="rounded-2xl bg-slate-50 p-3">
+                  <p class="text-xs text-slate-400">回程</p>
+                  <p class="mt-1 font-bold text-slate-800">5/15 BR195 20:40</p>
+                </div>
+                <div class="rounded-2xl bg-slate-50 p-3">
+                  <p class="text-xs text-slate-400">住宿</p>
+                  <p class="mt-1 font-bold text-slate-800">Tosei Hotel COCONE Ueno Okachimachi</p>
+                </div>
+                <div class="rounded-2xl bg-slate-50 p-3">
+                  <p class="text-xs text-slate-400">主行程</p>
+                  <p class="mt-1 font-bold text-slate-800">迪士尼陸地</p>
+                </div>
+              </div>
+            </div>
 
-    <section class="section timeline" id="itinerary"></section>
+            <div class="grid grid-cols-3 gap-3">
+              <article class="rounded-3xl bg-white p-4 shadow-sm">
+                <p class="text-xs text-slate-400">天數</p>
+                <p class="mt-1 text-xl font-black text-slate-900">4</p>
+              </article>
+              <article class="rounded-3xl bg-white p-4 shadow-sm">
+                <p class="text-xs text-slate-400">地圖</p>
+                <p class="mt-1 text-xl font-black text-slate-900">步行</p>
+              </article>
+              <article class="rounded-3xl bg-white p-4 shadow-sm">
+                <p class="text-xs text-slate-400">親子</p>
+                <p class="mt-1 text-xl font-black text-slate-900">OK</p>
+              </article>
+            </div>
 
-    <section class="section" id="spa">
-      <div class="section-title">
-        <span class="eyebrow">Pocket List</span>
-        <h2>每日周邊 SPA 推薦</h2>
-      </div>
-      <div class="grid cards-3" id="spaGrid"></div>
-    </section>
+            <div class="rounded-[1.7rem] bg-white p-4 shadow-sm ring-1 ring-slate-100">
+              <h3 class="font-bold text-slate-900">每日重點</h3>
+              <div class="mt-3 space-y-3">
+                <button v-for="day in days" :key="day.no" @click="activeTab = 'trip'; openedDay = day.no" class="flex w-full items-center gap-3 rounded-2xl bg-slate-50 p-3 text-left transition active:scale-[0.99]">
+                  <div :class="theme.badge" class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-sm font-black text-white">{{ day.no }}</div>
+                  <div class="min-w-0 flex-1">
+                    <p class="text-sm font-bold text-slate-800">{{ day.title }}</p>
+                    <p class="text-xs text-slate-400">{{ day.date }}｜{{ day.tag }}</p>
+                  </div>
+                  <span class="text-slate-300">›</span>
+                </button>
+              </div>
+            </div>
+          </div>
 
-    <section class="section" id="extras">
-      <div class="section-title">
-        <span class="eyebrow">Extra</span>
-        <h2>隨插即用：算命＆Reels 地標</h2>
-      </div>
-      <div class="grid cards-2" id="extraGrid"></div>
-    </section>
+          <!-- 行程 -->
+          <div v-if="activeTab === 'trip'" class="space-y-3">
+            <div class="mb-2 flex items-center justify-between">
+              <h2 class="text-base font-bold text-slate-900">每日詳細行程</h2>
+              <span class="text-xs text-slate-500">點卡片展開</span>
+            </div>
 
-    <section class="section print-card">
-      <h2>出發前檢查</h2>
-      <ul class="checklist">
-        <li>Grab / Bolt / LINE 群組先設好。</li>
-        <li>包車日：7/4、7/6，前一天再次確認司機與集合時間。</li>
-        <li>小孩用品：推車、防曬、薄外套、濕紙巾、退燒藥、備用衣物。</li>
-        <li>晚餐熱門餐廳如 Chom Arun、Rongros、米其林餐廳，建議先預約。</li>
-        <li>下雨或小孩累：優先改百貨、飯店泳池、外送回房間。</li>
-      </ul>
-      <button class="btn primary" onclick="window.print()">列印 / 存成 PDF</button>
-    </section>
-  </main>
+            <article
+              v-for="day in days"
+              :key="day.title"
+              class="rounded-[1.7rem] bg-white p-4 shadow-sm ring-1 ring-slate-100"
+            >
+              <button
+                type="button"
+                @click="toggleDay(day.no)"
+                class="w-full text-left transition active:scale-[0.99]"
+              >
+                <div class="flex items-start gap-3">
+                  <div :class="theme.badge" class="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl text-lg font-black text-white">
+                    {{ day.no }}
+                  </div>
+                  <div class="min-w-0 flex-1">
+                    <div class="flex items-start justify-between gap-2">
+                      <div>
+                        <p class="text-xs font-semibold text-slate-400">{{ day.date }}</p>
+                        <h3 class="mt-1 font-bold text-slate-900">{{ day.title }}</h3>
+                      </div>
+                      <div class="flex items-center gap-2">
+                        <span class="rounded-full bg-slate-100 px-2.5 py-1 text-[11px] font-semibold text-slate-500">{{ day.tag }}</span>
+                        <span class="text-lg font-bold text-slate-400">{{ openedDay === day.no ? '−' : '+' }}</span>
+                      </div>
+                    </div>
+                    <p class="mt-2 text-sm leading-6 text-slate-500">{{ day.note }}</p>
+                    <div class="mt-3 flex items-center gap-2 text-xs text-slate-400">
+                      <span>🚆 {{ day.transport }}</span>
+                      <span>•</span>
+                      <span>⏱ {{ day.time }}</span>
+                    </div>
+                  </div>
+                </div>
+              </button>
 
-  <footer>
-    <p>2026 曼谷＋芭達雅家族查閱手冊｜手機版 GitHub Pages Ready</p>
-  </footer>
+              <div v-if="openedDay === day.no" class="mt-4 rounded-3xl bg-slate-50 p-4">
+                <h4 class="mb-3 text-sm font-bold text-slate-900">詳細時間表</h4>
+                <div class="space-y-3">
+                  <div v-for="item in day.details" :key="item.time" class="flex gap-3">
+                    <div class="w-16 shrink-0 text-xs font-bold text-slate-500">{{ item.time }}</div>
+                    <div class="flex-1 border-l-2 border-slate-200 pl-3">
+                      <p class="text-sm font-bold text-slate-800">{{ item.title }}</p>
+                      <p class="mt-1 text-xs leading-5 text-slate-500">{{ item.desc }}</p>
+                    </div>
+                  </div>
+                </div>
 
-  <script src="data.js"></script>
-  <script src="script.js"></script>
+                <div class="mt-4 rounded-2xl bg-white p-3 ring-1 ring-slate-100">
+                  <p class="text-xs font-bold text-slate-400">交通重點</p>
+                  <p class="mt-1 text-sm leading-6 text-slate-600">{{ day.route }}</p>
+                </div>
+
+                <div v-if="day.disney" class="mt-4 space-y-3">
+                  <div class="rounded-2xl bg-white p-3 ring-1 ring-slate-100">
+                    <p class="text-xs font-bold text-sky-600">迪士尼攻略｜3 歲親子版</p>
+                    <p class="mt-2 text-sm leading-6 text-slate-600">{{ day.disney.summary }}</p>
+                  </div>
+                  <div class="grid grid-cols-1 gap-3">
+                    <div class="rounded-2xl bg-white p-3 ring-1 ring-slate-100">
+                      <p class="text-xs font-bold text-slate-400">優先設施</p>
+                      <div class="mt-2 flex flex-wrap gap-2">
+                        <span v-for="ride in day.disney.rides" :key="ride" class="rounded-full bg-sky-50 px-3 py-1 text-xs font-semibold text-sky-700">{{ ride }}</span>
+                      </div>
+                    </div>
+                    <div class="rounded-2xl bg-white p-3 ring-1 ring-slate-100">
+                      <p class="text-xs font-bold text-slate-400">攻略順序</p>
+                      <ol class="mt-2 space-y-2 text-sm leading-6 text-slate-600">
+                        <li v-for="step in day.disney.plan" :key="step">{{ step }}</li>
+                      </ol>
+                    </div>
+                    <div class="rounded-2xl bg-white p-3 ring-1 ring-slate-100">
+                      <p class="text-xs font-bold text-slate-400">親子提醒</p>
+                      <ul class="mt-2 space-y-2 text-sm leading-6 text-slate-600">
+                        <li v-for="tip in day.disney.tips" :key="tip">・{{ tip }}</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </article>
+          </div>
+
+          <!-- 路線 -->
+          <div v-if="activeTab === 'transport'" class="space-y-4">
+            <div class="mb-2">
+              <h2 class="text-base font-bold text-slate-900">路線導覽</h2>
+              <p class="mt-1 text-xs text-slate-500">早上出門看「飯店出發」，晚上回去看「回飯店」。</p>
+            </div>
+
+            <div class="rounded-[1.7rem] bg-white p-4 shadow-sm ring-1 ring-slate-100">
+              <p class="text-xs font-bold text-sky-600">住宿基地｜3 晚連住</p>
+              <h3 class="mt-1 font-black leading-6 text-slate-900">Tosei Hotel COCONE Ueno Okachimachi</h3>
+              <p class="mt-2 text-sm leading-6 text-slate-500">所有步行時間採「親子推車版」估算，已比一般成人步行時間抓得保守一點。</p>
+              <a href="https://www.google.com/maps/search/?api=1&query=Tosei%20Hotel%20COCONE%20Ueno%20Okachimachi" target="_blank" class="mt-4 block rounded-2xl bg-sky-600 px-4 py-3 text-center text-sm font-bold text-white shadow-sm active:scale-[0.99]">開啟飯店 Google Maps</a>
+            </div>
+
+            <div class="grid grid-cols-2 gap-2 rounded-[1.5rem] bg-white p-2 shadow-sm ring-1 ring-slate-100">
+              <button @click="routeMode = 'fromHotel'" :class="routeMode === 'fromHotel' ? 'bg-sky-600 text-white shadow-sm' : 'text-slate-500'" class="rounded-2xl px-3 py-3 text-sm font-bold transition active:scale-95">飯店出發</button>
+              <button @click="routeMode = 'toHotel'" :class="routeMode === 'toHotel' ? 'bg-sky-600 text-white shadow-sm' : 'text-slate-500'" class="rounded-2xl px-3 py-3 text-sm font-bold transition active:scale-95">回飯店</button>
+            </div>
+
+            <div class="space-y-3">
+              <article v-for="route in activeRoutes" :key="route.title" class="overflow-hidden rounded-[1.7rem] bg-white shadow-sm ring-1 ring-slate-100">
+                <div class="bg-gradient-to-br from-sky-50 to-indigo-50 p-4">
+                  <div class="flex items-center justify-between gap-3">
+                    <div class="rounded-2xl bg-white px-3 py-2 text-xs font-black text-sky-700 shadow-sm">{{ route.startLabel }}</div>
+                    <div class="flex-1 border-t-2 border-dashed border-sky-300"></div>
+                    <div class="rounded-2xl bg-sky-600 px-3 py-2 text-xs font-black text-white shadow-sm">{{ route.endLabel }}</div>
+                  </div>
+                  <div class="mt-3 flex items-center justify-center gap-2 text-xs font-bold text-slate-500">
+                    <span>🚶‍♂️ 步行</span>
+                    <span>・</span>
+                    <span>推車版 {{ route.familyTime }}</span>
+                  </div>
+                </div>
+
+                <div class="p-4">
+                  <div class="flex items-start justify-between gap-3">
+                    <div>
+                      <p class="text-xs font-bold text-sky-600">{{ route.day }}</p>
+                      <h3 class="mt-1 font-bold text-slate-900">{{ route.title }}</h3>
+                    </div>
+                    <span class="rounded-full bg-slate-100 px-2.5 py-1 text-[11px] font-semibold text-slate-500">{{ route.tag }}</span>
+                  </div>
+                  <div class="mt-3 grid grid-cols-2 gap-2 text-sm">
+                    <div class="rounded-2xl bg-slate-50 p-3">
+                      <p class="text-xs text-slate-400">一般步行</p>
+                      <p class="mt-1 font-bold text-slate-800">{{ route.normalTime }}</p>
+                    </div>
+                    <div class="rounded-2xl bg-slate-50 p-3">
+                      <p class="text-xs text-slate-400">親子推車</p>
+                      <p class="mt-1 font-bold text-slate-800">{{ route.familyTime }}</p>
+                    </div>
+                  </div>
+                  <p class="mt-3 text-sm leading-6 text-slate-600">{{ route.note }}</p>
+                  <a :href="route.mapUrl" target="_blank" class="mt-4 block rounded-2xl bg-slate-900 px-4 py-3 text-center text-sm font-bold text-white shadow-sm active:scale-[0.99]">開啟 Google Maps 導航</a>
+                </div>
+              </article>
+            </div>
+
+            <div class="rounded-[1.7rem] bg-white p-4 shadow-sm ring-1 ring-slate-100">
+              <h3 class="font-bold text-slate-900">每日大動線</h3>
+              <div class="mt-3 space-y-3">
+                <div v-for="map in dayMaps" :key="map.day" class="rounded-2xl bg-slate-50 p-3">
+                  <p class="text-xs font-bold text-sky-600">{{ map.day }}</p>
+                  <p class="mt-1 text-sm font-bold text-slate-800">{{ map.title }}</p>
+                  <div class="mt-3 flex flex-wrap items-center gap-2 text-xs leading-6 text-slate-600">
+                    <template v-for="(step, idx) in map.steps" :key="step">
+                      <span class="rounded-full bg-white px-3 py-1 font-semibold shadow-sm">{{ step }}</span>
+                      <span v-if="idx < map.steps.length - 1" class="text-slate-300">→</span>
+                    </template>
+                  </div>
+                  <p class="mt-2 text-xs leading-5 text-slate-500">{{ map.note }}</p>
+                </div>
+              </div>
+            </div>
+
+            <article v-for="item in transports" :key="item.title" class="rounded-[1.7rem] bg-white p-4 shadow-sm ring-1 ring-slate-100">
+              <div class="flex items-start gap-3">
+                <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-sky-100 text-lg">🚆</div>
+                <div class="min-w-0 flex-1">
+                  <p class="text-xs font-bold text-sky-600">{{ item.day }}</p>
+                  <h3 class="mt-1 font-bold text-slate-900">{{ item.title }}</h3>
+                  <div class="mt-3 space-y-2">
+                    <div v-for="line in item.lines" :key="line" class="rounded-2xl bg-slate-50 p-3 text-sm leading-6 text-slate-600">{{ line }}</div>
+                  </div>
+                </div>
+              </div>
+            </article>
+          </div>
+
+          <!-- 攻略 -->
+          <div v-if="activeTab === 'guide'" class="space-y-4">
+            <div class="mb-2">
+              <h2 class="text-base font-bold text-slate-900">迪士尼攻略</h2>
+              <p class="mt-1 text-xs text-slate-500">5/13 東京迪士尼樂園｜3 歲親子穩定版攻略。</p>
+            </div>
+
+            <div class="grid grid-cols-4 gap-2 rounded-[1.5rem] bg-white p-2 shadow-sm ring-1 ring-slate-100">
+              <button @click="guideSection = 'play'" :class="guideSection === 'play' ? 'bg-sky-600 text-white shadow-sm' : 'text-slate-500'" class="rounded-2xl px-2 py-3 text-xs font-bold transition active:scale-95">玩法</button>
+              <button @click="guideSection = 'pass'" :class="guideSection === 'pass' ? 'bg-sky-600 text-white shadow-sm' : 'text-slate-500'" class="rounded-2xl px-2 py-3 text-xs font-bold transition active:scale-95">快速通關</button>
+              <button @click="guideSection = 'show'" :class="guideSection === 'show' ? 'bg-sky-600 text-white shadow-sm' : 'text-slate-500'" class="rounded-2xl px-2 py-3 text-xs font-bold transition active:scale-95">表演</button>
+              <button @click="guideSection = 'backup'" :class="guideSection === 'backup' ? 'bg-sky-600 text-white shadow-sm' : 'text-slate-500'" class="rounded-2xl px-2 py-3 text-xs font-bold transition active:scale-95">備案</button>
+            </div>
+
+            <!-- 玩法 -->
+            <div v-if="guideSection === 'play'" class="space-y-4">
+              <div class="rounded-[1.7rem] bg-gradient-to-br from-sky-600 to-indigo-600 p-5 text-white shadow-sm">
+                <p class="text-xs font-bold opacity-80">Tokyo Disneyland｜5/13</p>
+                <h3 class="mt-2 text-xl font-black">今日玩法方針</h3>
+                <p class="mt-3 text-sm leading-6 text-white/90">這天不是大人衝設施日，而是 3 歲親子穩定版。重點是小孩不崩潰、有玩到親子設施、有午睡、看得到白天遊行，晚上依體力決定是否看夜間遊行。</p>
+                <div class="mt-4 grid grid-cols-2 gap-2 text-sm">
+                  <div class="rounded-2xl bg-white/15 p-3 glass">早上：夢幻樂園＋卡通城</div>
+                  <div class="rounded-2xl bg-white/15 p-3 glass">中午：提早午餐＋推車午睡</div>
+                  <div class="rounded-2xl bg-white/15 p-3 glass">下午：15:00 白天遊行</div>
+                  <div class="rounded-2xl bg-white/15 p-3 glass">晚上：19:15 視體力</div>
+                </div>
+              </div>
+
+              <div class="rounded-[1.7rem] bg-white p-4 shadow-sm ring-1 ring-slate-100">
+                <h3 class="font-black text-slate-900">成功標準</h3>
+                <div class="mt-3 grid grid-cols-2 gap-2 text-sm text-slate-600">
+                  <div class="rounded-2xl bg-slate-50 p-3">拍到城堡照</div>
+                  <div class="rounded-2xl bg-slate-50 p-3">玩 4–6 個親子設施</div>
+                  <div class="rounded-2xl bg-slate-50 p-3">看 15:00 遊行</div>
+                  <div class="rounded-2xl bg-slate-50 p-3">小孩有午睡</div>
+                  <div class="rounded-2xl bg-slate-50 p-3">晚餐提早吃</div>
+                  <div class="rounded-2xl bg-slate-50 p-3">20:00 左右可撤退</div>
+                </div>
+              </div>
+
+              <div class="rounded-[1.7rem] bg-white p-4 shadow-sm ring-1 ring-slate-100">
+                <p class="text-xs font-bold text-sky-600">09:00 入園後</p>
+                <h3 class="mt-1 font-black text-slate-900">入園後 5 分鐘</h3>
+                <p class="mt-2 text-sm leading-6 text-slate-500">不要站在入口研究太久。一位大人推車往夢幻樂園移動，另一位大人打開官方 App 操作。</p>
+                <div class="mt-3 space-y-2">
+                  <div v-for="step in disneyFirstSteps" :key="step" class="rounded-2xl bg-sky-50 p-3 text-sm leading-6 text-slate-700">{{ step }}</div>
+                </div>
+              </div>
+
+              <div class="rounded-[1.7rem] bg-white p-4 shadow-sm ring-1 ring-slate-100">
+                <h3 class="font-black text-slate-900">3 歲親子玩法流程</h3>
+                <div class="mt-3 space-y-3">
+                  <div v-for="plan in disneyPlayPlan" :key="plan.title" class="rounded-2xl bg-slate-50 p-3">
+                    <p class="text-xs font-bold text-sky-600">{{ plan.time }}</p>
+                    <p class="mt-1 text-sm font-bold text-slate-800">{{ plan.title }}</p>
+                    <p class="mt-1 text-xs leading-5 text-slate-500">{{ plan.desc }}</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="rounded-[1.7rem] bg-white p-4 shadow-sm ring-1 ring-slate-100">
+                <h3 class="font-black text-slate-900">七大園區速查</h3>
+                <p class="mt-2 text-sm leading-6 text-slate-500">不需要完整繞全園，3 歲親子版優先集中在夢幻樂園與卡通城。</p>
+                <div class="mt-3 space-y-3">
+                  <div v-for="zone in disneyZones" :key="zone.name" class="rounded-2xl bg-slate-50 p-3">
+                    <div class="flex items-start justify-between gap-3">
+                      <div>
+                        <p class="text-sm font-bold text-slate-900">{{ zone.name }}</p>
+                        <p class="mt-1 text-xs leading-5 text-slate-500">{{ zone.desc }}</p>
+                      </div>
+                      <span :class="zone.level === '主攻' ? 'bg-sky-100 text-sky-700' : zone.level === '可考慮' ? 'bg-amber-100 text-amber-700' : 'bg-slate-200 text-slate-500'" class="shrink-0 rounded-full px-2.5 py-1 text-[11px] font-bold">{{ zone.level }}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="rounded-[1.7rem] bg-white p-4 shadow-sm ring-1 ring-slate-100">
+                <h3 class="font-black text-slate-900">3 歲設施分級</h3>
+                <div class="mt-3 space-y-3">
+                  <div v-for="group in disneyRideLevels" :key="group.level" class="rounded-2xl bg-slate-50 p-3">
+                    <p class="text-sm font-bold text-slate-900">{{ group.level }}</p>
+                    <p class="mt-1 text-xs leading-5 text-slate-500">{{ group.note }}</p>
+                    <div class="mt-2 flex flex-wrap gap-2">
+                      <span v-for="ride in group.rides" :key="ride" class="rounded-full bg-white px-3 py-1 text-xs font-semibold text-slate-600 shadow-sm">{{ ride }}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 快速通關 -->
+            <div v-if="guideSection === 'pass'" class="space-y-4">
+              <div class="rounded-[1.7rem] bg-white p-4 shadow-sm ring-1 ring-slate-100">
+                <p class="text-xs font-bold text-sky-600">App 操作</p>
+                <h3 class="mt-1 font-black text-slate-900">DPA / PP / SP 操作路徑</h3>
+                <p class="mt-2 text-sm leading-6 text-slate-500">DPA、PP、SP 都是刷票入園後才能操作。建議先看 DPA，再看 PP，接著確認 SP 與 Entry Request。</p>
+              </div>
+
+              <article v-for="pass in disneyPasses" :key="pass.title" class="rounded-[1.7rem] bg-white p-4 shadow-sm ring-1 ring-slate-100">
+                <div class="flex items-start gap-3">
+                  <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-indigo-100 text-lg">{{ pass.icon }}</div>
+                  <div class="min-w-0 flex-1">
+                    <p class="text-xs font-bold text-indigo-600">{{ pass.label }}</p>
+                    <h3 class="mt-1 font-bold text-slate-900">{{ pass.title }}</h3>
+                    <div class="mt-3 rounded-2xl bg-slate-50 p-3">
+                      <p class="text-xs font-bold text-slate-400">App 路徑</p>
+                      <p class="mt-1 text-sm leading-6 text-slate-700">{{ pass.path }}</p>
+                    </div>
+                    <div class="mt-3 space-y-2">
+                      <div v-for="tip in pass.tips" :key="tip" class="rounded-2xl bg-white p-3 text-sm leading-6 text-slate-600 ring-1 ring-slate-100">{{ tip }}</div>
+                    </div>
+                  </div>
+                </div>
+              </article>
+            </div>
+
+            <!-- 表演 -->
+            <div v-if="guideSection === 'show'" class="space-y-4">
+              <div class="rounded-[1.7rem] bg-white p-4 shadow-sm ring-1 ring-slate-100">
+                <p class="text-xs font-bold text-sky-600">5/13｜Tokyo Disneyland</p>
+                <h3 class="mt-1 font-black text-slate-900">表演速查</h3>
+                <p class="mt-2 text-sm leading-6 text-slate-500">以下不幫你排先後順序，只列出時間、解說、地點與親子備註，現場依小孩體力自行選擇。</p>
+              </div>
+
+              <article v-for="show in disneyShows" :key="show.name + show.time" class="rounded-[1.7rem] bg-white p-4 shadow-sm ring-1 ring-slate-100">
+                <div class="flex items-start gap-3">
+                  <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-sky-100 text-sm font-black text-sky-700">{{ show.time }}</div>
+                  <div class="min-w-0 flex-1">
+                    <div class="flex items-start justify-between gap-2">
+                      <div>
+                        <h3 class="font-bold leading-6 text-slate-900">{{ show.name }}</h3>
+                        <p class="mt-1 text-xs font-bold text-sky-600">{{ show.type }}</p>
+                      </div>
+                      <span class="rounded-full bg-slate-100 px-2.5 py-1 text-[11px] font-semibold text-slate-500">{{ show.badge }}</span>
+                    </div>
+                    <p class="mt-3 text-sm leading-6 text-slate-600">{{ show.desc }}</p>
+                    <div class="mt-3 rounded-2xl bg-slate-50 p-3 text-sm leading-6 text-slate-600">
+                      <p><span class="font-bold text-slate-800">地點：</span>{{ show.location }}</p>
+                      <p class="mt-1"><span class="font-bold text-slate-800">親子備註：</span>{{ show.note }}</p>
+                    </div>
+                    <a :href="show.link" target="_blank" class="mt-4 block rounded-2xl bg-slate-900 px-4 py-3 text-center text-sm font-bold text-white shadow-sm active:scale-[0.99]">查看官方頁面／位置圖</a>
+                  </div>
+                </div>
+              </article>
+
+              <div class="rounded-[1.7rem] bg-white p-4 shadow-sm ring-1 ring-slate-100">
+                <h3 class="font-black text-slate-900">遊行找位原則</h3>
+                <div class="mt-3 space-y-2 text-sm leading-6 text-slate-600">
+                  <p>・遊行多沿城堡周邊路線行進，實際位置以官方 App 當日地圖為準。</p>
+                  <p>・若想穩定看 15:00 白天遊行，14:20 左右開始找位。</p>
+                  <p>・不要為了卡位讓孩子餓到或錯過午睡。</p>
+                  <p>・夜間遊行 19:15 可視體力，孩子累了就直接放棄。</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- 備案 -->
+            <div v-if="guideSection === 'backup'" class="space-y-4">
+              <div class="rounded-[1.7rem] bg-white p-4 shadow-sm ring-1 ring-slate-100">
+                <h3 class="font-black text-slate-900">雨天／小孩累了備案</h3>
+                <p class="mt-2 text-sm leading-6 text-slate-500">當天如果下雨、人太多或孩子太累，不要硬照原計畫走。親子版最重要是穩定。</p>
+              </div>
+              <div class="space-y-3">
+                <div v-for="item in disneyBackups" :key="item.title" class="rounded-[1.7rem] bg-white p-4 shadow-sm ring-1 ring-slate-100">
+                  <p class="font-bold text-slate-900">{{ item.title }}</p>
+                  <p class="mt-2 text-sm leading-6 text-slate-500">{{ item.desc }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 提醒 -->
+          <div v-if="activeTab === 'tips'" class="space-y-5">
+            <div class="rounded-[1.7rem] bg-white p-4 shadow-sm ring-1 ring-slate-100">
+              <div class="mb-3 flex items-center justify-between">
+                <h2 class="font-bold text-slate-900">出門前檢查</h2>
+                <span class="text-xs text-slate-400">可勾選</span>
+              </div>
+              <label v-for="task in tasks" :key="task" class="flex items-center gap-3 border-t border-slate-100 py-3 first:border-t-0">
+                <input type="checkbox" class="h-5 w-5 rounded border-slate-300" />
+                <span class="text-sm text-slate-600">{{ task }}</span>
+              </label>
+            </div>
+
+            <div class="rounded-[1.7rem] bg-white p-4 shadow-sm ring-1 ring-slate-100">
+              <h2 class="font-bold text-slate-900">迪士尼必帶</h2>
+              <div class="mt-3 grid grid-cols-2 gap-2 text-sm text-slate-600">
+                <div class="rounded-2xl bg-slate-50 p-3">推車雨罩</div>
+                <div class="rounded-2xl bg-slate-50 p-3">小孩薄外套</div>
+                <div class="rounded-2xl bg-slate-50 p-3">備用衣物</div>
+                <div class="rounded-2xl bg-slate-50 p-3">行動電源</div>
+                <div class="rounded-2xl bg-slate-50 p-3">濕紙巾</div>
+                <div class="rounded-2xl bg-slate-50 p-3">小零食</div>
+                <div class="rounded-2xl bg-slate-50 p-3">水壺</div>
+                <div class="rounded-2xl bg-slate-50 p-3">迪士尼 App</div>
+              </div>
+            </div>
+
+            <div class="rounded-[1.7rem] bg-white p-4 shadow-sm ring-1 ring-slate-100">
+              <h2 class="font-bold text-slate-900">迪士尼現場原則</h2>
+              <div class="mt-3 space-y-2 text-sm leading-6 text-slate-600">
+                <p>・3 歲小孩以幻想世界、卡通城、遊行與拍照為主。</p>
+                <p>・餐食提早：午餐 11:30 前後，晚餐 16:30–17:30。</p>
+                <p>・孩子午睡時，大人不要硬排長隊，改休息、買飲料或逛商店。</p>
+                <p>・20:00 左右離園最穩，不一定要撐到閉園。</p>
+              </div>
+            </div>
+
+            <div class="rounded-[1.7rem] bg-white p-4 shadow-sm ring-1 ring-slate-100">
+              <h2 class="font-bold text-slate-900">回程提醒</h2>
+              <p class="mt-2 text-sm leading-6 text-slate-500">5/15 建議 15:20 回飯店拿行李，15:50 步行到京成上野，16:30 搭 Skyliner，17:15 前後抵達成田機場，BR195 20:40 起飛。</p>
+            </div>
+
+            <div class="rounded-[1.7rem] bg-white p-4 shadow-sm ring-1 ring-slate-100">
+              <h2 class="font-bold text-slate-900">吃｜餐食原則</h2>
+              <div class="mt-3 space-y-2 text-sm leading-6 text-slate-600">
+                <p>・早餐不要排名店，便利商店、咖啡廳或飯店附近簡單吃最穩。</p>
+                <p>・迪士尼午餐抓 11:30 左右，晚餐抓 16:30–17:30。</p>
+                <p>・最後一天晚餐建議在成田機場吃，孩子先吃飽再上飛機。</p>
+                <p>・每天準備小孩零食、水、香蕉或優格，避免臨時餓到崩潰。</p>
+              </div>
+            </div>
+
+            <div class="rounded-[1.7rem] bg-white p-4 shadow-sm ring-1 ring-slate-100">
+              <h2 class="font-bold text-slate-900">穿｜5 月東京穿搭</h2>
+              <div class="mt-3 space-y-2 text-sm leading-6 text-slate-600">
+                <p>・大人：短袖或薄長袖、薄外套、好走鞋。</p>
+                <p>・小孩：短袖、薄外套、舒適褲，每天備用衣 1 套。</p>
+                <p>・迪士尼當天不要穿新鞋，小孩穿好辨識顏色，晚上加薄外套。</p>
+                <p>・推車雨罩與小毯子一定要帶。</p>
+              </div>
+            </div>
+
+            <div class="rounded-[1.7rem] bg-white p-4 shadow-sm ring-1 ring-slate-100">
+              <h2 class="font-bold text-slate-900">行｜不搭計程車原則</h2>
+              <div class="mt-3 space-y-2 text-sm leading-6 text-slate-600">
+                <p>・移動時間不要只看車程，要加上找電梯、進出站、推車、孩子上廁所。</p>
+                <p>・東京站轉京葉線最花時間，請抓 15–20 分鐘。</p>
+                <p>・成田往返上野用 Skyliner 最穩，回程不要壓線。</p>
+                <p>・晴空塔回飯店建議原路回淺草再轉銀座線，雖不是最短，但最直覺。</p>
+              </div>
+            </div>
+
+            <div class="rounded-[1.7rem] bg-white p-4 shadow-sm ring-1 ring-slate-100">
+              <h2 class="font-bold text-slate-900">臨時狀況備案</h2>
+              <div class="mt-3 space-y-2">
+                <div v-for="item in backups" :key="item.title" class="rounded-2xl bg-slate-50 p-3">
+                  <p class="text-sm font-bold text-slate-800">{{ item.title }}</p>
+                  <p class="mt-1 text-xs leading-5 text-slate-500">{{ item.desc }}</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="rounded-[1.7rem] bg-white p-4 shadow-sm ring-1 ring-slate-100">
+              <h2 class="font-bold text-slate-900">LINE 快速版</h2>
+              <div class="mt-3 space-y-2">
+                <div v-for="item in lineQuick" :key="item" class="rounded-2xl bg-sky-50 p-3 text-sm leading-6 text-slate-700">{{ item }}</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Bottom nav -->
+        <nav class="absolute inset-x-4 bottom-4 z-20 rounded-[1.6rem] border border-white/40 bg-white/85 px-2 py-3 shadow-lg glass">
+          <div class="grid grid-cols-5 text-center text-[11px] font-semibold">
+            <button @click="activeTab = 'home'" :class="activeTab === 'home' ? 'text-sky-600' : 'text-slate-400'" class="rounded-2xl py-2 active:scale-95">首頁</button>
+            <button @click="activeTab = 'trip'" :class="activeTab === 'trip' ? 'text-sky-600' : 'text-slate-400'" class="rounded-2xl py-2 active:scale-95">行程</button>
+            <button @click="activeTab = 'transport'" :class="activeTab === 'transport' ? 'text-sky-600' : 'text-slate-400'" class="rounded-2xl py-2 active:scale-95">路線</button>
+            <button @click="activeTab = 'guide'" :class="activeTab === 'guide' ? 'text-sky-600' : 'text-slate-400'" class="rounded-2xl py-2 active:scale-95">攻略</button>
+            <button @click="activeTab = 'tips'" :class="activeTab === 'tips' ? 'text-sky-600' : 'text-slate-400'" class="rounded-2xl py-2 active:scale-95">提醒</button>
+          </div>
+        </nav>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const { createApp, computed, ref } = Vue;
+
+    createApp({
+      setup() {
+        const selectedTheme = ref('tokyo'); // 預設固定使用「東京藍」風格
+        const activeTab = ref('home');
+        const routeMode = ref('fromHotel');
+        const guideSection = ref('play');
+
+        const themes = [
+          {
+            key: 'tokyo',
+            name: '東京藍',
+            desc: '清爽科技',
+            swatch: 'bg-gradient-to-br from-sky-400 to-indigo-600',
+            body: 'bg-gradient-to-br from-sky-100 via-indigo-50 to-slate-100',
+            hero: 'bg-gradient-to-br from-sky-500 via-blue-500 to-indigo-600',
+            badge: 'bg-gradient-to-br from-sky-500 to-indigo-600',
+            progress: 'bg-white'
+          },
+          {
+            key: 'sakura',
+            name: '櫻花粉',
+            desc: '親子溫柔',
+            swatch: 'bg-gradient-to-br from-pink-300 to-rose-500',
+            body: 'bg-gradient-to-br from-pink-50 via-rose-50 to-orange-50',
+            hero: 'bg-gradient-to-br from-pink-400 via-rose-400 to-orange-400',
+            badge: 'bg-gradient-to-br from-pink-400 to-rose-500',
+            progress: 'bg-white'
+          },
+          {
+            key: 'matcha',
+            name: '抹茶綠',
+            desc: '自然沉穩',
+            swatch: 'bg-gradient-to-br from-emerald-300 to-teal-600',
+            body: 'bg-gradient-to-br from-emerald-50 via-teal-50 to-stone-100',
+            hero: 'bg-gradient-to-br from-emerald-500 via-teal-500 to-cyan-600',
+            badge: 'bg-gradient-to-br from-emerald-500 to-teal-600',
+            progress: 'bg-white'
+          }
+        ];
+
+        const theme = computed(() => themes.find(t => t.key === selectedTheme.value));
+
+        const openedDay = ref('1');
+
+        const toggleDay = (dayNo) => {
+          openedDay.value = openedDay.value === dayNo ? '' : dayNo;
+        };
+
+        const days = [
+          {
+            no: '1',
+            date: '5/12',
+            title: '成田機場 → 上野入住',
+            tag: '抵達日',
+            note: '搭 Skyliner 到京成上野，步行到飯店，晚上阿美橫丁簡單採買。',
+            transport: 'Skyliner',
+            time: '約 60–80 分',
+            route: '成田機場搭 Keisei Skyliner 到京成上野，約 2–3 站、41–45 分鐘；京成上野步行到飯店約 15–20 分鐘。',
+            details: [
+              { time: '13:25', title: '抵達成田機場', desc: '通關、拿行李、整理推車，親子建議抓約 60 分鐘。' },
+              { time: '14:25', title: '購買／兌換 Skyliner 票', desc: '確認回程票也一起處理好，避免最後一天手忙腳亂。' },
+              { time: '14:45', title: '搭 Skyliner 前往京成上野', desc: '車程約 41–45 分鐘，全車指定席，行李可放置。' },
+              { time: '15:30', title: '抵達京成上野', desc: '不搭計程車，推車加行李步行到飯店約 15–20 分鐘。' },
+              { time: '16:00', title: '飯店 Check-in', desc: '放行李、稍微休息，整理隔天迪士尼用品。' },
+              { time: '17:00', title: '阿美橫丁周邊採買', desc: '買水、牛奶、優格、香蕉、小孩零食與隔天早餐。' },
+              { time: '20:00', title: '回飯店休息', desc: '隔天迪士尼要早起，第一天不要排太滿。' }
+            ]
+          },
+          {
+            no: '2',
+            date: '5/13',
+            title: '東京迪士尼樂園',
+            tag: '主行程',
+            note: 'JR 御徒町到東京站，轉京葉線到舞濱，親子抓 65–75 分鐘。',
+            transport: 'JR',
+            time: '約 65–75 分',
+            route: '御徒町搭 JR 山手線到東京站約 3 站，站內轉京葉線約 15–20 分鐘，東京到舞濱約 3–6 站。',
+            disney: {
+              summary: '這天不要用大人玩法硬衝設施，主軸是 Fantasyland、Toontown、遊行、拍照、午睡與提早用餐。建議 20:00 左右視孩子體力離園。',
+              rides: ['小小世界', '小飛象', '旋轉木馬', '米奇魔法交響樂', 'Toontown 卡通城', '城堡拍照', '遊行卡位', '爆米花補給'],
+              plan: [
+                '1. 09:00 入園後先往 Fantasyland，不先衝刺激設施。',
+                '2. 10:30 前後移動到 Toontown，讓小孩拍照與放電。',
+                '3. 11:30 前吃午餐，避開 12:30 以後尖峰。',
+                '4. 12:30–14:00 用推車午睡，大人輪流休息或買飲料。',
+                '5. 下午以遊行、室內設施與商店為主，依 App 等候時間調整。',
+                '6. 16:30–17:30 提早吃晚餐，避免孩子餓到崩潰。',
+                '7. 18:00 後拍夜景、買伴手禮；20:00 左右評估是否離園。'
+              ],
+              tips: ['不要午餐拖太晚。', '不要把推車當置物櫃放貴重物品。', '小孩睡覺時不要硬排長隊。', '晚餐提早吃比多玩一項設施更重要。', '若下雨，以室內設施、商店與餐廳休息為主。']
+            },
+            details: [
+              { time: '06:30', title: '起床與早餐', desc: '簡單吃，整理推車、雨罩、水壺、備用衣與行動電源。' },
+              { time: '07:05', title: '飯店出發到 JR 御徒町站', desc: '步行約 5 分鐘，準備搭山手線往東京站。' },
+              { time: '07:20', title: '御徒町 → 東京', desc: 'JR 山手線約 3 站、6–8 分鐘。' },
+              { time: '07:28', title: '東京站轉京葉線', desc: '這段站內走最久，推車建議抓 15–20 分鐘。' },
+              { time: '07:48', title: '東京 → 舞濱', desc: 'JR 京葉線／武藏野線約 3–6 站、12–17 分鐘。' },
+              { time: '08:20', title: '抵達 Disneyland 入口', desc: '排隊入園，9:00 開園前抵達剛好。' },
+              { time: '09:00', title: '入園開始玩', desc: '先玩 Fantasyland、Toontown，適合 3 歲小孩。' },
+              { time: '12:30', title: '午餐與推車午睡', desc: '不要午餐吃太晚，小孩累了讓他在推車休息。' },
+              { time: '20:00', title: '建議離園', desc: '避開 21:00 閉園大人潮，推車回程比較舒服。' },
+              { time: '21:15', title: '回到飯店', desc: '舞濱回東京，再轉山手線到御徒町。' }
+            ]
+          },
+          {
+            no: '3',
+            date: '5/14',
+            title: '淺草＋晴空塔',
+            tag: '輕鬆日',
+            note: '銀座線到淺草，再搭東武晴空塔線 1 站到東京晴空塔。',
+            transport: 'Metro＋東武',
+            time: '約 20–30 分/段',
+            route: '上野／上野廣小路搭銀座線到淺草約 3–4 站；淺草搭東武晴空塔線到東京晴空塔約 1 站。',
+            details: [
+              { time: '08:30', title: '起床', desc: '前一天迪士尼後不要太早出門，讓小孩多睡一點。' },
+              { time: '09:30', title: '飯店出發到地鐵站', desc: '步行到上野廣小路或上野站，約 5–10 分鐘。' },
+              { time: '09:40', title: '上野／上野廣小路 → 淺草', desc: '東京 Metro 銀座線約 3–4 站、5–8 分鐘。' },
+              { time: '10:00', title: '雷門、仲見世通、淺草寺', desc: '拍照、買小點心，推車慢慢走。' },
+              { time: '11:20', title: '淺草午餐', desc: '建議找家庭餐廳、烏龍麵、天丼或簡單親子可分食餐點。' },
+              { time: '12:35', title: '淺草 → 東京晴空塔', desc: '東武晴空塔線 1 站，車程約 3 分鐘，但含走路找電梯抓 20–30 分鐘。' },
+              { time: '13:00', title: '墨田水族館', desc: '室內、不怕天氣，適合 3 歲小孩。' },
+              { time: '15:00', title: '晴空塔 Solamachi', desc: '點心、購物、伴手禮，晚餐也可在商場解決。' },
+              { time: '17:30', title: '從晴空塔回飯店', desc: '東京晴空塔站回淺草，轉銀座線回上野／上野廣小路。' },
+              { time: '18:40', title: '回飯店休息', desc: '隔天回程日，要整理行李。' }
+            ]
+          },
+          {
+            no: '4',
+            date: '5/15',
+            title: '上野動物園 → 成田',
+            tag: '回程日',
+            note: '上午步行去動物園，下午回飯店拿行李，搭 Skyliner 去成田。',
+            transport: '步行＋Skyliner',
+            time: '約 45 分',
+            route: '飯店步行到上野動物園約 20–25 分鐘；回程從京成上野搭 Skyliner 到成田機場約 2–3 站、41–45 分鐘。',
+            details: [
+              { time: '07:30', title: '起床整理行李', desc: '大行李與隨身包分開，護照、零食、備用衣不要放進托運行李。' },
+              { time: '08:30', title: 'Check-out 並寄放行李', desc: '把大行李寄飯店，只帶推車與隨身包去動物園。' },
+              { time: '09:00', title: '飯店步行到上野動物園', desc: '約 20–25 分鐘，推車慢慢走。' },
+              { time: '09:30', title: '上野動物園', desc: '抓 2.5–3 小時即可，不要想全部逛完。' },
+              { time: '12:00', title: '午餐', desc: '園內簡單吃，或回上野周邊用餐。' },
+              { time: '14:00', title: '離開動物園', desc: '步行到阿美橫丁做最後採買。' },
+              { time: '15:20', title: '回飯店拿行李', desc: '小孩換衣服、上廁所、整理戰利品。' },
+              { time: '15:50', title: '步行到京成上野站', desc: '行李加推車抓 15–20 分鐘。' },
+              { time: '16:30', title: 'Skyliner 前往成田機場', desc: '京成上野到成田機場約 2–3 站、41–45 分鐘。' },
+              { time: '17:15', title: '抵達成田機場', desc: '辦理報到、托運、出境、晚餐與伴手禮。' },
+              { time: '20:40', title: 'BR195 起飛', desc: '建議 19:30 前往登機門，不要壓線。' }
+            ]
+          }
+        ];
+
+        const transports = [
+          {
+            day: 'Day 1｜5/12',
+            title: '成田機場 → Tosei Hotel COCONE',
+            lines: [
+              '成田機場 → 京成上野：Keisei Skyliner 約 2–3 站，41–45 分鐘。',
+              '京成上野 → 飯店：步行約 15–20 分鐘，行李＋推車要抓保守。',
+              '晚餐與採買：飯店到阿美橫丁步行約 5–10 分鐘。'
+            ]
+          },
+          {
+            day: 'Day 2｜5/13',
+            title: 'Tosei Hotel COCONE → 東京迪士尼樂園',
+            lines: [
+              '御徒町 → 東京：JR 山手線 3 站，約 6–8 分鐘。',
+              '東京站內轉京葉線：約 15–20 分鐘，這段推車會走比較久。',
+              '東京 → 舞濱：JR 京葉線／武藏野線約 3–6 站，12–17 分鐘。',
+              '舞濱站 → Disneyland：步行約 10–15 分鐘。'
+            ]
+          },
+          {
+            day: 'Day 3｜5/14',
+            title: '淺草、晴空塔、墨田水族館',
+            lines: [
+              '上野廣小路 → 淺草：東京 Metro 銀座線 4 站，約 7–8 分鐘。',
+              '上野 → 淺草：東京 Metro 銀座線 3 站，約 5 分鐘。',
+              '淺草 → 東京晴空塔：東武晴空塔線 1 站，約 3 分鐘。',
+              '晴空塔回飯店：原路回淺草，轉銀座線回上野／上野廣小路。'
+            ]
+          },
+          {
+            day: 'Day 4｜5/15',
+            title: '上野動物園 → 成田機場',
+            lines: [
+              '飯店 → 上野動物園：步行約 20–25 分鐘。',
+              '上野動物園 → 阿美橫丁：步行約 15–20 分鐘。',
+              '飯店 → 京成上野：步行約 15–20 分鐘。',
+              '京成上野 → 成田機場：Skyliner 約 2–3 站，41–45 分鐘。'
+            ]
+          }
+        ];
+
+        const disneyFirstSteps = [
+          '1. 先確認門票已綁定，My Plan 可以看到全家票券。',
+          '2. 先看 DPA：美女與野獸是否有好時段，不好就放棄。',
+          '3. 再看 PP：小熊維尼／怪獸電力公司有沒有合適時段。',
+          '4. 看 SP：是否有商店、餐廳或設施需要 Standby Pass。',
+          '5. 抽 Entry Request：米奇魔法音樂世界 15:50、米奇樂跳跳 14:10 或 16:00 較適合。',
+          '6. 確認 15:00 白天遊行與 19:15 夜間遊行是否正常。'
+        ];
+
+        const disneyZones = [
+          { name: '世界市集', level: '最後', desc: '入口購物街與伴手禮區。建議離園前再買，不要一早買到大包小包。' },
+          { name: '夢幻樂園', level: '主攻', desc: '3 歲親子主攻區。小小世界、旋轉木馬、米奇魔法交響樂、小熊維尼都在這區。' },
+          { name: '卡通城', level: '主攻', desc: '適合小孩拍照、放電與角色見面。米奇公館、米妮時尚工作室可視等候時間安排。' },
+          { name: '明日樂園', level: '可考慮', desc: '怪獸電力公司可考慮；星際旅行、杯麵歡樂之旅較不列 3 歲優先。' },
+          { name: '探險樂園', level: '可考慮', desc: '叢林巡航可視孩子狀態；加勒比海盜較暗且 5/13 維修，不列入。' },
+          { name: '西部樂園', level: '可考慮', desc: '西部沿河鐵路可視情況；巨雷山刺激，不列親子優先。' },
+          { name: '動物天地', level: '不優先', desc: '飛濺山較刺激、可能濕身，不列 3 歲親子優先。' }
+        ];
+
+        const disneyPlayPlan = [
+          { time: '09:00–10:30', title: '早上先留在夢幻樂園', desc: '小小世界、旋轉木馬、米奇魔法交響樂、城堡拍照。不要一入園就橫跨全園。' },
+          { time: '10:30–11:20', title: '移動到卡通城', desc: '米奇公館、米妮時尚工作室、卡通城拍照與小孩放電；等候太久就只拍照。' },
+          { time: '11:20–12:20', title: '提早午餐', desc: '11:20 開始找餐廳，11:30 左右吃。親子版重點是有座位、能休息。' },
+          { time: '12:30–14:00', title: '推車午睡', desc: '小孩睡覺時不要硬排長隊，大人輪流休息、買飲料、看 App。' },
+          { time: '14:20–15:30', title: '白天遊行', desc: '14:20 左右找位置，15:00 看繽紛甜點時刻！。' },
+          { time: '15:40–17:30', title: '室內設施＋提早晚餐', desc: '可接室內表演或商店休息，16:30–17:30 提早晚餐。' },
+          { time: '18:00–20:00', title: '夜景、購物、視體力撤退', desc: '體力好可看 19:15 電子大遊行；看完約 20:00 準備離園。' }
+        ];
+
+        const disneyRideLevels = [
+          { level: 'A 級｜最推薦', note: '適合 3 歲、刺激度低、好拍照或可休息。', rides: ['小小世界', '旋轉木馬', '米奇魔法交響樂', 'Toontown 卡通城', '城堡拍照', '遊行', '爆米花補給'] },
+          { level: 'B 級｜看等候與狀態', note: '等候短、孩子狀態好再安排。', rides: ['小熊維尼獵蜜記', '怪獸電力公司', '叢林巡航', '西部沿河鐵路', '米奇公館會米奇', '米妮時尚工作室'] },
+          { level: 'C 級｜不列優先', note: '不是不能玩，而是不值得犧牲午餐、午睡與孩子情緒。', rides: ['美女與野獸', '杯麵歡樂之旅', '幽靈公館', '星際旅行', '飛濺山', '巨雷山'] }
+        ];
+
+        const disneyBackups = [
+          { title: '下雨版', desc: '減少戶外排隊與遊行等待，多用室內設施、商店、餐廳與劇場表演。推車雨罩一定要帶。' },
+          { title: '小孩 14:00 前已經累', desc: '放棄夜間遊行，下午只做室內設施與商店，17:00 吃晚餐，18:30–19:00 離園。' },
+          { title: '人潮太多', desc: '不硬排超過 60 分鐘的設施，改拍照、看遊行、吃點心與逛商店。' },
+          { title: 'DPA / PP 時段很差', desc: '直接放棄，不為快速通關打亂午餐、午睡與晚餐。' }
+        ];
+
+        const disneyShows = [
+          {
+            time: '15:00',
+            name: '繽紛甜點時刻！',
+            type: '白天遊行｜DPA',
+            badge: '親子推薦',
+            desc: '「雲妮露的甜蜜世界」主題相關遊行，色彩鮮明、角色感強，適合 3 歲小孩看。',
+            location: '遊行路線沿線，建議現場用官方 App 查看當日位置圖。',
+            note: '若想看，建議 14:20 左右開始找位置；不用硬買 DPA。',
+            link: 'https://www.tokyodisneyresort.jp/tc/tdl/show.html'
+          },
+          {
+            time: '19:15',
+            name: '東京迪士尼樂園電子大遊行～夢之光',
+            type: '夜間遊行｜DPA',
+            badge: '經典',
+            desc: '東京迪士尼經典夜間燈光遊行，花車亮燈效果很強，氣氛非常有代表性。',
+            location: '遊行路線沿線，建議現場用官方 App 查看當日位置圖。',
+            note: '小孩體力夠再看；看完約 19:50–20:00 可準備離園。',
+            link: 'https://www.tokyodisneyresort.jp/tc/tdl/show.html'
+          },
+          {
+            time: '20:15',
+            name: '眾彩滿夜空',
+            type: '煙火',
+            badge: '加分項',
+            desc: '園區煙火秀，抬頭可看，但容易受風向與天候影響取消。',
+            location: '園區內多處可看，實際視天候與人流調整。',
+            note: '有看到算加分，不建議為了它硬等。',
+            link: 'https://www.tokyodisneyresort.jp/tc/tdl/show.html'
+          },
+          {
+            time: '20:35',
+            name: 'Reach for the Stars',
+            type: '城堡投影秀｜DPA',
+            badge: '較晚',
+            desc: '灰姑娘城堡前方的夜間投影與燈光秀，視覺效果精彩，但時間偏晚。',
+            location: '灰姑娘城堡前方周邊，建議用官方 App 查看觀賞區與 DPA 區域。',
+            note: '3 歲小孩不列必看；除非孩子下午睡很好、晚上狀態很好才留下。',
+            link: 'https://www.tokyodisneyresort.jp/tc/tdl/show.html'
+          },
+          {
+            time: '10:55 / 12:20 / 13:45 / 15:50 / 17:15',
+            name: '米奇魔法音樂世界',
+            type: '劇場表演｜Entry Request / DPA',
+            badge: '室內',
+            desc: '劇場型音樂表演，有角色、歌舞與舞台效果，適合坐下休息。',
+            location: '劇場場地，依官方 App 顯示入口與座位規則。',
+            note: '15:50 可作為看完白天遊行後的室內備案；不要卡午餐與午睡。',
+            link: 'https://www.tokyodisneyresort.jp/tc/tdl/show.html'
+          },
+          {
+            time: '11:40 / 12:55 / 14:10 / 16:00 / 17:15',
+            name: '米奇樂跳跳！同歡共舞！',
+            type: '互動表演｜Entry Request',
+            badge: '小孩互動',
+            desc: '節奏活潑的互動型表演，適合小孩感受音樂與氣氛。',
+            location: '依官方 App 顯示場地與入場資訊。',
+            note: '14:10 或 16:00 比較可考慮；11:40 卡午餐、12:55 卡午睡、17:15 卡晚餐。',
+            link: 'https://www.tokyodisneyresort.jp/tc/tdl/show.html'
+          }
+        ];
+
+        const disneyPasses = [
+          {
+            icon: '💳',
+            label: 'DPA｜付費',
+            title: 'Disney Premier Access 怎麼搶',
+            path: 'Tokyo Disney Resort App → My Plan → Disney Premier Access → 選同行門票 → 選 Tokyo Disneyland → 選設施／表演 → 選時段 → 付款 → My Plan 查看。',
+            tips: [
+              '你們只優先看「美女與野獸」，不要亂買一堆。',
+              '好時段：09:30–11:00 或 14:30–16:30。',
+              '避開 11:20–12:30 午餐、12:30–14:00 午睡、16:30–17:30 晚餐。',
+              '買完後到指定時間，從 My Plan 打開 QR Code，到 Priority Access Entrance 掃碼。'
+            ]
+          },
+          {
+            icon: '🎟️',
+            label: 'PP｜免費',
+            title: 'Priority Pass 怎麼拿',
+            path: 'Tokyo Disney Resort App → My Plan → 40th Anniversary Priority Pass → 選同行門票 → 選 Tokyo Disneyland → 選可取得設施 → 確認回場時間 → Obtain。',
+            tips: [
+              '優先看「小熊維尼獵蜜記」與「怪獸電力公司」。',
+              '有好時段才拿，不能卡午餐與午睡。',
+              '幽靈公館怕黑孩子不優先；星際旅行聲光動感較強；巨雷山不列親子優先。',
+              '到指定時間後，從 My Plan 打開 QR Code 到入口掃碼。'
+            ]
+          },
+          {
+            icon: '🧾',
+            label: 'SP｜免費',
+            title: 'Standby Pass 怎麼看',
+            path: 'Tokyo Disney Resort App → My Plan → Standby Pass → 選同行門票 → 選類別 Attractions / Shops / Restaurants → 選項目與時段 → Obtain。',
+            tips: [
+              'SP 不一定每天、每個時段都有，需要以當天 App 顯示為準。',
+              '若是商店限定商品才需要，沒有要買限定品就不用硬搶。',
+              '不要為了 SP 打亂孩子午餐、午睡與休息。'
+            ]
+          },
+          {
+            icon: '🎭',
+            label: '抽選',
+            title: 'Entry Request 表演怎麼抽',
+            path: 'Tokyo Disney Resort App → My Plan → Entry Request → 選同行門票 → 選表演／迎賓 → 選時段 → Submit → 看結果。',
+            tips: [
+              '米奇魔法音樂世界：15:50 較適合當午後室內備案。',
+              '米奇樂跳跳：14:10 或 16:00 較可考慮。',
+              '避開 11:40 午餐、12:55 午睡、17:15 晚餐前後。'
+            ]
+          }
+        ];
+
+        const routeCards = {
+          fromHotel: [
+            {
+              day: 'Day 2｜迪士尼日',
+              title: '飯店 → JR 御徒町站',
+              startLabel: '飯店',
+              endLabel: 'JR 御徒町',
+              normalTime: '約 5 分鐘',
+              familyTime: '約 5–7 分鐘',
+              tag: '早上出發',
+              note: '迪士尼當天主要從這裡出發。路線單純，建議 07:05 從飯店出門。',
+              mapUrl: 'https://www.google.com/maps/dir/?api=1&origin=Tosei%20Hotel%20COCONE%20Ueno%20Okachimachi&destination=Okachimachi%20Station&travelmode=walking'
+            },
+            {
+              day: 'Day 1/4｜機場往返',
+              title: '飯店 → 京成上野站',
+              startLabel: '飯店',
+              endLabel: '京成上野',
+              normalTime: '約 13–18 分鐘',
+              familyTime: '約 15–20 分鐘',
+              tag: '拖行李',
+              note: '回程最重要的一段。5/15 建議 15:50 從飯店出發，拖行李與推車請抓保守。',
+              mapUrl: 'https://www.google.com/maps/dir/?api=1&origin=Tosei%20Hotel%20COCONE%20Ueno%20Okachimachi&destination=Keisei%20Ueno%20Station&travelmode=walking'
+            },
+            {
+              day: 'Day 3｜淺草日',
+              title: '飯店 → 上野／上野廣小路站',
+              startLabel: '飯店',
+              endLabel: '銀座線',
+              normalTime: '約 5–8 分鐘',
+              familyTime: '約 5–10 分鐘',
+              tag: '搭銀座線',
+              note: '前往淺草時使用。當天看哪個入口順，就從上野或上野廣小路搭銀座線。',
+              mapUrl: 'https://www.google.com/maps/dir/?api=1&origin=Tosei%20Hotel%20COCONE%20Ueno%20Okachimachi&destination=Ueno-hirokoji%20Station&travelmode=walking'
+            },
+            {
+              day: 'Day 1/4｜補給採買',
+              title: '飯店 → 阿美橫丁',
+              startLabel: '飯店',
+              endLabel: '阿美橫丁',
+              normalTime: '約 5 分鐘',
+              familyTime: '約 5–10 分鐘',
+              tag: '補給',
+              note: '買水、牛奶、早餐、藥妝、零食與伴手禮最方便。最後一天採買不要超過 15:10。',
+              mapUrl: 'https://www.google.com/maps/dir/?api=1&origin=Tosei%20Hotel%20COCONE%20Ueno%20Okachimachi&destination=Ameyoko%20Shopping%20District&travelmode=walking'
+            },
+            {
+              day: 'Day 4｜動物園日',
+              title: '飯店 → 上野動物園',
+              startLabel: '飯店',
+              endLabel: '上野動物園',
+              normalTime: '約 18–20 分鐘',
+              familyTime: '約 20–25 分鐘',
+              tag: '輕便包',
+              note: '最後一天先把大行李寄飯店，只帶推車與輕便包去動物園。',
+              mapUrl: 'https://www.google.com/maps/dir/?api=1&origin=Tosei%20Hotel%20COCONE%20Ueno%20Okachimachi&destination=Ueno%20Zoo&travelmode=walking'
+            }
+          ],
+          toHotel: [
+            {
+              day: 'Day 1｜抵達日',
+              title: '京成上野站 → 飯店',
+              startLabel: '京成上野',
+              endLabel: '飯店',
+              normalTime: '約 13–18 分鐘',
+              familyTime: '約 15–20 分鐘',
+              tag: '拖行李',
+              note: '成田抵達後的關鍵路線。推車與行李很多，請不要急，抓 20 分鐘最穩。',
+              mapUrl: 'https://www.google.com/maps/dir/?api=1&origin=Keisei%20Ueno%20Station&destination=Tosei%20Hotel%20COCONE%20Ueno%20Okachimachi&travelmode=walking'
+            },
+            {
+              day: 'Day 2｜迪士尼回程',
+              title: 'JR 御徒町站 → 飯店',
+              startLabel: 'JR 御徒町',
+              endLabel: '飯店',
+              normalTime: '約 5 分鐘',
+              familyTime: '約 5–10 分鐘',
+              tag: '晚上回飯店',
+              note: '迪士尼回來後從御徒町站走回飯店，孩子可能已累，出站後慢慢走。',
+              mapUrl: 'https://www.google.com/maps/dir/?api=1&origin=Okachimachi%20Station&destination=Tosei%20Hotel%20COCONE%20Ueno%20Okachimachi&travelmode=walking'
+            },
+            {
+              day: 'Day 3｜淺草回程',
+              title: '上野廣小路站 → 飯店',
+              startLabel: '上野廣小路',
+              endLabel: '飯店',
+              normalTime: '約 5–8 分鐘',
+              familyTime: '約 8–12 分鐘',
+              tag: '銀座線回程',
+              note: '晴空塔回程建議原路回淺草，再搭銀座線到上野廣小路／上野，路線較直覺。',
+              mapUrl: 'https://www.google.com/maps/dir/?api=1&origin=Ueno-hirokoji%20Station&destination=Tosei%20Hotel%20COCONE%20Ueno%20Okachimachi&travelmode=walking'
+            },
+            {
+              day: 'Day 1/4｜採買回程',
+              title: '阿美橫丁 → 飯店',
+              startLabel: '阿美橫丁',
+              endLabel: '飯店',
+              normalTime: '約 5 分鐘',
+              familyTime: '約 5–10 分鐘',
+              tag: '補給回程',
+              note: '採買後回飯店很近，但最後一天不要買到忘記回飯店拿行李。',
+              mapUrl: 'https://www.google.com/maps/dir/?api=1&origin=Ameyoko%20Shopping%20District&destination=Tosei%20Hotel%20COCONE%20Ueno%20Okachimachi&travelmode=walking'
+            },
+            {
+              day: 'Day 4｜動物園後',
+              title: '上野動物園 → 飯店',
+              startLabel: '上野動物園',
+              endLabel: '飯店',
+              normalTime: '約 18–20 分鐘',
+              familyTime: '約 20–25 分鐘',
+              tag: '拿行李',
+              note: '動物園後若不逛阿美橫丁，可直接回飯店拿行李。若採買，請留意 15:20 前回飯店。',
+              mapUrl: 'https://www.google.com/maps/dir/?api=1&origin=Ueno%20Zoo&destination=Tosei%20Hotel%20COCONE%20Ueno%20Okachimachi&travelmode=walking'
+            }
+          ]
+        };
+
+        const activeRoutes = computed(() => routeCards[routeMode.value]);
+
+        const dayMaps = [
+          { day: 'Day 1｜5/12', title: '抵達日：進市區與補給', steps: ['成田機場', 'Skyliner', '京成上野', '飯店', '阿美橫丁'], note: '重點是順利入住與補給，晚上早點休息。' },
+          { day: 'Day 2｜5/13', title: '迪士尼日：早出晚回', steps: ['飯店', 'JR 御徒町', '東京站', '舞濱', 'Disneyland'], note: '東京站轉京葉線最耗時，推車請抓 15–20 分鐘。' },
+          { day: 'Day 3｜5/14', title: '淺草與晴空塔：室內外平衡', steps: ['飯店', '銀座線', '淺草雷門', '東武線', '晴空塔/水族館'], note: '晴空塔回飯店建議原路回淺草再轉銀座線。' },
+          { day: 'Day 4｜5/15', title: '回程日：上野區域最穩', steps: ['飯店寄行李', '上野動物園', '阿美橫丁', '飯店拿行李', '京成上野', '成田機場'], note: '14:30 前停止大量採買，優先回飯店拿行李。' }
+        ];
+
+        const tasks = [
+          '證件：護照、機票資料、住宿確認、旅遊保險資料',
+          '付款：信用卡、少量日幣、Suica／PASMO 或手機交通卡',
+          '小孩：推車、推車雨罩、小毯子、備用衣、濕紙巾',
+          '醫藥：退燒藥、腸胃藥、OK 繃、蚊蟲藥、常用藥',
+          '電子：手機、行動電源、充電線、轉接頭',
+          '迪士尼：東京迪士尼 App、門票、水壺、小零食',
+          '最後一天：護照與機票資料不要放進托運行李',
+          '孩子機場會用到的東西獨立放一包'
+        ];
+
+        const backups = [
+          { title: '小孩早上起不來', desc: 'Day 3 淺草縮短，直接晴空塔與水族館；Day 4 動物園縮短到 2 小時。' },
+          { title: '下雨', desc: 'Day 3 以墨田水族館與 Solamachi 為主；淺草拍照縮短。' },
+          { title: '迪士尼太累', desc: '20:00 左右離園，不等閉園；隔天延後到 10:30 出門。' },
+          { title: '最後一天採買太多', desc: '14:30 前停止採買，優先回飯店拿行李。' },
+          { title: '交通卡或票券問題', desc: '先找車站人工窗口，不要在閘門前卡太久。' },
+          { title: '孩子臨時不舒服', desc: '行程全部降級，以飯店附近與機場時間為優先。' }
+        ];
+
+        const lineQuick = [
+          '5/12 Day 1：成田抵達 → Skyliner 約 2–3 站到京成上野 → 步行到飯店 → 阿美橫丁補給 → 早休息。',
+          '5/13 Day 2：御徒町 3 站到東京 → 轉京葉線約 3–6 站到舞濱 → 東京迪士尼樂園；20:00 左右視體力離園。',
+          '5/14 Day 3：上野／上野廣小路搭銀座線 3–4 站到淺草 → 東武線 1 站到晴空塔 → 墨田水族館＋Solamachi → 原路回飯店。',
+          '5/15 Day 4：步行到上野動物園 → 阿美橫丁採買 → 回飯店拿行李 → 步行京成上野 → Skyliner 約 2–3 站到成田 → BR195 20:40 回台灣。'
+        ];
+
+        return { selectedTheme, themes, theme, days, tasks, transports, disneyFirstSteps, disneyZones, disneyPlayPlan, disneyRideLevels, disneyBackups, disneyShows, disneyPasses, routeCards, activeRoutes, routeMode, guideSection, dayMaps, backups, lineQuick, openedDay, toggleDay, activeTab };
+      }
+    }).mount('#app');
+  </script>
 </body>
 </html>
