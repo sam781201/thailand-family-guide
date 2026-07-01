@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#0891b2" />
-  <title>2026 曼谷＋芭達雅親子行程</title>
+  <title>2026 曼谷＋芭達雅親子行程｜泰國 Web App 3.1 超穩定版</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     * { -webkit-tap-highlight-color: transparent; }
@@ -12,885 +12,465 @@
     .phone-shadow { box-shadow: 0 24px 80px rgba(15, 23, 42, .22); }
     .glass { backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); }
     .safe-bottom { padding-bottom: env(safe-area-inset-bottom); }
-    [v-cloak] { display: none; }
-    #fallback-app { display:none; }
-    body.app-fallback #fallback-app { display:block; }
-    .line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-    @media print {
-      body { background: #fff !important; }
-      nav, .no-print { display: none !important; }
-      main { max-width: none !important; padding: 0 !important; }
-      section.phone-shell { box-shadow: none !important; border-radius: 0 !important; min-height: auto !important; }
-    }
+    .tab-panel { display:none; }
+    .tab-panel.active { display:block; }
+    .map-grid a { display:block; }
   </style>
 </head>
 <body class="min-h-screen bg-slate-100">
-<div id="app" v-cloak :class="theme.body" class="min-h-screen transition-all duration-500">
+<div id="app" class="min-h-screen bg-gradient-to-br from-cyan-100 via-teal-50 to-amber-50 transition-all duration-500">
   <main class="mx-auto flex min-h-screen max-w-md flex-col px-4 py-5">
     <section class="phone-shell phone-shadow relative flex min-h-[calc(100vh-40px)] flex-col overflow-hidden rounded-[2.2rem] border border-white/30 bg-white/90">
-      <div :class="theme.hero" class="absolute inset-x-0 top-0 h-64"></div>
+      <div class="absolute inset-x-0 top-0 h-64 bg-gradient-to-br from-cyan-500 via-teal-500 to-amber-500"></div>
       <div class="absolute inset-x-0 top-0 h-64 bg-gradient-to-b from-black/10 to-transparent"></div>
-
       <header class="relative z-10 px-5 pb-4 pt-5 text-white">
         <div class="flex items-center justify-between">
-          <div>
-            <p class="text-xs opacity-80">Thailand Family Web App 3.1 Stable</p>
-            <h1 class="mt-1 text-2xl font-bold tracking-tight">曼谷＋芭達雅</h1>
-          </div>
-          <button @click="jumpToday" class="rounded-full bg-white/20 px-3 py-2 text-sm font-semibold glass active:scale-95">今日</button>
+          <div><p class="text-xs opacity-80">Thailand Family Web App 3.1</p><h1 class="mt-1 text-2xl font-bold tracking-tight">曼谷＋芭達雅</h1></div>
+          <button id="jumpTodayBtn" class="rounded-full bg-white/20 px-3 py-2 text-sm font-semibold glass active:scale-95">今日</button>
         </div>
-
         <div class="mt-5 rounded-3xl bg-white/18 p-4 glass">
           <div class="flex items-start justify-between gap-3">
-            <div>
-              <p class="text-sm opacity-80">2026 家族大會師</p>
-              <p class="mt-1 text-xl font-bold">曼谷＋芭達雅 7天6夜</p>
-            </div>
-            <div class="rounded-2xl bg-white/20 px-3 py-2 text-center">
-              <p class="text-xs opacity-80">模式</p>
-              <p class="font-bold">現場操作</p>
-            </div>
+            <div><p class="text-sm opacity-80">2026 家族大會師</p><p class="mt-1 text-xl font-bold">曼谷＋芭達雅 7天6夜</p></div>
+            <div class="rounded-2xl bg-white/20 px-3 py-2 text-center"><p class="text-xs opacity-80">模式</p><p class="font-bold">現場操作</p></div>
           </div>
-          <div class="mt-4 h-2 rounded-full bg-white/20"><div :class="theme.progress" class="h-2 rounded-full" :style="{width: progressWidth}"></div></div>
+          <div class="mt-4 h-2 rounded-full bg-white/20"><div id="progressBar" class="h-2 rounded-full bg-white" style="width:14%"></div></div>
         </div>
       </header>
-
       <section class="relative z-10 flex-1 overflow-y-auto rounded-t-[2rem] bg-slate-50 px-5 pb-28 pt-5">
-        <div v-if="activeTab === 'home'" class="space-y-4">
-          <div class="rounded-[1.9rem] bg-gradient-to-br from-cyan-600 via-teal-600 to-amber-500 p-5 text-white shadow-sm">
-            <div class="flex items-start justify-between gap-3">
-              <div>
-                <p class="text-xs font-bold opacity-80">今日總控台</p>
-                <h2 class="mt-2 text-2xl font-black tracking-tight">今天要幹嘛？</h2>
-                <p class="mt-2 text-sm leading-6 text-white/90">先看今天、天氣、下一步。其他資訊需要再點。</p>
-              </div>
-              <span class="shrink-0 rounded-full bg-white/20 px-3 py-1 text-[11px] font-bold glass">{{ todayStatus.displayDate }}</span>
-            </div>
-
-            <div class="mt-5 rounded-3xl bg-white/16 p-4 glass">
-              <p class="text-xs font-bold opacity-80">{{ todayStatus.label }}</p>
-              <h3 class="mt-1 text-xl font-black leading-7">{{ todayStatus.title }}</h3>
-              <p class="mt-2 text-sm leading-6 text-white/90">{{ todayStatus.message }}</p>
-              <div v-if="todayStatus.day" class="mt-4 grid grid-cols-2 gap-2 text-sm">
-                <div class="rounded-2xl bg-white/15 p-3">
-                  <p class="text-xs opacity-80">今晚睡哪</p>
-                  <p class="mt-1 font-black">{{ todayStatus.day.stayShort }}</p>
-                </div>
-                <div class="rounded-2xl bg-white/15 p-3">
-                  <p class="text-xs opacity-80">今天怎麼走</p>
-                  <p class="mt-1 font-black">{{ todayStatus.day.transportShort }}</p>
-                </div>
-              </div>
-            </div>
-
-            <div class="mt-3 grid grid-cols-3 gap-2 text-center text-sm">
-              <button @click="openToday" class="rounded-2xl bg-white px-3 py-3 font-black text-cyan-700 shadow-sm active:scale-95">看今天</button>
-              <button @click="activeTab='restaurants'" class="rounded-2xl bg-white/18 px-3 py-3 font-black glass active:scale-95">找好吃</button>
-              <button @click="activeTab='tips'" class="rounded-2xl bg-white/18 px-3 py-3 font-black glass active:scale-95">出門檢查</button>
-            </div>
-          </div>
-
-          <div class="rounded-[1.7rem] bg-white p-4 shadow-sm ring-1 ring-slate-100">
-            <div class="flex items-start justify-between gap-3">
-              <div>
-                <p class="text-xs font-bold text-cyan-600">今天會不會下雨？</p>
-                <h3 class="mt-1 text-lg font-black text-slate-900">{{ todayWeather.icon }} {{ todayWeather.title }}</h3>
-                <p class="mt-2 text-sm leading-6 text-slate-500">{{ todayWeather.summary }}</p>
-              </div>
-              <span class="shrink-0 rounded-full bg-cyan-50 px-3 py-1 text-[11px] font-bold text-cyan-700">{{ todayWeather.placeName }}</span>
-            </div>
-            <div class="mt-4 grid grid-cols-3 gap-2 text-center text-xs">
-              <div class="rounded-2xl bg-slate-50 p-3"><p class="text-slate-400">氣溫</p><p class="mt-1 font-black text-slate-800">{{ todayWeather.tempText }}</p></div>
-              <div class="rounded-2xl bg-slate-50 p-3"><p class="text-slate-400">降雨</p><p class="mt-1 font-black text-slate-800">{{ todayWeather.rainText }}</p></div>
-              <div class="rounded-2xl bg-slate-50 p-3"><p class="text-slate-400">行動</p><p class="mt-1 font-black text-slate-800">{{ todayWeather.action }}</p></div>
-            </div>
-            <div class="mt-4 rounded-2xl bg-amber-50 p-3 text-sm leading-6 text-amber-900"><span class="font-bold">小秘書建議：</span>{{ todayWeather.advice }}</div>
-          </div>
-
-          <div class="grid grid-cols-4 gap-2 text-center text-xs font-bold">
-            <button @click="openToday" class="rounded-2xl bg-white p-3 text-cyan-700 shadow-sm ring-1 ring-slate-100 active:scale-95">去哪玩</button>
-            <button @click="activeTab='restaurants'" class="rounded-2xl bg-white p-3 text-orange-700 shadow-sm ring-1 ring-slate-100 active:scale-95">吃什麼</button>
-            <button @click="activeTab='guide'" class="rounded-2xl bg-white p-3 text-teal-700 shadow-sm ring-1 ring-slate-100 active:scale-95">小攻略</button>
-            <button @click="activeTab='tips'" class="rounded-2xl bg-white p-3 text-slate-700 shadow-sm ring-1 ring-slate-100 active:scale-95">提醒</button>
-          </div>
-
-          <div class="rounded-[1.7rem] bg-white p-4 shadow-sm ring-1 ring-slate-100">
-            <p class="text-xs font-bold text-cyan-600">旅行基地</p>
-            <div class="mt-3 grid grid-cols-1 gap-2 text-sm">
-              <div class="rounded-2xl bg-slate-50 p-3"><span class="font-bold text-slate-800">曼谷前段：</span>Sukhumvit 2</div>
-              <div class="rounded-2xl bg-slate-50 p-3"><span class="font-bold text-slate-800">芭達雅：</span>Somerset Pattaya</div>
-              <div class="rounded-2xl bg-slate-50 p-3"><span class="font-bold text-slate-800">曼谷後段：</span>Eastin Phayathai</div>
-            </div>
-          </div>
-        </div>
-
-        <div v-if="activeTab === 'trip'" class="space-y-3">
-          <div class="mb-2 flex items-center justify-between"><h2 class="text-base font-bold text-slate-900">我們要去哪玩</h2><span class="text-xs text-slate-500">先看重點，再看細節</span></div>
-          <article v-for="day in days" :key="day.no" class="rounded-[1.7rem] bg-white p-4 shadow-sm ring-1 ring-slate-100">
-            <button type="button" @click="toggleDay(day.no)" class="w-full text-left transition active:scale-[0.99]">
-              <div class="flex items-start gap-3">
-                <div :class="theme.badge" class="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl text-lg font-black text-white">{{ day.no }}</div>
-                <div class="min-w-0 flex-1">
-                  <div class="flex items-start justify-between gap-2">
-                    <div><p class="text-xs font-semibold text-slate-400">{{ day.date }}</p><h3 class="mt-1 font-bold text-slate-900">{{ day.title }}</h3></div>
-                    <div class="flex items-center gap-2"><span class="rounded-full bg-slate-100 px-2.5 py-1 text-[11px] font-bold text-slate-500">{{ openedDay === day.no ? '收合' : '展開' }}</span></div>
-                  </div>
-                  <div class="mt-3 flex flex-wrap items-center gap-2 text-xs">
-                    <span class="rounded-full bg-cyan-50 px-2.5 py-1 font-bold text-cyan-700">{{ day.tag }}</span>
-                    <span class="rounded-full bg-slate-50 px-2.5 py-1 font-semibold text-slate-500">🚕 {{ day.transportShort }}</span>
-                    <span class="rounded-full bg-amber-50 px-2.5 py-1 font-semibold text-amber-700">{{ weatherForDay(day).icon }} {{ weatherForDay(day).action }}</span>
-                  </div>
-                  <p class="mt-2 line-clamp-2 text-sm leading-6 text-slate-500">{{ day.note }}</p>
-                </div>
-              </div>
-            </button>
-            <div v-if="openedDay === day.no" class="mt-4 rounded-3xl bg-slate-50 p-4">
-              <div class="rounded-2xl bg-white p-3 ring-1 ring-slate-100"><p class="text-xs font-bold text-cyan-600">今天怎麼玩</p><p class="mt-1 text-sm leading-6 text-slate-600">{{ day.strategy }}</p></div>
-
-              <div class="mt-3 rounded-2xl bg-cyan-50 p-3 ring-1 ring-cyan-100">
-                <p class="text-xs font-bold text-cyan-700">今天怎麼走</p>
-                <p class="mt-1 text-sm font-bold leading-6 text-slate-800">{{ day.routeLine }}</p>
-                <p class="mt-1 text-xs leading-5 text-slate-600">{{ day.routeNote }}</p>
-              </div>
-
-              <div class="mt-3 rounded-2xl bg-amber-50 p-3 ring-1 ring-amber-100">
-                <div class="flex items-start gap-2">
-                  <span class="text-lg">{{ weatherForDay(day).icon }}</span>
-                  <div class="min-w-0 flex-1">
-                    <p class="text-xs font-bold text-amber-700">天氣小提醒｜{{ weatherForDay(day).placeName }}</p>
-                    <p class="mt-1 text-sm leading-6 text-slate-700">{{ weatherForDay(day).title }}，{{ weatherForDay(day).action }}。{{ weatherForDay(day).advice }}</p>
-                  </div>
-                </div>
-              </div>
-
-              <h4 class="mb-3 mt-4 text-sm font-bold text-slate-900">今天幾點做什麼</h4>
-              <div class="space-y-3">
-                <div v-for="item in day.details" :key="item.time + item.title" class="flex gap-3">
-                  <div class="w-16 shrink-0 text-xs font-bold text-slate-500">{{ item.time }}</div>
-                  <div class="flex-1 border-l-2 border-slate-200 pl-3"><p class="text-sm font-bold text-slate-800">{{ item.title }}</p><p class="mt-1 text-xs leading-5 text-slate-500">{{ item.desc }}</p></div>
-                </div>
-              </div>
-              <div class="mt-4 grid grid-cols-1 gap-3">
-                <div class="rounded-2xl bg-white p-3 ring-1 ring-slate-100"><p class="text-xs font-bold text-slate-400">小孩友善提醒</p><p class="mt-1 text-sm leading-6 text-slate-600">{{ day.kid }}</p></div>
-                <div class="rounded-2xl bg-white p-3 ring-1 ring-slate-100"><p class="text-xs font-bold text-slate-400">大概花多少</p><p class="mt-1 text-sm leading-6 text-slate-600">{{ day.budget }}</p></div>
-              </div>
-              <div class="mt-4 rounded-2xl bg-white p-3 ring-1 ring-slate-100">
-                <div class="flex items-start justify-between gap-3">
-                  <div>
-                    <p class="text-xs font-bold text-cyan-600">地圖按這裡</p>
-                    <p class="mt-1 text-sm leading-6 text-slate-600">{{ day.mapTip }}</p>
-                  </div>
-                  <span class="shrink-0 rounded-full bg-cyan-50 px-2.5 py-1 text-[11px] font-bold text-cyan-700">親子友善</span>
-                </div>
-
-                <div class="mt-3 space-y-3">
-                  <div class="rounded-2xl border border-cyan-100 bg-cyan-50 p-3">
-                    <div class="mb-2">
-                      <p class="text-sm font-black text-cyan-800">① 今天怎麼走</p>
-                      <p class="mt-1 text-xs leading-5 text-cyan-700">先看大方向，不用照順序硬跑。</p>
-                    </div>
-                    <a v-for="map in day.mapMain" :key="map.label" :href="map.url" target="_blank" class="mb-2 block rounded-2xl bg-white p-3 shadow-sm active:scale-[0.99] last:mb-0">
-                      <div class="flex items-center justify-between gap-3">
-                        <div class="min-w-0">
-                          <p class="text-sm font-black text-slate-800">{{ map.label }}</p>
-                          <p class="mt-1 text-xs leading-5 text-slate-500">{{ map.desc }}</p>
-                        </div>
-                        <span class="shrink-0 rounded-xl bg-cyan-600 px-3 py-2 text-xs font-bold text-white">看路</span>
-                      </div>
-                    </a>
-                  </div>
-
-                  <div class="rounded-2xl border border-emerald-100 bg-emerald-50 p-3">
-                    <div class="mb-2">
-                      <p class="text-sm font-black text-emerald-800">② 叫車去這裡</p>
-                      <p class="mt-1 text-xs leading-5 text-emerald-700">給 Grab / Bolt 搜尋目的地，避免跑錯分店。</p>
-                    </div>
-                    <a v-for="map in day.mapTaxi" :key="map.label" :href="map.url" target="_blank" class="mb-2 block rounded-2xl bg-white p-3 shadow-sm active:scale-[0.99] last:mb-0">
-                      <div class="flex items-center justify-between gap-3">
-                        <div class="min-w-0">
-                          <p class="text-sm font-black text-slate-800">{{ map.label }}</p>
-                          <p class="mt-1 text-xs leading-5 text-slate-500">{{ map.desc }}</p>
-                        </div>
-                        <span class="shrink-0 rounded-xl bg-emerald-600 px-3 py-2 text-xs font-bold text-white">叫車</span>
-                      </div>
-                    </a>
-                  </div>
-
-                  <div class="rounded-2xl border border-slate-200 bg-slate-50 p-3">
-                    <div class="mb-2">
-                      <p class="text-sm font-black text-slate-800">③ 回飯店</p>
-                      <p class="mt-1 text-xs leading-5 text-slate-600">小孩累、下雨、太熱、塞車，直接回住宿休息。</p>
-                    </div>
-                    <a v-for="map in day.mapHotel" :key="map.label" :href="map.url" target="_blank" class="mb-2 block rounded-2xl bg-white p-3 shadow-sm active:scale-[0.99] last:mb-0">
-                      <div class="flex items-center justify-between gap-3">
-                        <div class="min-w-0">
-                          <p class="text-sm font-black text-slate-800">{{ map.label }}</p>
-                          <p class="mt-1 text-xs leading-5 text-slate-500">{{ map.desc }}</p>
-                        </div>
-                        <span class="shrink-0 rounded-xl bg-slate-900 px-3 py-2 text-xs font-bold text-white">回家</span>
-                      </div>
-                    </a>
-                  </div>
-                </div>
-
-                <p class="mt-3 text-xs leading-5 text-slate-400">小秘書提醒：多點路線只看大方向；真的叫車請按「叫車去這裡」，比較不會跑錯。</p>
-              </div>
-            </div>
-          </article>
-        </div>
-
-        <div v-if="activeTab === 'guide'" class="space-y-4">
-          <div class="rounded-[1.7rem] bg-gradient-to-br from-cyan-600 to-teal-600 p-5 text-white shadow-sm">
-            <p class="text-xs font-bold opacity-80">Tiny Travel Guide</p>
-            <h2 class="mt-2 text-xl font-black">旅行小攻略</h2>
-            <p class="mt-2 text-sm leading-6 text-white/90">不用看長篇說明，現場遇到狀況就看這裡。</p>
-          </div>
-          <article v-for="item in guideCards" :key="item.title" class="rounded-[1.7rem] bg-white p-4 shadow-sm ring-1 ring-slate-100">
-            <div class="flex items-start gap-3">
-              <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-cyan-100 text-lg">{{ item.icon }}</div>
-              <div class="min-w-0 flex-1">
-                <p class="text-xs font-bold text-cyan-600">{{ item.label }}</p>
-                <h3 class="mt-1 font-black text-slate-900">{{ item.title }}</h3>
-                <div class="mt-3 space-y-2">
-                  <div v-for="tip in item.tips" :key="tip" class="rounded-2xl bg-slate-50 p-3 text-sm leading-6 text-slate-600">{{ tip }}</div>
-                </div>
-              </div>
-            </div>
-          </article>
-        </div>
-
-        <div v-if="activeTab === 'tips'" class="space-y-5">
-          <div class="rounded-[1.7rem] bg-gradient-to-br from-amber-500 to-orange-500 p-5 text-white shadow-sm">
-            <p class="text-xs font-bold opacity-80">Family Trip Reminder</p>
-            <h2 class="mt-2 text-xl font-black">出門前看一下</h2>
-            <p class="mt-2 text-sm leading-6 text-white/90">出門前先掃一眼：證件、交通、小孩用品、雨天備案、回程時間都在這裡。</p>
-          </div>
-
-
-          <div class="rounded-[1.7rem] bg-white p-4 shadow-sm ring-1 ring-slate-100">
-            <h2 class="font-bold text-slate-900">出門前 30 秒檢查</h2>
-            <div class="mt-3 grid grid-cols-2 gap-2 text-sm text-slate-600">
-              <div class="rounded-2xl bg-slate-50 p-3">護照 / 房卡 / 現金</div>
-              <div class="rounded-2xl bg-slate-50 p-3">手機 / 行動電源</div>
-              <div class="rounded-2xl bg-slate-50 p-3">水 / 小孩零食</div>
-              <div class="rounded-2xl bg-slate-50 p-3">濕紙巾 / 尿布</div>
-              <div class="rounded-2xl bg-slate-50 p-3">防曬 / 防蚊</div>
-              <div class="rounded-2xl bg-slate-50 p-3">薄外套 / 雨具</div>
-            </div>
-          </div>
-
-          <div class="rounded-[1.7rem] bg-white p-4 shadow-sm ring-1 ring-slate-100">
-            <h2 class="font-bold text-slate-900">下雨 / 太熱怎麼辦</h2>
-            <div class="mt-3 space-y-2 text-sm leading-6 text-slate-600">
-              <div class="rounded-2xl bg-cyan-50 p-3"><span class="font-bold text-cyan-700">🌤 天氣 OK：</span>上午戶外照走，下午仍保留冷氣 / 泳池休息。</div>
-              <div class="rounded-2xl bg-amber-50 p-3"><span class="font-bold text-amber-700">🌦 可能下雨：</span>上午先跑主景點，下午改百貨、室內景點、飯店泳池。</div>
-              <div class="rounded-2xl bg-slate-50 p-3"><span class="font-bold text-slate-700">☔ 雨勢明顯：</span>取消夜市，改外送、百貨美食街或飯店休息。</div>
-              <div class="rounded-2xl bg-rose-50 p-3"><span class="font-bold text-rose-700">🔥 太熱：</span>戶外縮短，補水、防曬，午後回住宿或冷氣餐廳。</div>
-            </div>
-          </div>
-
-          <div class="rounded-[1.7rem] bg-white p-4 shadow-sm ring-1 ring-slate-100">
-            <h2 class="font-bold text-slate-900">出發前大檢查</h2>
-            <p class="mt-1 text-xs leading-5 text-slate-500">出發前一天或每天早上都可以勾。</p>
-            <div class="mt-3"><label v-for="task in tasks" :key="task" class="flex items-center gap-3 border-t border-slate-100 py-3 first:border-t-0"><input type="checkbox" class="h-5 w-5 rounded border-slate-300" /><span class="text-sm text-slate-600">{{ task }}</span></label></div>
-          </div>
-
-          <div class="rounded-[1.7rem] bg-white p-4 shadow-sm ring-1 ring-slate-100">
-            <h2 class="font-bold text-slate-900">小孩補給包</h2>
-            <div class="mt-3 grid grid-cols-2 gap-2 text-sm text-slate-600"><div v-for="item in kidItems" :key="item" class="rounded-2xl bg-slate-50 p-3">{{ item }}</div></div>
-          </div>
-
-          <div class="rounded-[1.7rem] bg-white p-4 shadow-sm ring-1 ring-slate-100">
-            <h2 class="font-bold text-slate-900">叫車與移動提醒</h2>
-            <div class="mt-3 space-y-2 text-sm leading-6 text-slate-600">
-              <div class="rounded-2xl bg-cyan-50 p-3"><span class="font-bold text-cyan-700">Grab / Bolt：</span>多人＋行李請叫大車，上車點選飯店大門或百貨正門。</div>
-              <div class="rounded-2xl bg-cyan-50 p-3"><span class="font-bold text-cyan-700">包車日：</span>前一天確認司機、集合時間、兒童用品與行李空間。</div>
-              <div class="rounded-2xl bg-cyan-50 p-3"><span class="font-bold text-cyan-700">回機場：</span>三組家庭加小孩，建議比一般旅客多抓 30–60 分鐘。</div>
-            </div>
-          </div>
-
-          <div class="rounded-[1.7rem] bg-white p-4 shadow-sm ring-1 ring-slate-100">
-            <h2 class="font-bold text-slate-900">小孩狀況提醒</h2>
-            <div class="mt-3 space-y-2 text-sm leading-6 text-slate-600">
-              <div class="rounded-2xl bg-amber-50 p-3">小孩累了：不要硬跑夜市，優先回飯店、外送、洗澡睡覺。</div>
-              <div class="rounded-2xl bg-amber-50 p-3">太熱：戶外縮短，改百貨、海洋館、室內景點、飯店泳池。</div>
-              <div class="rounded-2xl bg-amber-50 p-3">餐廳等太久：先點白飯、蛋、湯、不辣菜，小孩先吃，大人才有命吃。</div>
-            </div>
-          </div>
-
-          <div class="rounded-[1.7rem] bg-white p-4 shadow-sm ring-1 ring-slate-100">
-            <h2 class="font-bold text-slate-900">雨天 / 太熱備案</h2>
-            <div class="mt-3 space-y-2 text-sm leading-6 text-slate-600">
-              <div class="rounded-2xl bg-slate-50 p-3">曼谷：CentralwOrld、Siam、SEA LIFE、ICONSIAM、按摩。</div>
-              <div class="rounded-2xl bg-slate-50 p-3">芭達雅：Terminal 21、Central Pattaya、House of Benedict、飯店泳池。</div>
-              <div class="rounded-2xl bg-slate-50 p-3">原則：下雨先刪夜市；太熱先刪戶外第二景點。</div>
-            </div>
-          </div>
-
-          <div class="rounded-[1.7rem] bg-white p-4 shadow-sm ring-1 ring-slate-100">
-            <h2 class="font-bold text-slate-900">SPA 速查</h2>
-            <div class="mt-3 space-y-3"><div v-for="spa in spas" :key="spa.area" class="rounded-2xl bg-slate-50 p-3"><p class="text-sm font-bold text-slate-800">{{ spa.area }}</p><p v-for="s in spa.items" :key="s" class="mt-1 text-xs leading-5 text-slate-500">・{{ s }}</p></div></div>
-          </div>
-
-          <div class="rounded-[1.7rem] bg-white p-4 shadow-sm ring-1 ring-slate-100">
-            <h2 class="font-bold text-slate-900">LINE 快速版</h2>
-            <div class="mt-3 space-y-2"><div v-for="item in lineQuick" :key="item" class="rounded-2xl bg-cyan-50 p-3 text-sm leading-6 text-slate-700">{{ item }}</div></div>
-          </div>
-
-          <div class="rounded-[1.7rem] bg-white p-4 shadow-sm ring-1 ring-slate-100">
-            <h2 class="font-bold text-slate-900">原始資料</h2>
-            <p class="mt-2 text-sm leading-6 text-slate-500">保留原本 PDF，遇到細節需要查完整版本時可直接開啟。</p><a href="assets/original-guide.pdf" target="_blank" class="mt-4 block rounded-2xl bg-cyan-600 px-4 py-3 text-center text-sm font-bold text-white shadow-sm active:scale-[0.99]">打開原始 PDF</a>
-          </div>
-        </div>
-
-        <div v-if="activeTab === 'restaurants'" class="space-y-4">
-          <div class="rounded-[1.7rem] bg-gradient-to-br from-orange-500 to-amber-500 p-5 text-white shadow-sm">
-            <p class="text-xs font-bold opacity-80">Food Control Center</p>
-            <h2 class="mt-2 text-xl font-black">有什麼好吃</h2>
-            <p class="mt-2 text-sm leading-6 text-white/90">先看必點前三名，真的要點餐再展開 6 大 2 小完整版本。</p>
-          </div>
-
-          <div class="grid grid-cols-3 gap-2 rounded-[1.5rem] bg-white p-2 shadow-sm ring-1 ring-slate-100">
-            <button @click="restaurantArea='all'" :class="restaurantArea==='all' ? 'bg-cyan-600 text-white shadow-sm' : 'text-slate-500'" class="rounded-2xl px-2 py-3 text-xs font-bold transition active:scale-95">全部</button>
-            <button @click="restaurantArea='bangkok'" :class="restaurantArea==='bangkok' ? 'bg-cyan-600 text-white shadow-sm' : 'text-slate-500'" class="rounded-2xl px-2 py-3 text-xs font-bold transition active:scale-95">曼谷</button>
-            <button @click="restaurantArea='pattaya'" :class="restaurantArea==='pattaya' ? 'bg-cyan-600 text-white shadow-sm' : 'text-slate-500'" class="rounded-2xl px-2 py-3 text-xs font-bold transition active:scale-95">芭達雅</button>
-          </div>
-
-          <article v-for="r in activeRestaurants" :key="r.name" class="overflow-hidden rounded-[1.7rem] bg-white shadow-sm ring-1 ring-slate-100">
-            <button type="button" @click="toggleRestaurant(r.name)" class="w-full bg-gradient-to-br from-orange-50 to-amber-50 p-4 text-left active:scale-[0.99]">
-              <div class="flex items-start justify-between gap-3">
-                <div class="min-w-0 flex-1">
-                  <p class="text-xs font-bold text-orange-600">{{ r.day }}｜{{ r.areaLabel }}｜{{ r.type }}</p>
-                  <h3 class="mt-1 text-lg font-black leading-6 text-slate-900">{{ r.name }}</h3>
-                  <p class="mt-2 text-sm leading-6 text-slate-600">{{ r.desc }}</p>
-                </div>
-                <span class="shrink-0 rounded-full bg-white px-2.5 py-1 text-[11px] font-bold text-orange-700 shadow-sm">{{ expandedRestaurants[r.name] ? '收合' : '展開' }}</span>
-              </div>
-            </button>
-            <div class="p-4">
-              <p class="text-xs font-bold text-cyan-600">先點這三個</p>
-              <div class="mt-3 space-y-2">
-                <div v-for="dish in r.dishes.slice(0,3)" :key="dish" class="rounded-2xl bg-slate-50 p-3 text-sm leading-6 text-slate-700">{{ dish }}</div>
-              </div>
-              <div class="mt-3 grid grid-cols-2 gap-2">
-                <button @click="toggleRestaurant(r.name)" class="rounded-2xl bg-orange-50 px-4 py-3 text-center text-sm font-bold text-orange-700 active:scale-95">{{ expandedRestaurants[r.name] ? '收合點餐建議' : '看6大2小點法' }}</button>
-                <a :href="r.mapUrl" target="_blank" class="rounded-2xl bg-slate-900 px-4 py-3 text-center text-sm font-bold text-white shadow-sm active:scale-[0.99]">要去的地方</a>
-              </div>
-
-              <div v-if="expandedRestaurants[r.name]" class="mt-4 space-y-3">
-                <div class="rounded-2xl bg-orange-50 p-3 ring-1 ring-orange-100">
-                  <p class="text-xs font-black text-orange-700">6大2小建議點法</p>
-                  <div class="mt-2 space-y-2"><div v-for="item in r.groupOrder" :key="item" class="rounded-xl bg-white/80 px-3 py-2 text-xs leading-5 text-slate-700">{{ item }}</div></div>
-                </div>
-                <div v-if="r.dishes.length > 3" class="rounded-2xl bg-white p-3 ring-1 ring-slate-100">
-                  <p class="text-xs font-bold text-slate-400">其他也可點</p>
-                  <div class="mt-2 space-y-2"><div v-for="dish in r.dishes.slice(3)" :key="dish" class="rounded-xl bg-slate-50 px-3 py-2 text-xs leading-5 text-slate-600">{{ dish }}</div></div>
-                </div>
-                <div class="rounded-2xl bg-cyan-50 p-3 text-xs leading-5 text-cyan-800"><span class="font-bold">小孩友善提醒：</span>{{ r.kid }}</div>
-                <div class="rounded-2xl bg-rose-50 p-3 text-xs leading-5 text-rose-800"><span class="font-bold">辣度 / 排隊提醒：</span>{{ r.spicyNote }}</div>
-                <div class="rounded-2xl bg-amber-50 p-3 text-xs leading-5 text-amber-800"><span class="font-bold">點餐小抄：</span>{{ r.orderTip }}</div>
-                <div class="rounded-2xl bg-slate-50 p-3 text-[11px] leading-5 text-slate-500"><span class="font-bold">參考口碑：</span>{{ r.sourceNote }}</div>
-              </div>
-            </div>
-          </article>
-        </div>
+        <div id="home" class="tab-panel active space-y-5"></div>
+        <div id="trip" class="tab-panel space-y-3"></div>
+        <div id="restaurants" class="tab-panel space-y-4"></div>
+        <div id="guide" class="tab-panel space-y-4"></div>
+        <div id="tips" class="tab-panel space-y-5"></div>
       </section>
-
       <nav class="absolute inset-x-4 bottom-4 z-20 rounded-[1.6rem] border border-white/40 bg-white/85 px-2 py-3 shadow-lg glass safe-bottom">
         <div class="grid grid-cols-5 text-center text-[11px] font-semibold">
-          <button @click="activeTab='home'" :class="activeTab==='home' ? 'text-cyan-600' : 'text-slate-400'" class="rounded-2xl py-2 active:scale-95">首頁</button>
-          <button @click="activeTab='trip'" :class="activeTab==='trip' ? 'text-cyan-600' : 'text-slate-400'" class="rounded-2xl py-2 active:scale-95">去哪玩</button>
-          <button @click="activeTab='restaurants'" :class="activeTab==='restaurants' ? 'text-cyan-600' : 'text-slate-400'" class="rounded-2xl py-2 active:scale-95">吃什麼</button>
-          <button @click="activeTab='guide'" :class="activeTab==='guide' ? 'text-cyan-600' : 'text-slate-400'" class="rounded-2xl py-2 active:scale-95">小攻略</button>
-          <button @click="activeTab='tips'" :class="activeTab==='tips' ? 'text-cyan-600' : 'text-slate-400'" class="rounded-2xl py-2 active:scale-95">提醒</button>
+          <button data-tab="home" class="nav-btn rounded-2xl py-2 active:scale-95 text-cyan-600">首頁</button>
+          <button data-tab="trip" class="nav-btn rounded-2xl py-2 active:scale-95 text-slate-400">去哪玩</button>
+          <button data-tab="restaurants" class="nav-btn rounded-2xl py-2 active:scale-95 text-slate-400">吃什麼</button>
+          <button data-tab="guide" class="nav-btn rounded-2xl py-2 active:scale-95 text-slate-400">小攻略</button>
+          <button data-tab="tips" class="nav-btn rounded-2xl py-2 active:scale-95 text-slate-400">提醒</button>
         </div>
       </nav>
     </section>
   </main>
 </div>
-
-<div id="fallback-app" class="mx-auto max-w-md px-4 py-6">
-  <div class="rounded-[1.7rem] bg-white p-5 shadow-sm ring-1 ring-slate-100">
-    <p class="text-xs font-bold text-cyan-600">Thailand Family Web App</p>
-    <h2 class="mt-2 text-xl font-black text-slate-900">網頁正在載入中</h2>
-    <p class="mt-2 text-sm leading-6 text-slate-500">如果畫面一直沒有出現，請重新整理，或確認手機網路是否正常。這版已加入 Vue 備援來源，通常重新整理一次即可。</p>
-    <a href="https://sam781201.github.io/thailand-family-guide/?v=15" class="mt-4 block rounded-2xl bg-cyan-600 px-4 py-3 text-center text-sm font-bold text-white">重新整理新版</a>
-  </div>
-</div>
-
 <script>
-window.__startThaiApp = function(){
-if (!window.Vue) { document.body.classList.add('app-fallback'); return; }
-const { createApp, computed, ref, onMounted } = Vue;
-createApp({ setup() {
-  const activeTab = ref('home');
-  const openedDay = ref('1');
-  const guideSection = ref('play');
-  const restaurantArea = ref('all');
-  const expandedRestaurants = ref({});
-  const theme = { body:'bg-gradient-to-br from-cyan-100 via-teal-50 to-amber-50', hero:'bg-gradient-to-br from-cyan-500 via-teal-500 to-amber-500', badge:'bg-gradient-to-br from-cyan-500 to-teal-600', progress:'bg-white' };
-  const days = [
-    { no:'1', date:'7/2（四）', title:'深夜大會師 ➜ 晚餐與夜遊', tag:'抵達日', stayShort:'曼谷 Sukhumvit 2', transportShort:'Grab / ARL', note:'機場分流進市區，晚餐三選一，視體力安插匯狂象神廟。', strategy:'今天重點不是跑景點，而是讓三組順利進市區、孩子不要崩潰。太晚就外送回房，象神廟可留到 7/6 包車日。', kid:'3歲娃建議車上小睡；晚餐避免排隊太久，外送派對是最穩版本。', backup:'太晚或塞車：直接 Grab Food 外送回飯店；還有精神再去象神廟。', budget:'晚餐約 350–700 THB / 人。', mapUrl:'https://www.google.com/maps/search/?api=1&query=66%2F1%20Sukhumvit%202%20Bangkok%20Je%20Oh%20Chula%20Huai%20Khwang%20Ganesha', details:[{time:'18:00',title:'第二組抵達',desc:'行李上 Grab 六人大車走高速，3歲娃車上小憩。'},{time:'17:50',title:'第三組抵達',desc:'可搭 ARL 機場快線，避開地面塞車，至 Phayathai 轉乘。'},{time:'20:30+',title:'晚餐三選一',desc:'A Je Oh Chula＋象神廟；B Emsphere 美食街；C Grab Food 外送回飯店。'}] },
-    { no:'2', date:'7/3（五）', title:'曼谷美食美妝大分流 ➜ 全員舒壓', tag:'曼谷日', stayShort:'曼谷 Sukhumvit 2', transportShort:'BTS/MRT＋Grab', note:'早餐備選庫、Here Hai 合體午餐，下午分流，晚上 Playmondo 或 SPA。', strategy:'上午吃、下午分流、晚上放鬆。大人想逛美妝，帶娃組就用 SEA LIFE / Playmondo / 百貨冷氣穩住。', kid:'SEA LIFE 與 Playmondo 是帶娃主線；百貨冷氣可做中繼休息點。', backup:'太熱：Gaysorn / CentralwOrld；累了：直接按摩或回飯店。', budget:'早餐 60–350；午餐 400–800；晚餐 500–800 THB / 人。', mapUrl:'https://www.google.com/maps/search/?api=1&query=Here%20Hai%20Bangkok%20CentralWorld%20SEA%20LIFE%20Bangkok', details:[{time:'08:00',title:'早餐備選庫',desc:'邢泰記、安樂園、Samantao、王子戲院豬肉粥、益生老茶室；懶人可吃 The Coffee Club / 7-11。'},{time:'10:30',title:'Here Hai 合體午餐',desc:'爆量蟹肉炒飯，順路外帶斑斕小點。'},{time:'13:45',title:'下午三分流',desc:'貴婦避暑流、Siam 潮流流、SEA LIFE 帶娃流。'},{time:'18:00',title:'舒壓分流',desc:'放電組 Playmondo；按摩組預約飯店周邊 SPA。'},{time:'20:30+',title:'晚餐備案',desc:'CentralwOrld Savoey / Kub Kao Kub Pla，或 Jodd Fairs 夜市。'}] },
-    { no:'3', date:'7/4（六）', title:'曼谷 ➜ 綠山動物園 ➜ 芭達雅', tag:'包車去程', stayShort:'Somerset Pattaya', transportShort:'15人座包車', note:'包車從曼谷出發，順路綠山野生動物園，入住後泳池放電，晚上海景晚餐。', strategy:'這天包車最有價值：長距離移動＋沿路景點一次處理。下午務必留飯店泳池，晚上看體力決定夜市。', kid:'上車睡、動物園放電、飯店泳池再放電；晚上夜市可刪。', backup:'不去動物園：Great&Grand、Frost Magical Ice、Terminal 21 Pattaya。', budget:'動物園門票約 300–350；晚餐 800–1500；夜市 150–300 THB / 人。', mapUrl:'https://www.google.com/maps/search/?api=1&query=Khao%20Kheow%20Open%20Zoo%20Somerset%20Pattaya%20The%20Glass%20House%20Pattaya', details:[{time:'09:30',title:'包車出發',desc:'15人座保姆車從曼谷出發。'},{time:'11:00',title:'Khao Kheow 綠山動物園',desc:'可租高爾夫球車，餵長頸鹿、看水豚，午餐園區或周邊簡單吃。'},{time:'15:30',title:'Somerset 入住',desc:'頂樓無邊際海盜船水上滑梯放電。'},{time:'18:00',title:'The Glass House Pattaya',desc:'海景玻璃屋海鮮晚餐，Grab/Bolt 前往。'},{time:'21:00+',title:'Thepprasit 大帕夜市',desc:'週五六日限定，烤大頭蝦、青木瓜沙拉；累了可取消。'}] },
-    { no:'4', date:'7/5（日）', title:'芭達雅避暑網美 ➜ 飛機地標夜市', tag:'芭達雅日', stayShort:'Somerset Pattaya', transportShort:'Grab/Bolt', note:'House of Benedict、海景鳥巢午餐、Central Pattaya 補貨、外送海鮮、飛機夜市。', strategy:'白天先走室內冷氣網美點，下午回百貨/房間降溫，晚上再決定要不要飛機夜市。', kid:'中午海景餐廳不要排太硬；下午回房間或百貨讓小孩休息。', backup:'太累：省略夜市，直接飯店泳池＋外送。', budget:'門票 100–200；午餐 450–900；外送 400–700；夜市 100–250 THB / 人。', mapUrl:'https://www.google.com/maps/search/?api=1&query=House%20of%20Benedict%203%20Mermaids%20The%20Sky%20Gallery%20Runway%20Street%20Food%20Pattaya', details:[{time:'09:30',title:'House of Benedict',desc:'全室內冷氣網美棚，推車暢行。'},{time:'12:30',title:'海景午餐二選一',desc:'3 Mermaids 巨型鳥巢＋兒童區；或 The Sky Gallery 草皮寬敞。'},{time:'15:00',title:'Central Pattaya＋房內海鮮宴',desc:'買伴手禮，晚餐可 Grab 外送回三臥室客廳。'},{time:'20:45+',title:'Runway Street Food',desc:'747 飛機地標夜市，空地平坦推車友善。'}] },
-    { no:'5', date:'7/6（一）', title:'芭達雅 ➜ 小綿羊農莊 ➜ 象神安插 ➜ 曼谷', tag:'包車回程', stayShort:'Eastin Phayathai', transportShort:'15人座包車', note:'退房後回程包車，小綿羊農莊，回曼谷途中視情況安插象神廟。', strategy:'用包車消化回曼谷路程，小孩上車午睡；如果 7/2 沒去象神，今天安插最順。', kid:'農場餵羊駝與小綿羊後，上車剛好睡午覺。', backup:'不去農莊：Elephant Jungle Sanctuary 或真理寺。', budget:'農莊門票 150–250；晚餐 200–1500 THB / 人。', mapUrl:'https://www.google.com/maps/search/?api=1&query=Pattaya%20Sheep%20Farm%20Huai%20Khwang%20Ganesha%20Shrine%20Eastin%20Grand%20Hotel%20Phayathai', details:[{time:'10:00',title:'退房，包車出發',desc:'從 Somerset Pattaya 出發回曼谷。'},{time:'10:30',title:'Pattaya Sheep Farm',desc:'童話戶外農場，餵羊駝與小綿羊。'},{time:'13:00',title:'返回曼谷',desc:'小孩車上午睡，午餐可簡單吃。'},{time:'15:30',title:'象神安插',desc:'若 7/2 沒去匯狂象神廟，今天請司機順路載去。'},{time:'18:30',title:'晚餐三選一',desc:'Somboon、Chom Arun / Rongros、ICONSIAM SookSiam。'}] },
-    { no:'6', date:'7/7（二）', title:'法力貼紙 ➜ 購物 ➜ 家族晚宴', tag:'購物日', stayShort:'Eastin Phayathai', transportShort:'BTS/MRT＋Grab', note:'早餐彈性，Museum of Siam，ICONSIAM，Big C 掃貨，晚上家族晚宴。', strategy:'今天是補貨與體驗日，不要排太密。午餐後先判斷孩子與長輩體力，再決定 Big C 與晚宴。', kid:'購物日容易累，建議午餐後安排一次飯店或咖啡廳休息。', backup:'不想跑遠：飯店周邊＋King Power / CentralwOrld。', budget:'晚宴約 800–4000 THB / 人。', mapUrl:'https://www.google.com/maps/search/?api=1&query=Museum%20of%20Siam%20ICONSIAM%20Big%20C%20Supercenter%20Bangkok', details:[{time:'08:00',title:'早餐彈性',desc:'The Coffee Club Phayathai、站邊輕食、Nara Thai、Grab 外送安樂園。'},{time:'10:30',title:'Museum of Siam',desc:'泰服拍照、互動裝置、Yant Sticker 法力貼紙。'},{time:'13:00',title:'ICONSIAM＋Big C',desc:'瀑布餐廳合體午餐，接 Big C 終極伴手禮掃貨。'},{time:'18:30',title:'家族晚宴',desc:'米其林 Saneh Jaan / Paste，或 Somboon / Nara Thai 家庭友善。'}] },
-    { no:'7', date:'7/8（三）', title:'完美終極無縫分流', tag:'回程日', stayShort:'退房日', transportShort:'Grab / ARL', note:'依三組航班分流：機場、King Power、飯店泳池、The Commons 慢活。', strategy:'返程日只求順，不求多。晚班機可寄行李，孩子用泳池放電，大人免稅/按摩。', kid:'不要安排硬景點，保留吃飯、泳池、免稅、交通緩衝。', backup:'遇到雨天或塞車：提早去機場，進免稅店吹冷氣。', budget:'The Commons 400–650；按摩 600–1100 THB / 人。', mapUrl:'https://www.google.com/maps/search/?api=1&query=Eastin%20Grand%20Hotel%20Phayathai%20The%20Commons%20Saladaeng%20Suvarnabhumi%20Airport', details:[{time:'10:00',title:'第一組退房',desc:'Grab 大車直奔機場。'},{time:'10:00+',title:'第二組 J 人備案',desc:'下午班機去機場；晚班機寄行李，King Power / 泳池，時間到搭機場快線。'},{time:'10:00',title:'第三組慢活',desc:'行李寄飯店，The Commons Saladaeng 精品咖啡早午餐。'},{time:'15:50',title:'第三組出發機場',desc:'領行李，Grab 直奔機場，18:50 班機。'}] }
-  ];
+// 3.1 超穩定版：不使用 Vue，避免 CDN 失敗時出現大括號模板。
+(function() {
+'use strict';
+const days = [
+  { no:'1', date:'7/2（四）', title:'深夜大會師 ➜ 晚餐與夜遊', tag:'抵達日', stayShort:'曼谷 Sukhumvit 2', transportShort:'Grab / ARL', note:'機場分流進市區，晚餐三選一，視體力安插匯狂象神廟。', strategy:'今天重點不是跑景點，而是讓三組順利進市區、孩子不要崩潰。太晚就外送回房，象神廟可留到 7/6 包車日。', kid:'3歲娃建議車上小睡；晚餐避免排隊太久，外送派對是最穩版本。', backup:'太晚或塞車：直接 Grab Food 外送回飯店；還有精神再去象神廟。', budget:'晚餐約 350–700 THB / 人。', mapUrl:'https://www.google.com/maps/search/?api=1&query=66%2F1%20Sukhumvit%202%20Bangkok%20Je%20Oh%20Chula%20Huai%20Khwang%20Ganesha', details:[{time:'18:00',title:'第二組抵達',desc:'行李上 Grab 六人大車走高速，3歲娃車上小憩。'},{time:'17:50',title:'第三組抵達',desc:'可搭 ARL 機場快線，避開地面塞車，至 Phayathai 轉乘。'},{time:'20:30+',title:'晚餐三選一',desc:'A Je Oh Chula＋象神廟；B Emsphere 美食街；C Grab Food 外送回飯店。'}] },
+  { no:'2', date:'7/3（五）', title:'曼谷美食美妝大分流 ➜ 全員舒壓', tag:'曼谷日', stayShort:'曼谷 Sukhumvit 2', transportShort:'BTS/MRT＋Grab', note:'早餐備選庫、Here Hai 合體午餐，下午分流，晚上 Playmondo 或 SPA。', strategy:'上午吃、下午分流、晚上放鬆。大人想逛美妝，帶娃組就用 SEA LIFE / Playmondo / 百貨冷氣穩住。', kid:'SEA LIFE 與 Playmondo 是帶娃主線；百貨冷氣可做中繼休息點。', backup:'太熱：Gaysorn / CentralwOrld；累了：直接按摩或回飯店。', budget:'早餐 60–350；午餐 400–800；晚餐 500–800 THB / 人。', mapUrl:'https://www.google.com/maps/search/?api=1&query=Here%20Hai%20Bangkok%20CentralWorld%20SEA%20LIFE%20Bangkok', details:[{time:'08:00',title:'早餐備選庫',desc:'邢泰記、安樂園、Samantao、王子戲院豬肉粥、益生老茶室；懶人可吃 The Coffee Club / 7-11。'},{time:'10:30',title:'Here Hai 合體午餐',desc:'爆量蟹肉炒飯，順路外帶斑斕小點。'},{time:'13:45',title:'下午三分流',desc:'貴婦避暑流、Siam 潮流流、SEA LIFE 帶娃流。'},{time:'18:00',title:'舒壓分流',desc:'放電組 Playmondo；按摩組預約飯店周邊 SPA。'},{time:'20:30+',title:'晚餐備案',desc:'CentralwOrld Savoey / Kub Kao Kub Pla，或 Jodd Fairs 夜市。'}] },
+  { no:'3', date:'7/4（六）', title:'曼谷 ➜ 綠山動物園 ➜ 芭達雅', tag:'包車去程', stayShort:'Somerset Pattaya', transportShort:'15人座包車', note:'包車從曼谷出發，順路綠山野生動物園，入住後泳池放電，晚上海景晚餐。', strategy:'這天包車最有價值：長距離移動＋沿路景點一次處理。下午務必留飯店泳池，晚上看體力決定夜市。', kid:'上車睡、動物園放電、飯店泳池再放電；晚上夜市可刪。', backup:'不去動物園：Great&Grand、Frost Magical Ice、Terminal 21 Pattaya。', budget:'動物園門票約 300–350；晚餐 800–1500；夜市 150–300 THB / 人。', mapUrl:'https://www.google.com/maps/search/?api=1&query=Khao%20Kheow%20Open%20Zoo%20Somerset%20Pattaya%20The%20Glass%20House%20Pattaya', details:[{time:'09:30',title:'包車出發',desc:'15人座保姆車從曼谷出發。'},{time:'11:00',title:'Khao Kheow 綠山動物園',desc:'可租高爾夫球車，餵長頸鹿、看水豚，午餐園區或周邊簡單吃。'},{time:'15:30',title:'Somerset 入住',desc:'頂樓無邊際海盜船水上滑梯放電。'},{time:'18:00',title:'The Glass House Pattaya',desc:'海景玻璃屋海鮮晚餐，Grab/Bolt 前往。'},{time:'21:00+',title:'Thepprasit 大帕夜市',desc:'週五六日限定，烤大頭蝦、青木瓜沙拉；累了可取消。'}] },
+  { no:'4', date:'7/5（日）', title:'芭達雅避暑網美 ➜ 飛機地標夜市', tag:'芭達雅日', stayShort:'Somerset Pattaya', transportShort:'Grab/Bolt', note:'House of Benedict、海景鳥巢午餐、Central Pattaya 補貨、外送海鮮、飛機夜市。', strategy:'白天先走室內冷氣網美點，下午回百貨/房間降溫，晚上再決定要不要飛機夜市。', kid:'中午海景餐廳不要排太硬；下午回房間或百貨讓小孩休息。', backup:'太累：省略夜市，直接飯店泳池＋外送。', budget:'門票 100–200；午餐 450–900；外送 400–700；夜市 100–250 THB / 人。', mapUrl:'https://www.google.com/maps/search/?api=1&query=House%20of%20Benedict%203%20Mermaids%20The%20Sky%20Gallery%20Runway%20Street%20Food%20Pattaya', details:[{time:'09:30',title:'House of Benedict',desc:'全室內冷氣網美棚，推車暢行。'},{time:'12:30',title:'海景午餐二選一',desc:'3 Mermaids 巨型鳥巢＋兒童區；或 The Sky Gallery 草皮寬敞。'},{time:'15:00',title:'Central Pattaya＋房內海鮮宴',desc:'買伴手禮，晚餐可 Grab 外送回三臥室客廳。'},{time:'20:45+',title:'Runway Street Food',desc:'747 飛機地標夜市，空地平坦推車友善。'}] },
+  { no:'5', date:'7/6（一）', title:'芭達雅 ➜ 小綿羊農莊 ➜ 象神安插 ➜ 曼谷', tag:'包車回程', stayShort:'Eastin Phayathai', transportShort:'15人座包車', note:'退房後回程包車，小綿羊農莊，回曼谷途中視情況安插象神廟。', strategy:'用包車消化回曼谷路程，小孩上車午睡；如果 7/2 沒去象神，今天安插最順。', kid:'農場餵羊駝與小綿羊後，上車剛好睡午覺。', backup:'不去農莊：Elephant Jungle Sanctuary 或真理寺。', budget:'農莊門票 150–250；晚餐 200–1500 THB / 人。', mapUrl:'https://www.google.com/maps/search/?api=1&query=Pattaya%20Sheep%20Farm%20Huai%20Khwang%20Ganesha%20Shrine%20Eastin%20Grand%20Hotel%20Phayathai', details:[{time:'10:00',title:'退房，包車出發',desc:'從 Somerset Pattaya 出發回曼谷。'},{time:'10:30',title:'Pattaya Sheep Farm',desc:'童話戶外農場，餵羊駝與小綿羊。'},{time:'13:00',title:'返回曼谷',desc:'小孩車上午睡，午餐可簡單吃。'},{time:'15:30',title:'象神安插',desc:'若 7/2 沒去匯狂象神廟，今天請司機順路載去。'},{time:'18:30',title:'晚餐三選一',desc:'Somboon、Chom Arun / Rongros、ICONSIAM SookSiam。'}] },
+  { no:'6', date:'7/7（二）', title:'法力貼紙 ➜ 購物 ➜ 家族晚宴', tag:'購物日', stayShort:'Eastin Phayathai', transportShort:'BTS/MRT＋Grab', note:'早餐彈性，Museum of Siam，ICONSIAM，Big C 掃貨，晚上家族晚宴。', strategy:'今天是補貨與體驗日，不要排太密。午餐後先判斷孩子與長輩體力，再決定 Big C 與晚宴。', kid:'購物日容易累，建議午餐後安排一次飯店或咖啡廳休息。', backup:'不想跑遠：飯店周邊＋King Power / CentralwOrld。', budget:'晚宴約 800–4000 THB / 人。', mapUrl:'https://www.google.com/maps/search/?api=1&query=Museum%20of%20Siam%20ICONSIAM%20Big%20C%20Supercenter%20Bangkok', details:[{time:'08:00',title:'早餐彈性',desc:'The Coffee Club Phayathai、站邊輕食、Nara Thai、Grab 外送安樂園。'},{time:'10:30',title:'Museum of Siam',desc:'泰服拍照、互動裝置、Yant Sticker 法力貼紙。'},{time:'13:00',title:'ICONSIAM＋Big C',desc:'瀑布餐廳合體午餐，接 Big C 終極伴手禮掃貨。'},{time:'18:30',title:'家族晚宴',desc:'米其林 Saneh Jaan / Paste，或 Somboon / Nara Thai 家庭友善。'}] },
+  { no:'7', date:'7/8（三）', title:'完美終極無縫分流', tag:'回程日', stayShort:'退房日', transportShort:'Grab / ARL', note:'依三組航班分流：機場、King Power、飯店泳池、The Commons 慢活。', strategy:'返程日只求順，不求多。晚班機可寄行李，孩子用泳池放電，大人免稅/按摩。', kid:'不要安排硬景點，保留吃飯、泳池、免稅、交通緩衝。', backup:'遇到雨天或塞車：提早去機場，進免稅店吹冷氣。', budget:'The Commons 400–650；按摩 600–1100 THB / 人。', mapUrl:'https://www.google.com/maps/search/?api=1&query=Eastin%20Grand%20Hotel%20Phayathai%20The%20Commons%20Saladaeng%20Suvarnabhumi%20Airport', details:[{time:'10:00',title:'第一組退房',desc:'Grab 大車直奔機場。'},{time:'10:00+',title:'第二組 J 人備案',desc:'下午班機去機場；晚班機寄行李，King Power / 泳池，時間到搭機場快線。'},{time:'10:00',title:'第三組慢活',desc:'行李寄飯店，The Commons Saladaeng 精品咖啡早午餐。'},{time:'15:50',title:'第三組出發機場',desc:'領行李，Grab 直奔機場，18:50 班機。'}] }
+];
 
-  const routeInfo = {
-    '1': { line:'機場 → Sukhumvit 2 飯店 → 晚餐 / 外送 → 回飯店', note:'抵達日以入住為主，晚餐看體力，不要硬排行程。' },
-    '2': { line:'Sukhumvit 2 → Here Hai → CentralWorld / Siam → 飯店', note:'曼谷市區日以冷氣點串接，逛街與帶娃可分流。' },
-    '3': { line:'Sukhumvit 2 → 綠山動物園 → Somerset Pattaya → 海景晚餐', note:'包車去程日，重點是順利移動與入住，不要再加太多點。' },
-    '4': { line:'Somerset Pattaya → House of Benedict → 海景午餐 → 百貨 / 飯店 → 夜市', note:'芭達雅日先室內，再看天氣決定晚上是否夜市。' },
-    '5': { line:'Somerset Pattaya → Pattaya Sheep Farm → 象神廟 / 曼谷 → Eastin Phayathai', note:'包車回程日，小孩上車午睡，象神視 7/2 是否已去決定。' },
-    '6': { line:'Eastin Phayathai → Museum of Siam → ICONSIAM / Big C → 家族晚宴', note:'購物日容易超時，午餐後先判斷小孩與長輩體力。' },
-    '7': { line:'Eastin Phayathai → 分組退房 / King Power / The Commons → 機場', note:'回程日只求順，交通時間抓寬，不排硬景點。' }
-  };
-  const dayWeatherMeta = {
-    '1': { iso:'2026-07-02', place:'bangkok' },
-    '2': { iso:'2026-07-03', place:'bangkok' },
-    '3': { iso:'2026-07-04', place:'pattaya' },
-    '4': { iso:'2026-07-05', place:'pattaya' },
-    '5': { iso:'2026-07-06', place:'pattaya' },
-    '6': { iso:'2026-07-07', place:'bangkok' },
-    '7': { iso:'2026-07-08', place:'bangkok' }
-  };
-  days.forEach(day => {
-    day.routeLine = routeInfo[day.no]?.line || day.title;
-    day.routeNote = routeInfo[day.no]?.note || day.transportShort;
-    day.weatherIso = dayWeatherMeta[day.no]?.iso;
-    day.weatherPlace = dayWeatherMeta[day.no]?.place || 'bangkok';
-  });
-
-  const gSearch = (q) => 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(q);
-  const gDir = (origin, destination, waypoints='', mode='driving') => {
-    const wp = waypoints ? '&waypoints=' + encodeURIComponent(waypoints) : '';
-    return 'https://www.google.com/maps/dir/?api=1&origin=' + encodeURIComponent(origin) + '&destination=' + encodeURIComponent(destination) + wp + '&travelmode=' + mode;
-  };
-  const friendlyMaps = {
-    '1': {
-      mapTip:'抵達日不要給家人一長串搜尋字。建議只開「飯店定位」與「晚餐/象神二選一」，晚了就直接外送。',
-      maps:[
-        {label:'先定位飯店｜Sukhumvit 2', desc:'給 Grab / 家人集合用，先確認今晚住宿位置。', url:gSearch('Bangkok Sukhothai style hotel 66/1 Sukhumvit 2 Bangkok')},
-        {label:'晚餐主線｜Je Oh Chula → 象神廟', desc:'有體力才走；適合夜貓組，不適合小孩太累時硬衝。', url:gDir('66/1 Sukhumvit 2 Bangkok','Huai Khwang Ganesha Shrine','Jeh O Chula Bangkok')},
-        {label:'輕鬆冷氣｜Emsphere 美食街', desc:'最適合帶娃與長輩，吃完可直接回飯店。', url:gDir('66/1 Sukhumvit 2 Bangkok','Emsphere Bangkok')},
-        {label:'回飯店｜晚餐後用', desc:'不管在哪裡，最後用這個回 Sukhumvit 2。', url:gSearch('66/1 Sukhumvit 2 Bangkok')}
-      ]
-    },
-    '2': {
-      mapTip:'這天景點多，改成「午餐主線、帶娃主線、夜市備案」三顆按鈕，現場不用重新找。',
-      maps:[
-        {label:'午餐主線｜Here Hai 爆量蟹肉炒飯', desc:'全員合體午餐定位。', url:gDir('66/1 Sukhumvit 2 Bangkok','Here Hai Bangkok')},
-        {label:'帶娃冷氣｜SEA LIFE / CentralwOrld', desc:'下午帶娃組用，百貨與海洋世界互相支援。', url:gDir('66/1 Sukhumvit 2 Bangkok','CentralWorld Bangkok','SEA LIFE Bangkok Ocean World')},
-        {label:'大人逛街｜Siam / EVEANDBOY', desc:'美妝與潮流組用，與 CentralwOrld 距離近。', url:gSearch('Siam Square EVEANDBOY Bangkok')},
-        {label:'晚上備案｜Jodd Fairs Rama 9', desc:'有體力再去；孩子累就取消。', url:gDir('CentralWorld Bangkok','Jodd Fairs Rama 9 Bangkok')}
-      ]
-    },
-    '3': {
-      mapTip:'包車日最需要司機看得懂。這裡做成「完整包車路線」＋「各站單點」，方便丟給司機。',
-      maps:[
-        {label:'包車完整路線｜曼谷 → 綠山 → Somerset', desc:'給司機看整天大方向；中途可依體力刪減。', url:gDir('66/1 Sukhumvit 2 Bangkok','Somerset Pattaya','Khao Kheow Open Zoo')},
-        {label:'第一站｜Khao Kheow 綠山動物園', desc:'司機直接導航到動物園；園內可租高爾夫球車。', url:gSearch('Khao Kheow Open Zoo')},
-        {label:'飯店入住｜Somerset Pattaya', desc:'下午入住與泳池放電定位。', url:gSearch('Somerset Pattaya')},
-        {label:'晚餐｜The Glass House Pattaya', desc:'海景晚餐；從飯店叫 Grab/Bolt 用。', url:gDir('Somerset Pattaya','The Glass House Pattaya')},
-        {label:'夜市｜Thepprasit 大帕夜市', desc:'週末限定，累了就刪。', url:gSearch('Thepprasit Night Market Pattaya')}
-      ]
-    },
-    '4': {
-      mapTip:'芭達雅這天改成「上午、午餐、晚上」三段，不要把全部景點塞在同一個地圖搜尋。',
-      maps:[
-        {label:'上午｜House of Benedict', desc:'室內冷氣網美棚，從 Somerset 叫車。', url:gDir('Somerset Pattaya','House of Benedict Pattaya')},
-        {label:'午餐 A｜3 Mermaids', desc:'拍照強、有鳥巢；適合想打卡。', url:gDir('House of Benedict Pattaya','3 Mermaids Pattaya')},
-        {label:'午餐 B｜The Sky Gallery', desc:'草皮與推車動線較寬，親子更穩。', url:gDir('House of Benedict Pattaya','The Sky Gallery Pattaya')},
-        {label:'補貨｜Central Pattaya', desc:'回飯店前後可買伴手禮，走路/短程叫車都可。', url:gSearch('Central Pattaya')},
-        {label:'晚上｜Runway Street Food', desc:'747 飛機夜市，平坦推車友善；晚了可取消。', url:gDir('Somerset Pattaya','Runway Street Food Pattaya')}
-      ]
-    },
-    '5': {
-      mapTip:'回程包車重點是「退房後一路回曼谷」。已分成完整包車線、農莊、象神、飯店四個按鈕。',
-      maps:[
-        {label:'包車完整路線｜Somerset → 農莊 → 象神 → Eastin', desc:'給司機看整天主線；象神可視 7/2 是否已去再決定。', url:gDir('Somerset Pattaya','Eastin Grand Hotel Phayathai','Pattaya Sheep Farm|Huai Khwang Ganesha Shrine')},
-        {label:'第一站｜Pattaya Sheep Farm', desc:'親子餵羊駝與小綿羊，之後上車午睡。', url:gSearch('Pattaya Sheep Farm')},
-        {label:'安插｜Huai Khwang Ganesha Shrine', desc:'若 7/2 沒去象神廟，今天最順。', url:gSearch('Huai Khwang Ganesha Shrine')},
-        {label:'入住｜Eastin Grand Phayathai', desc:'最後請司機開到飯店。', url:gSearch('Eastin Grand Hotel Phayathai')},
-        {label:'晚餐備案｜ICONSIAM / SookSiam', desc:'想輕鬆吃室內冷氣就用這個。', url:gDir('Eastin Grand Hotel Phayathai','ICONSIAM Bangkok')}
-      ]
-    },
-    '6': {
-      mapTip:'購物日容易失控，所以做成「上午體驗、午餐購物、晚餐」分段導航。',
-      maps:[
-        {label:'上午｜Museum of Siam', desc:'泰服拍照、互動裝置、法力貼紙。', url:gDir('Eastin Grand Hotel Phayathai','Museum of Siam')},
-        {label:'午餐購物｜ICONSIAM', desc:'瀑布餐廳與 SookSiam，冷氣好休息。', url:gDir('Museum of Siam','ICONSIAM Bangkok')},
-        {label:'伴手禮｜Big C Supercenter', desc:'掃貨用；先列清單再買。', url:gSearch('Big C Supercenter Bangkok')},
-        {label:'家庭晚宴｜Somboon Siam Square One', desc:'無腦家庭友善版。', url:gDir('Eastin Grand Hotel Phayathai','Somboon Seafood Siam Square One')},
-        {label:'米其林晚宴｜Saneh Jaan', desc:'想吃精緻泰菜時使用，建議先訂位。', url:gSearch('Saneh Jaan Bangkok')}
-      ]
-    },
-    '7': {
-      mapTip:'回程日只做分流，不排硬景點。每組直接按自己的路線。',
-      maps:[
-        {label:'第一組｜飯店 → 機場', desc:'退房後 Grab 大車直奔機場。', url:gDir('Eastin Grand Hotel Phayathai','Suvarnabhumi Airport')},
-        {label:'第二組晚班機｜King Power 免稅', desc:'行李寄放後採購，小孩可飯店泳池放電。', url:gDir('Eastin Grand Hotel Phayathai','King Power Rangnam Bangkok')},
-        {label:'第三組慢活｜The Commons Saladaeng', desc:'精品咖啡早午餐＋大人按摩前後使用。', url:gDir('Eastin Grand Hotel Phayathai','The Commons Saladaeng')},
-        {label:'最後回機場｜The Commons → BKK', desc:'15:50 提行李後視情況改從飯店或 The Commons 出發。', url:gDir('The Commons Saladaeng','Suvarnabhumi Airport')}
-      ]
-    }
-  };
-  const enhancedMaps = {
-    '1': {
-      mapTip:'抵達日用三顆核心按鈕：先定位飯店、晚餐/象神看體力、最後一鍵回飯店。小孩累或太晚，直接外送回房。',
-      mapMain:[
-        {label:'D1 今日大路線｜機場 → 飯店 → 晚餐備案', desc:'給大人看今晚大方向；抵達太晚就只完成入住。', url:gDir('Suvarnabhumi Airport','66/1 Sukhumvit 2 Bangkok')}
-      ],
-      mapTaxi:[
-        {label:'直接叫車｜Sukhumvit 2 飯店', desc:'三組集合與入住定位。', url:gSearch('66/1 Sukhumvit 2 Bangkok')},
-        {label:'直接叫車｜Je Oh Chula', desc:'有體力才去的晚餐主線。', url:gSearch('Jeh O Chula Bangkok')},
-        {label:'直接叫車｜Emsphere 美食街', desc:'冷氣、廁所、用餐都方便，親子比較穩。', url:gSearch('Emsphere Bangkok')},
-        {label:'直接叫車｜匯狂象神廟', desc:'晚上還有精神再去；也可留到 7/6 包車日。', url:gSearch('Huai Khwang Ganesha Shrine')}
-      ],
-      mapHotel:[
-        {label:'回 Sukhumvit 2 飯店', desc:'小孩累、下雨、太晚時直接按這顆。', url:gSearch('66/1 Sukhumvit 2 Bangkok')}
-      ]
-    },
-    '2': {
-      mapTip:'曼谷市區日景點較多，分成午餐主線、帶娃冷氣、大人逛街與回飯店，現場依體力切換。',
-      mapMain:[
-        {label:'D2 今日大路線｜飯店 → Here Hai → CentralWorld / Siam', desc:'上午美食、下午分流，晚上看體力。', url:gDir('66/1 Sukhumvit 2 Bangkok','CentralWorld Bangkok','Here Hai Bangkok')}
-      ],
-      mapTaxi:[
-        {label:'直接叫車｜Here Hai', desc:'全員合體午餐定位。', url:gSearch('Here Hai Bangkok')},
-        {label:'直接叫車｜SEA LIFE / CentralWorld', desc:'帶娃冷氣主線，百貨與海洋世界互相支援。', url:gSearch('SEA LIFE Bangkok Ocean World CentralWorld')},
-        {label:'直接叫車｜Siam Square / EVEANDBOY', desc:'大人美妝與潮流逛街用。', url:gSearch('Siam Square EVEANDBOY Bangkok')},
-        {label:'直接叫車｜Jodd Fairs Rama 9', desc:'晚上有體力才去的夜市備案。', url:gSearch('Jodd Fairs Rama 9 Bangkok')}
-      ],
-      mapHotel:[
-        {label:'回 Sukhumvit 2 飯店', desc:'下午午睡、晚上小孩累或下雨時用。', url:gSearch('66/1 Sukhumvit 2 Bangkok')}
-      ]
-    },
-    '3': {
-      mapTip:'包車去芭達雅日用「完整包車路線＋單點叫車＋回飯店」三層設計，方便丟給司機也方便臨時刪點。',
-      mapMain:[
-        {label:'D3 包車大路線｜曼谷 → 綠山動物園 → Somerset', desc:'給司機看整體方向；中途可依天氣與小孩體力調整。', url:gDir('66/1 Sukhumvit 2 Bangkok','Somerset Pattaya','Khao Kheow Open Zoo')}
-      ],
-      mapTaxi:[
-        {label:'直接定位｜Khao Kheow 綠山動物園', desc:'包車第一站，園內可租高爾夫球車。', url:gSearch('Khao Kheow Open Zoo')},
-        {label:'直接定位｜Somerset Pattaya', desc:'下午入住與泳池放電。', url:gSearch('Somerset Pattaya')},
-        {label:'直接叫車｜The Glass House Pattaya', desc:'晚上海景晚餐，從飯店叫 Grab/Bolt。', url:gSearch('The Glass House Pattaya')},
-        {label:'直接叫車｜Thepprasit 大帕夜市', desc:'週末限定，累了就刪。', url:gSearch('Thepprasit Night Market Pattaya')}
-      ],
-      mapHotel:[
-        {label:'回 Somerset Pattaya', desc:'包車日小孩累了，直接回飯店最重要。', url:gSearch('Somerset Pattaya')}
-      ]
-    },
-    '4': {
-      mapTip:'芭達雅親子日分成上午主景點、午餐、冷氣補貨、晚上夜市。下午一定要保留回飯店或百貨休息。',
-      mapMain:[
-        {label:'D4 今日大路線｜Somerset → House of Benedict → 海景午餐 → 百貨/飯店', desc:'上午完成主景點，下午降溫休息。', url:gDir('Somerset Pattaya','Central Pattaya','House of Benedict Pattaya|The Sky Gallery Pattaya')}
-      ],
-      mapTaxi:[
-        {label:'直接叫車｜House of Benedict', desc:'室內冷氣網美棚，上午主景點。', url:gSearch('House of Benedict Pattaya')},
-        {label:'直接叫車｜3 Mermaids', desc:'巨型鳥巢打卡餐廳，拍照感強。', url:gSearch('3 Mermaids Pattaya')},
-        {label:'直接叫車｜The Sky Gallery', desc:'草皮寬敞，親子用餐較穩。', url:gSearch('The Sky Gallery Pattaya')},
-        {label:'直接叫車｜Central Pattaya', desc:'冷氣、補貨、廁所、餐廳都方便。', url:gSearch('Central Pattaya')},
-        {label:'直接叫車｜Runway Street Food', desc:'晚上有體力才去的飛機夜市。', url:gSearch('Runway Street Food Pattaya')}
-      ],
-      mapHotel:[
-        {label:'回 Somerset Pattaya', desc:'下午午睡、泳池或外送時直接按。', url:gSearch('Somerset Pattaya')}
-      ]
-    },
-    '5': {
-      mapTip:'包車回曼谷日重點是退房、農莊、車上午睡、進曼谷。象神廟視 7/2 是否已去與孩子狀態決定。',
-      mapMain:[
-        {label:'D5 包車大路線｜Somerset → 小綿羊農莊 → 象神 → Eastin', desc:'給司機看整天主線；象神可刪可補。', url:gDir('Somerset Pattaya','Eastin Grand Hotel Phayathai','Pattaya Sheep Farm|Huai Khwang Ganesha Shrine')}
-      ],
-      mapTaxi:[
-        {label:'直接定位｜Pattaya Sheep Farm', desc:'親子餵羊駝與小綿羊，之後上車午睡。', url:gSearch('Pattaya Sheep Farm')},
-        {label:'直接定位｜匯狂象神廟', desc:'若 7/2 沒去，今天包車順路補。', url:gSearch('Huai Khwang Ganesha Shrine')},
-        {label:'直接定位｜Eastin Grand Phayathai', desc:'最後曼谷住宿，請司機開到飯店。', url:gSearch('Eastin Grand Hotel Phayathai')},
-        {label:'直接叫車｜ICONSIAM / SookSiam', desc:'晚上想吃冷氣室內美食可用。', url:gSearch('ICONSIAM Bangkok SookSiam')}
-      ],
-      mapHotel:[
-        {label:'回 Eastin Grand Phayathai', desc:'回曼谷後小孩累、下雨、塞車時直接回飯店。', url:gSearch('Eastin Grand Hotel Phayathai')}
-      ]
-    },
-    '6': {
-      mapTip:'購物日很容易失控，所以分成上午體驗、午餐購物、伴手禮、晚宴與回飯店；累了就縮短購物。',
-      mapMain:[
-        {label:'D6 今日大路線｜Eastin → Museum of Siam → ICONSIAM → Big C', desc:'體驗＋購物日，大人小孩都要保留休息空檔。', url:gDir('Eastin Grand Hotel Phayathai','Big C Supercenter Ratchadamri','Museum of Siam|ICONSIAM Bangkok')}
-      ],
-      mapTaxi:[
-        {label:'直接叫車｜Museum of Siam', desc:'泰服拍照、互動裝置、法力貼紙。', url:gSearch('Museum of Siam')},
-        {label:'直接叫車｜ICONSIAM', desc:'午餐、冷氣、SookSiam、伴手禮。', url:gSearch('ICONSIAM Bangkok')},
-        {label:'直接叫車｜Big C Supercenter', desc:'終極伴手禮掃貨，建議先列清單。', url:gSearch('Big C Supercenter Ratchadamri Bangkok')},
-        {label:'直接叫車｜Somboon Siam Square One', desc:'家庭友善晚餐版本。', url:gSearch('Somboon Seafood Siam Square One')},
-        {label:'直接叫車｜Saneh Jaan', desc:'精緻泰菜版本，建議先訂位。', url:gSearch('Saneh Jaan Bangkok')}
-      ],
-      mapHotel:[
-        {label:'回 Eastin Grand Phayathai', desc:'午休、放戰利品、孩子累了直接回。', url:gSearch('Eastin Grand Hotel Phayathai')}
-      ]
-    },
-    '7': {
-      mapTip:'回程日只分流，不排硬景點。每組按自己的路線，重點是提早到機場、行李不要出錯。',
-      mapMain:[
-        {label:'D7 今日大路線｜Eastin → 機場 / King Power / The Commons', desc:'依三組航班分流，回程日不硬跑。', url:gDir('Eastin Grand Hotel Phayathai','Suvarnabhumi Airport')}
-      ],
-      mapTaxi:[
-        {label:'第一組｜直接叫車到機場', desc:'退房後 Grab 大車直奔機場。', url:gSearch('Suvarnabhumi Airport')},
-        {label:'第二組｜King Power Rangnam', desc:'晚班機可寄行李後採買。', url:gSearch('King Power Rangnam Bangkok')},
-        {label:'第三組｜The Commons Saladaeng', desc:'精品咖啡早午餐慢活。', url:gSearch('The Commons Saladaeng')},
-        {label:'最後叫車｜The Commons → BKK', desc:'15:50 後抓寬時間前往機場。', url:gDir('The Commons Saladaeng','Suvarnabhumi Airport')}
-      ],
-      mapHotel:[
-        {label:'回 Eastin Grand Phayathai', desc:'退房前後拿行李、集合、孩子休息用。', url:gSearch('Eastin Grand Hotel Phayathai')}
-      ]
-    }
-  };
-  days.forEach(day => {
-    Object.assign(day, friendlyMaps[day.no] || { mapTip:'開啟今日重要地點。', maps:[{label:'今日 Google Maps', desc:'開啟今日重要地點搜尋。', url:day.mapUrl}]});
-    Object.assign(day, enhancedMaps[day.no] || {
-      mapMain: day.maps || [{label:'今日大路線', desc:'開啟今日重要地點搜尋。', url:day.mapUrl}],
-      mapTaxi: day.maps || [{label:'直接叫車地點', desc:'開啟今日重要地點搜尋。', url:day.mapUrl}],
-      mapHotel: [{label:'回住宿', desc:'小孩累或下雨時直接回住宿。', url:day.mapUrl}]
-    });
-  });
-  const routes = {
-    bangkok:[
-      {day:'Day 1', start:'BKK / DMK', end:'Sukhumvit 2', type:'Grab / ARL', time:'約 45–90 分', title:'機場進曼谷市區', note:'第二組行李多可 Grab 六人大車；第三組可 ARL 到 Phayathai 避塞車，再轉乘。', mapUrl:'https://www.google.com/maps/search/?api=1&query=66%2F1%20Sukhumvit%202%20Bangkok'},
-      {day:'Day 2', start:'Sukhumvit 2', end:'CentralWorld / Siam', type:'BTS＋步行', time:'約 15–30 分', title:'曼谷市區冷氣動線', note:'四面佛、Gaysorn、CentralwOrld、Siam Square 可連成一條；帶娃組可插 SEA LIFE。', mapUrl:'https://www.google.com/maps/search/?api=1&query=CentralWorld%20Siam%20Square%20SEA%20LIFE%20Bangkok'},
-      {day:'Day 6', start:'Eastin Phayathai', end:'Museum / ICONSIAM', type:'BTS/MRT＋Grab', time:'約 20–45 分', title:'Phayathai 出發購物日', note:'Museum of Siam、ICONSIAM、Big C 距離不算近，照體力分段。', mapUrl:'https://www.google.com/maps/search/?api=1&query=Eastin%20Grand%20Phayathai%20Museum%20of%20Siam%20ICONSIAM'}
-    ],
-    pattaya:[
-      {day:'Day 4', start:'Somerset', end:'House of Benedict', type:'Grab/Bolt', time:'約 20–35 分', title:'芭達雅室內網美棚', note:'上午先去冷氣景點，避免中午後戶外太熱。', mapUrl:'https://www.google.com/maps/search/?api=1&query=Somerset%20Pattaya%20House%20of%20Benedict'},
-      {day:'Day 4', start:'Somerset', end:'3 Mermaids / Sky Gallery', type:'Grab/Bolt', time:'約 15–30 分', title:'海景午餐區', note:'3 Mermaids 拍照強；The Sky Gallery 推車動線更寬。', mapUrl:'https://www.google.com/maps/search/?api=1&query=3%20Mermaids%20Pattaya%20The%20Sky%20Gallery'},
-      {day:'Day 4', start:'Somerset', end:'Runway Street Food', type:'Grab/Bolt', time:'約 15–25 分', title:'飛機夜市', note:'晚上看體力，累了就刪掉。', mapUrl:'https://www.google.com/maps/search/?api=1&query=Runway%20Street%20Food%20Pattaya'}
-    ],
-    charter:[
-      {day:'Day 3', start:'曼谷', end:'芭達雅', type:'15人座包車', time:'整日', title:'去程包車：曼谷 → 綠山動物園 → 芭達雅', note:'包車價值在於沿路景點可彈性替換，不去綠山可改甜點樂園、冰雕館或 Terminal 21。', mapUrl:'https://www.google.com/maps/search/?api=1&query=Khao%20Kheow%20Open%20Zoo%20Pattaya'},
-      {day:'Day 5', start:'芭達雅', end:'曼谷', type:'15人座包車', time:'整日', title:'回程包車：小綿羊農莊 → 曼谷 → 象神', note:'農場後小孩車上午睡，進曼谷可安插象神廟，最後回 Eastin Phayathai。', mapUrl:'https://www.google.com/maps/search/?api=1&query=Pattaya%20Sheep%20Farm%20Huai%20Khwang%20Ganesha'}
-    ]
-  };
-  const dayMaps = days.map(d => ({ no:d.no, day:d.date, title:d.title, steps:d.details.map(x=>x.title).slice(0,5), note:d.note }));
-  const playRules = [
-    {label:'原則 1', title:'上午只排一個主景點', desc:'泰國 7 月熱，上午先完成最想去的地方，中午後不要硬拼戶外。'},
-    {label:'原則 2', title:'下午一定要有冷氣或泳池', desc:'百貨、飯店、室內景點是親子行程穩定器。'},
-    {label:'原則 3', title:'夜市是加分，不是必去', desc:'孩子累了就外送回房；大人想逛再分流。'},
-    {label:'原則 4', title:'包車日保留替代景點', desc:'7/4、7/6 的沿路備案都已列好，當天看天氣和體力選。'}
-  ];
-  const rideGuides = [
-    {icon:'🚕', label:'Grab / Bolt', title:'叫車原則', tips:['多人＋行李請叫大車，不要省小車。','上車點盡量選飯店大門、百貨正門，不要在路邊臨停混亂處。','夜市回程先避開人潮最多出口，走到寬路再叫車。']},
-    {icon:'🚐', label:'15人座包車', title:'包車日操作', tips:['前一天確認司機、集合時間、兒童用品、車上是否可放行李。','7/4 重點是去程景點＋入住；7/6 重點是回程睡覺＋象神安插。','包車日不要臨時加太多點，避免孩子午睡被切碎。']},
-    {icon:'🚆', label:'ARL / BTS / MRT', title:'市區軌道交通', tips:['機場快線適合避塞車，但行李多與孩子多時要評估。','BTS/MRT 適合曼谷市中心短距離；推車要抓找電梯時間。','Phayathai 最後兩天可利用機場快線做回程備案。']}
-  ];
-  const spotGuides = [
-    {badge:'動物', name:'Khao Kheow 綠山野生動物園', type:'親子主景點', area:'去芭達雅沿路', desc:'可租高爾夫球車，近距離看長頸鹿、水豚等動物。', note:'適合 4 歲娃放電；中午熱，記得水、防曬、帽子。', mapUrl:'https://www.google.com/maps/search/?api=1&query=Khao%20Kheow%20Open%20Zoo'},
-    {badge:'冷氣', name:'House of Benedict', type:'室內網美棚', area:'芭達雅', desc:'全室內冷氣，拍照場景多，推車好走。', note:'適合熱天避暑，不用曬。', mapUrl:'https://www.google.com/maps/search/?api=1&query=House%20of%20Benedict'},
-    {badge:'海景', name:'The Glass House Pattaya', type:'海景晚餐', area:'芭達雅', desc:'海邊玻璃屋與木松樹林氛圍，主打海鮮晚餐。', note:'孩子累了可縮短用餐，不硬接夜市。', mapUrl:'https://www.google.com/maps/search/?api=1&query=The%20Glass%20House%20Pattaya'},
-    {badge:'祈福', name:'匯狂象神廟', type:'24H 祈福', area:'曼谷', desc:'若 7/2 太晚沒去，可 7/6 包車進曼谷時安插。', note:'帶小孩不宜停太久，簡單參拜即可。', mapUrl:'https://www.google.com/maps/search/?api=1&query=Huai%20Khwang%20Ganesha%20Shrine'},
-    {badge:'夜市', name:'Runway Street Food', type:'飛機地標夜市', area:'芭達雅', desc:'747 飛機地標，空地大且平坦。', note:'推車友善，但時間晚，孩子累就刪。', mapUrl:'https://www.google.com/maps/search/?api=1&query=Runway%20Street%20Food%20Pattaya'},
-    {badge:'購物', name:'ICONSIAM＋Big C', type:'伴手禮與午餐', area:'曼谷', desc:'ICONSIAM 室內冷氣，Big C 適合終極掃貨。', note:'購物日容易失控，先列清單再買。', mapUrl:'https://www.google.com/maps/search/?api=1&query=ICONSIAM%20Big%20C%20Bangkok'}
-  ];
-  const backups = [
-    {title:'下雨版', desc:'優先百貨、SEA LIFE、House of Benedict、Terminal 21、ICONSIAM；夜市直接取消。'},
-    {title:'太熱版', desc:'戶外景點縮短到 1–2 小時，改冷氣餐廳、按摩、飯店泳池。'},
-    {title:'小孩累了', desc:'不追行程，回飯店睡覺或外送回房；夜市與晚餐景觀餐廳都可刪。'},
-    {title:'長輩累了', desc:'分組行動：長輩回飯店或 SPA，大人帶小孩去近距離放電點。'},
-    {title:'曼谷塞車', desc:'市中心用 BTS/MRT；跨區用 Grab 但提早出門；回機場保留 3 小時以上。'},
-    {title:'包車日想改點', desc:'7/4 動物園可改甜點樂園/冰雕館/Terminal 21；7/6 農莊可改大象保護區/真理寺。'}
-  ];
-
-  const guideCards = [
-    {icon:'🎯', label:'怎麼玩', title:'每天只抓一個主景點', tips:['上午先完成最想玩的地方，中午後改冷氣、百貨或飯店。','夜市是加分，不是必去；小孩累了就外送回房。','包車日重點是移動順，不是塞滿景點。']},
-    {icon:'🚕', label:'怎麼搭', title:'叫車和包車原則', tips:['Grab / Bolt 目的地用「叫車直接按這裡」。','上車點選飯店大門、百貨正門，比路邊好找。','15人座包車日先確認司機、集合時間、兒童用品與行李。']},
-    {icon:'🌦', label:'天氣變臉', title:'下雨或太熱怎麼辦', tips:['可能下雨：上午先跑戶外，下午改室內。','雨勢明顯：夜市取消，改百貨美食街或外送。','太熱：戶外縮短，多補水、防曬，午後回住宿。']},
-    {icon:'👶', label:'小孩狀況', title:'小孩累了就是最高指令', tips:['先讓小孩吃飯、喝水、睡覺，大人行程再調整。','推車、濕紙巾、備用衣、水壺每天都要帶。','餐廳先點飯、蛋、湯、不辣菜，小孩先吃。']}
-  ];
-  const tasks = ['護照、機票、飯店確認信截圖', '旅平險、eSIM / 漫遊設定、信用卡', 'Grab、Bolt、Google Maps、Google 翻譯先裝好', '泰銖現金、小額鈔、信用卡分開放', '包車日司機資訊、集合時間、飯店地址', '小孩藥品、退燒藥、腸胃藥、防蚊、防曬', '推車、雨罩、薄外套、泳衣、備用衣', '行動電源、充電線、轉接頭、防水袋'];
-  const kidItems = ['推車 / 雨罩','防曬 / 防蚊','泳衣 / 泳圈','備用衣 2 套','濕紙巾','小零食','水壺','退燒藥','腸胃藥','薄外套','帽子','小玩具'];
-  const spas = [
-    {area:'Sukhumvit 2 周邊', items:['Let’s Relax Sukhumvit 31｜1,000–2,500 THB','Oasis Spa Sukhumvit 31｜2,500–4,500 THB','Health Land Asoke｜650–1,500 THB']},
-    {area:'Somerset Pattaya 周邊', items:['Let’s Relax Terminal 21｜800–2,000 THB','Health Land Pattaya North｜650–1,200 THB','Oasis Spa Pattaya｜2,500–4,000 THB']},
-    {area:'Eastin Phayathai 周邊', items:['Let’s Relax Phayathai｜800–2,000 THB','Divana Virtue Spa Sathon｜2,500–4,500 THB','Oasis Spa Sukhumvit 31｜2,500–4,500 THB']}
-  ];
-  const restaurants = [
-    {day:'D1', area:'bangkok', areaLabel:'曼谷', type:'晚餐/宵夜', name:'Jeh O Chula', desc:'抵達日有體力才衝的宵夜名店；主角是酸辣媽媽麵大鍋，適合大人分享。', dishes:['⭐ 必點｜Mama Tom Yum 酸辣媽媽麵大鍋','👍 推薦｜脆皮豬肉 Crispy Pork','👍 推薦｜豬肉丸 / 海鮮配料','👶 小孩可吃｜白飯、蛋類、炸物或少量不辣配菜'], groupOrder:['1 鍋 Mama Tom Yum 大鍋給大人分享','1 份脆皮豬肉或炸物','1 份豬肉丸 / 海鮮配料','1～2 份白飯或不辣主食給小孩','飲料先點，辣湯不要給小孩直接喝'], kid:'小孩不建議喝酸辣湯底；如果抵達太晚、孩子累，這間直接改外送或取消。', spicyNote:'招牌 Mama Tom Yum 偏辣且常排隊；建議大人當宵夜，不要當小孩正餐。', orderTip:'6大2小不用每人一碗，點一鍋招牌分食，再補不辣飯類與炸物比較穩。', sourceNote:'食記普遍把 Mama Tom Yum 視為招牌，也提醒份量大、辣度高、排隊久。', mapUrl:gSearch('Jeh O Chula Bangkok')},
-    {day:'D1 / D2', area:'bangkok', areaLabel:'曼谷', type:'百貨美食', name:'Emsphere / CentralWorld 美食街', desc:'最穩的親子備案：冷氣、廁所、推車、選擇多，適合第一天或下雨天。', dishes:['⭐ 必選｜每人自由選一份主食','👍 推薦｜Pad Thai / 海南雞飯 / 湯麵','👶 小孩可吃｜雞飯、蛋料理、白飯、湯麵','🍨 甜點｜芒果糯米飯、泰奶、椰子冰沙'], groupOrder:['大人各自點想吃的泰式或日式','小孩先買雞飯 / 湯麵 / 白飯','再補 2～3 份大家分的炸物或青菜','最後買甜點飲料集合吃','先找座位，再分頭買餐'], kid:'不用等上菜，最適合小孩餓、下雨、塞車後臨時吃。', spicyNote:'美食街選擇多，怕辣就選雞飯、湯麵、日式或西式。', orderTip:'三組家庭建議先指定集合桌，再派代表分頭買，避免推車和小孩在人潮裡亂跑。', sourceNote:'以百貨美食街實用性為主，屬行程備案，不是單一名店推薦。', mapUrl:gSearch('Emsphere Bangkok food court CentralWorld Bangkok')},
-    {day:'D2', area:'bangkok', areaLabel:'曼谷', type:'午餐主線', name:'Here Hai', desc:'曼谷午餐合體點，主打滿滿蟹肉炒飯與海鮮熱炒。', dishes:['⭐ 必點｜Insane Crab Fried Rice 招牌蟹肉炒飯','⭐ 必點｜Lump Crab Meat Fried Rice 大塊蟹肉炒飯','👍 推薦｜Crab Omelette 蟹肉煎蛋','👍 推薦｜Mantis Shrimp with Garlic and Pepper 蒜胡椒螳螂蝦','👶 小孩可吃｜不辣蟹肉炒飯、蟹肉煎蛋'], groupOrder:['蟹肉炒飯大份 2 份或中份 3 份','蟹肉煎蛋 1～2 份','螳螂蝦或蒜胡椒海鮮 1 份','青菜或清淡配菜 1 份','小孩先分不辣炒飯＋煎蛋'], kid:'點餐時可說 not spicy；小孩優先吃炒飯和蛋，辣醬另外放。', spicyNote:'熱門店可能要等，建議避開正中午或先預留時間。', orderTip:'6大2小不要點太散，主軸就是蟹肉炒飯＋蟹蛋＋一份海鮮，簡單又有記憶點。', sourceNote:'米其林與多篇食記都把蟹肉炒飯列為核心招牌，食記也常提到螳螂蝦與蟹蛋。', mapUrl:gSearch('Here Hai Bangkok')},
-    {day:'D2 / D6', area:'bangkok', areaLabel:'曼谷', type:'家庭餐廳', name:'Savoey / Kub Kao Kub Pla', desc:'百貨裡的泰式家庭餐廳，適合長輩、小孩、不想冒險的晚餐。', dishes:['⭐ Savoey 必點｜咖哩炒蟹','👍 Savoey 推薦｜炸蟹肉餅、鳳梨海鮮炒飯、檸檬蒸魚','⭐ Kub Kao 推薦｜蟹肉煎蛋、蟹肉炒飯','👍 Kub Kao 推薦｜不辣冬蔭湯、炒空心菜、炸鱸魚','👶 小孩可吃｜鳳梨炒飯、蟹肉煎蛋、白飯、清湯'], groupOrder:['招牌海鮮 1 道：咖哩炒蟹或蟹肉煎蛋','主食 2 道：炒飯 / Pad Thai / 白飯','青菜 1～2 道：空心菜或高麗菜','湯 1 道：不辣湯或清湯優先','魚或炸物 1 道給小孩分食'], kid:'百貨分店最穩，冷氣和廁所方便；可請店家少辣或不辣。', spicyNote:'咖哩炒蟹通常不會太辣但偏濃郁；怕油膩可改點蒸魚、炸魚、蟹蛋。', orderTip:'一桌先確保 2 道小孩能吃，再點大人想吃的咖哩蟹或辣味菜。', sourceNote:'Savoey 食記常列咖哩蟹、炸蟹肉餅、鳳梨炒飯；Kub Kao 評論常提蟹蛋、蟹炒飯與不辣湯。', mapUrl:gSearch('Kub Kao Kub Pla CentralWorld Bangkok')},
-    {day:'D3', area:'pattaya', areaLabel:'芭達雅', type:'海景晚餐', name:'The Glass House Pattaya', desc:'芭達雅海景晚餐，適合入住後吃海鮮、看海、拍照。', dishes:['⭐ 必點｜烤蝦 / 海鮮類','👍 推薦｜Tom Yum Goong 清湯或冬蔭功','👍 推薦｜炸鱸魚 / 魚露炸魚','👍 推薦｜蟹類、蝦類、海鮮熱炒','👶 小孩可吃｜炒飯、義大利麵、炸物'], groupOrder:['烤蝦或海鮮主菜 1～2 份','魚類 1 份：炸鱸魚或蒸魚','炒飯 / 義大利麵 2 份給小孩與長輩','湯品 1 鍋，大人分食','青菜或不辣配菜 1～2 道'], kid:'海景很美，但入住日小孩容易累；吃完就回飯店，不硬接夜市。', spicyNote:'海鮮與湯品可能偏酸辣，點餐請註明 not spicy / less spicy。', orderTip:'重點是海景＋海鮮，不用點太複雜；先讓小孩吃飽，大人再慢慢吃海鮮。', sourceNote:'官方菜單主打 sea-to-table 海鮮與泰式菜，Tripadvisor 也以海鮮和海景評價為主。', mapUrl:gSearch('The Glass House Pattaya')},
-    {day:'D4', area:'pattaya', areaLabel:'芭達雅', type:'海景午餐', name:'3 Mermaids Pattaya', desc:'鳥巢座位和拍照感強的一餐，適合想拍照但不適合趕時間。', dishes:['⭐ 推薦｜海鮮炒飯 / 蟹肉炒飯','👍 推薦｜烤蝦 / 炸物拼盤','👍 推薦｜泰式酸辣湯或海鮮湯','👶 小孩可吃｜薯條、炸雞、義大利麵、炒飯','🍹 拍照加分｜飲料、甜點'], groupOrder:['炒飯或義大利麵 2 份先給小孩','海鮮主菜 1～2 道給大人','炸物拼盤 1 份大家分','湯品 1 份，辣度請調低','飲料甜點視拍照需求加點'], kid:'鳥巢與階梯要顧小孩；推車和座位動線要現場評估。', spicyNote:'景觀餐廳以拍照氣氛為主，不建議點太多辣味菜。', orderTip:'如果主要想拍照，餐點簡單點就好；小孩先吃飽，拍照才不會崩潰。', sourceNote:'以景觀與打卡口碑為主，餐點建議採安全點法。', mapUrl:gSearch('3 Mermaids Pattaya')},
-    {day:'D4', area:'pattaya', areaLabel:'芭達雅', type:'海景親子', name:'The Sky Gallery Pattaya', desc:'空間感、草皮和海景都舒服，比純打卡店更適合坐著休息。', dishes:['⭐ 推薦｜海鮮義大利麵 / 披薩','👍 推薦｜泰式炒飯','👍 推薦｜烤蝦 / 炸花枝','👶 小孩可吃｜披薩、義大利麵、薯條、甜點','🍹 推薦｜飲料與冰沙'], groupOrder:['披薩或義大利麵 2 份給小孩','泰式炒飯 1～2 份','海鮮主菜 1～2 道','炸物 1 份','飲料甜點看小孩狀況'], kid:'小孩點西式餐，大人點泰式海鮮，是最不容易踩雷的組合。', spicyNote:'海景餐廳不要硬點全泰式辣菜，保留不辣主食比較穩。', orderTip:'6大2小建議用「西式給小孩＋泰式給大人」分流點法。', sourceNote:'以親子動線與海景用餐情境整理，搭配公開菜單常見品項。', mapUrl:gSearch('The Sky Gallery Pattaya')},
-    {day:'D4', area:'pattaya', areaLabel:'芭達雅', type:'夜市小吃', name:'Runway Street Food / Thepprasit Night Market', desc:'夜市適合有體力再去，目標是少量多樣，不是吃很飽的大餐。', dishes:['⭐ 推薦｜烤大頭蝦 / 烤海鮮','👍 推薦｜泰式烤肉串 / 炸物','🌶 大人吃｜青木瓜沙拉 Som Tam','👶 小孩可吃｜白飯、烤肉串、炸雞、玉米、水果','🍹 飲料｜椰子冰沙、水果切盤'], groupOrder:['先買不辣烤肉串 6～8 串','白飯或簡單主食 2～3 份','烤蝦 / 海鮮 1～2 份大人分','水果或飲料 2～3 份','辣味小吃最後少量加點'], kid:'夜市時間較晚，小孩累就取消；推車要注意人潮與地面。', spicyNote:'青木瓜沙拉、泰式辣醬常很辣；小孩吃的要分開買。', orderTip:'夜市不要一次買太多，邊走邊補；看到座位先坐再派人買。', sourceNote:'以夜市常見攤位品項與親子現場操作整理。', mapUrl:gSearch('Runway Street Food Pattaya Thepprasit Night Market Pattaya')},
-    {day:'D5 / D6', area:'bangkok', areaLabel:'曼谷', type:'海鮮聚餐', name:'Somboon Seafood', desc:'曼谷經典海鮮餐廳，最適合家庭聚餐與長輩。', dishes:['⭐ 必點｜Fried Curry Crab 咖哩炒蟹','👍 推薦｜Deep-fried Seabass 炸鱸魚','👍 推薦｜Thai seafood spicy soup 泰式海鮮湯','👍 推薦｜粉絲蝦煲 / 蒜味蝦','👶 小孩可吃｜白飯、粉絲、炸魚、炒青菜'], groupOrder:['咖哩炒蟹 1～2 份，配白飯','炸鱸魚或魚類 1 份','粉絲蝦煲或蒜味蝦 1 份','炒青菜 1～2 份','湯 1 份，大人分食，小孩少喝辣湯'], kid:'小孩主食抓白飯＋粉絲＋炸魚；咖哩蟹醬可以少量拌飯但先確認辣度。', spicyNote:'咖哩炒蟹偏濃郁、可能偏油；怕膩就加青菜和魚類平衡。', orderTip:'6大2小最穩：咖哩蟹＋炸魚＋蝦＋青菜＋白飯，不用點太多重口味。', sourceNote:'米其林介紹 Somboon 以咖哩蟹聞名，也推薦炸鱸魚與泰式海鮮湯；多篇評論也確認咖哩蟹是招牌。', mapUrl:gSearch('Somboon Seafood Bangkok')},
-    {day:'D5 / D6', area:'bangkok', areaLabel:'曼谷', type:'河景晚餐', name:'Chom Arun / Rongros', desc:'昭披耶河景餐廳，適合想看鄭王廟夜景的大人組；全員親子不一定最輕鬆。', dishes:['⭐ 推薦｜河蝦 / 海鮮主菜','👍 推薦｜冬蔭功或泰式湯品','👍 推薦｜Pad Thai / 炒飯','👶 小孩可吃｜炒飯、蛋料理、甜點','📸 重點｜河景座位與拍照'], groupOrder:['海鮮主菜 1～2 道','炒飯 / Pad Thai 2 份','湯品 1 份','不辣配菜 1～2 份','甜點飲料看孩子狀況'], kid:'景觀餐廳時間容易拉長，孩子累建議改 ICONSIAM / SookSiam。', spicyNote:'河景餐廳建議先訂位；若天氣不好，體驗會打折。', orderTip:'這餐重點是氣氛，不是吃很多；點法簡單、控制時間。', sourceNote:'以河景晚餐情境整理，適合大人組優先。', mapUrl:gSearch('Chom Arun Bangkok Rongros Bangkok')},
-    {day:'D5 / D6', area:'bangkok', areaLabel:'曼谷', type:'冷氣備案', name:'ICONSIAM / SookSiam', desc:'冷氣、選擇多、廁所方便，雨天或回曼谷後最穩。', dishes:['⭐ 推薦｜船麵 / 湯麵','👍 推薦｜泰式烤雞 / 炸雞','👍 推薦｜Pad Thai / 炒飯','👶 小孩可吃｜雞飯、湯麵、炸物、水果','🍨 甜點｜芒果糯米飯、泰奶、椰子冰沙'], groupOrder:['先找座位與集合點','小孩先買雞飯 / 湯麵 / 炸物','大人分頭買想吃的泰式小吃','甜點飲料最後補','人多時用 LINE 傳定位集合'], kid:'不需要全員吃同一家，最適合三組家庭各自點餐。', spicyNote:'人潮多，重點是集合點和推車動線，不是點哪一家。', orderTip:'像美食戰場一樣分工：顧小孩、佔位、買餐、買飲料，各一組。', sourceNote:'以大型百貨美食區與親子備案情境整理。', mapUrl:gSearch('ICONSIAM SookSiam Bangkok')},
-    {day:'D6', area:'bangkok', areaLabel:'曼谷', type:'家族晚宴', name:'Nara Thai / Saneh Jaan / Paste', desc:'Nara Thai 比較適合全家；Saneh Jaan / Paste 偏精緻大人晚宴。', dishes:['⭐ Nara 推薦｜Pad Thai','👍 Nara 推薦｜Ayutthaya Boat Noodles 船麵','👍 Nara 推薦｜Grilled River Prawns 烤河蝦','👍 Nara 推薦｜Deep Fried Pomfret 炸魚','👶 小孩可吃｜Pad Thai、炸魚、白飯、甜點'], groupOrder:['如果全家用餐：優先選 Nara Thai','Pad Thai 或炒飯 2 份','烤河蝦或海鮮 1～2 道','炸魚或不辣肉類 1 道','青菜 1 道＋甜點 1～2 份'], kid:'Nara Thai 對家庭較友善；精緻餐廳比較適合大人分流。', spicyNote:'船麵和咖哩可能偏重口味，小孩以 Pad Thai、炸魚、白飯為主。', orderTip:'全員 6大2小建議 Nara；大人想吃精緻再分流去 Saneh Jaan / Paste。', sourceNote:'Nara 官方菜單列出推薦菜如 Pad Thai、船麵、炸魚與烤河蝦；精緻餐廳建議先訂位。', mapUrl:gSearch('Nara Thai CentralWorld Bangkok Saneh Jaan Bangkok Paste Bangkok')},
-    {day:'D7', area:'bangkok', areaLabel:'曼谷', type:'早午餐', name:'The Commons Saladaeng', desc:'回程日慢活早午餐，適合寄行李後簡單吃，不適合拖太久。', dishes:['⭐ 推薦｜精品咖啡','👍 推薦｜早午餐蛋料理','👍 推薦｜三明治 / 麵包','👶 小孩可吃｜麵包、蛋、薯條、甜點','🍰 甜點｜蛋糕或冰品'], groupOrder:['大人咖啡 3～4 杯','早午餐主食 4～5 份分食','小孩麵包 / 蛋 / 薯條先點','甜點 1～2 份','不要點太久，保留去機場時間'], kid:'回程日時間最重要，吃簡單就好，不要排太滿。', spicyNote:'不是重口味泰菜，適合收尾；但要留意回飯店拿行李和去機場時間。', orderTip:'回程日的點餐原則是快、穩、舒服，不追求必吃。', sourceNote:'以回程日早午餐與親子操作需求整理。', mapUrl:gSearch('The Commons Saladaeng')}
-  ];
-  const lineQuick = days.map(d => `【${d.date}｜${d.title}】${d.note}｜親子重點：${d.kid}`);
-  const weatherLocations = {
-    bangkok: { name:'曼谷', latitude:13.7563, longitude:100.5018 },
-    pattaya: { name:'芭達雅', latitude:12.9236, longitude:100.8825 }
-  };
-  const weatherStore = ref({
-    bangkok: { loading:true, daily:null, error:'' },
-    pattaya: { loading:true, daily:null, error:'' }
-  });
-  const offlineWeather = (placeKey='bangkok') => ({
-    icon:'⛅', title:'天氣資料讀取中', placeName:weatherLocations[placeKey]?.name || '泰國', tempText:'--', rainText:'--', action:'先看天空',
-    summary:'正在讀取 Open-Meteo 預報；如果網路較慢，先依雨季原則安排。',
-    advice:'上午先跑主景點，下午保留百貨、室內景點或飯店休息。'
-  });
-  const weatherCodeText = (code)=>{
-    if (code === 0) return '晴朗';
-    if ([1,2,3].includes(code)) return '多雲';
-    if ([45,48].includes(code)) return '有霧';
-    if ([51,53,55,56,57].includes(code)) return '毛毛雨';
-    if ([61,63,65,66,67,80,81,82].includes(code)) return '有雨';
-    if ([95,96,99].includes(code)) return '雷雨';
-    return '天氣變化';
-  };
-  const buildWeatherView = (placeKey, daily, isoDate)=>{
-    const placeName = weatherLocations[placeKey]?.name || '泰國';
-    if (!daily || !daily.time) return offlineWeather(placeKey);
-    let idx = daily.time.indexOf(isoDate);
-    if (idx < 0) idx = 0;
-    const tMax = Math.round(daily.temperature_2m_max?.[idx] ?? 0);
-    const tMin = Math.round(daily.temperature_2m_min?.[idx] ?? 0);
-    const rainProb = Math.round(daily.precipitation_probability_max?.[idx] ?? 0);
-    const precip = Number(daily.precipitation_sum?.[idx] ?? 0);
-    const code = daily.weather_code?.[idx] ?? null;
-    const text = weatherCodeText(code);
-    let icon='🌤', title='天氣看起來 OK', action='照玩', advice='上午戶外可以先衝，下午還是留冷氣或飯店休息。';
-    if (rainProb >= 70 || precip >= 10 || [65,80,81,82,95,96,99].includes(code)) {
-      icon='☔'; title='雨神可能報到'; action='改室內'; advice='夜市先不要硬衝，改百貨、室內景點、外送或回飯店。';
-    } else if (rainProb >= 45 || precip >= 3 || [51,53,55,61,63].includes(code)) {
-      icon='🌦'; title='午後可能變臉'; action='下午備案'; advice='上午先玩主景點，下午準備百貨、室內景點或飯店泳池。';
-    } else if (tMax >= 34) {
-      icon='🔥'; title='熱到要補水'; action='縮短戶外'; advice='戶外不要撐太久，多補水、防曬，午後回住宿或冷氣餐廳。';
-    }
-    return {
-      icon, title, action, advice, placeName,
-      tempText: tMax && tMin ? `${tMin}–${tMax}°C` : '--',
-      rainText: `${rainProb}%`,
-      summary: `${placeName}｜${text}，降雨機率約 ${rainProb}% ，預估雨量 ${precip.toFixed(1)} mm。`
-    };
-  };
-  const fetchWeather = async (placeKey)=>{
-    const loc = weatherLocations[placeKey];
-    if (!loc) return;
-    try {
-      weatherStore.value[placeKey] = { loading:true, daily:null, error:'' };
-      const url = `https://api.open-meteo.com/v1/forecast?latitude=${loc.latitude}&longitude=${loc.longitude}&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,precipitation_sum&timezone=Asia%2FBangkok&forecast_days=10`;
-      const res = await fetch(url);
-      if (!res.ok) throw new Error('weather fetch failed');
-      const data = await res.json();
-      weatherStore.value[placeKey] = { loading:false, daily:data.daily, error:'' };
-    } catch (err) {
-      weatherStore.value[placeKey] = { loading:false, daily:null, error:'天氣讀取失敗' };
-    }
-  };
-  const weatherForDay = (day)=>{
-    const placeKey = day?.weatherPlace || 'bangkok';
-    const store = weatherStore.value[placeKey];
-    if (!store || store.loading || store.error) return offlineWeather(placeKey);
-    return buildWeatherView(placeKey, store.daily, day.weatherIso);
-  };
-  const todayWeather = computed(()=> todayStatus.value.day ? weatherForDay(todayStatus.value.day) : offlineWeather('bangkok'));
-  onMounted(()=>{
-    fetchWeather('bangkok');
-    fetchWeather('pattaya');
-  });
-
-  const tripDateMap = {
-    '2026-07-02':'1',
-    '2026-07-03':'2',
-    '2026-07-04':'3',
-    '2026-07-05':'4',
-    '2026-07-06':'5',
-    '2026-07-07':'6',
-    '2026-07-08':'7'
-  };
-  const dateKey = (d)=>{
-    const y = d.getFullYear();
-    const m = String(d.getMonth()+1).padStart(2,'0');
-    const day = String(d.getDate()).padStart(2,'0');
-    return `${y}-${m}-${day}`;
-  };
-  const todayStatus = computed(()=>{
-    const now = new Date();
-    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-    const start = new Date(2026, 6, 2);
-    const end = new Date(2026, 6, 8);
-    const todayLabel = `${now.getMonth()+1}/${now.getDate()}`;
-    if (today < start) {
-      return {
-        label:'出發前總控台',
-        displayDate:todayLabel,
-        title:'還沒到旅遊日期，先看 D1 抵達日',
-        message:'出發前先確認護照、eSIM、旅平險、Grab/Bolt、包車資訊與小孩用品。到 7/2 後，首頁會自動顯示當日行程。',
-        day:days[0]
-      };
-    }
-    if (today > end) {
-      return {
-        label:'旅程已結束',
-        displayDate:todayLabel,
-        title:'泰國親子旅行回顧',
-        message:'行程已結束，首頁保留最後一天回程資訊；之後可以用餐廳與提醒頁回查資料。',
-        day:days[6]
-      };
-    }
-    const no = tripDateMap[dateKey(today)] || '1';
-    const day = days.find(d=>d.no === no) || days[0];
-    return {
-      label:'今天要幹嘛？',
-      displayDate:day.date,
-      title:`D${day.no}｜${day.title}`,
-      message:day.strategy,
-      day
-    };
-  });
-  const openToday = ()=>{
-    activeTab.value='trip';
-    openedDay.value = todayStatus.value.day ? todayStatus.value.day.no : '1';
-  };
-  const activeRestaurants = computed(()=> restaurantArea.value === 'all' ? restaurants : restaurants.filter(r => r.area === restaurantArea.value));
-  const toggleRestaurant = (name)=>{ expandedRestaurants.value[name] = !expandedRestaurants.value[name]; };
-  const progressWidth = computed(()=> `${Math.round((Number(openedDay.value || '1')/days.length)*100)}%`);
-  const toggleDay = (n)=>{ openedDay.value = openedDay.value === n ? '' : n; };
-  const jumpToday = ()=>{ openToday(); };
-  return { activeTab, openedDay, guideSection, restaurantArea, expandedRestaurants, toggleRestaurant, days, todayStatus, todayWeather, weatherForDay, activeRestaurants, dayMaps, guideCards, playRules, rideGuides, spotGuides, backups, tasks, kidItems, spas, lineQuick, progressWidth, toggleDay, jumpToday, openToday, window };
-}}).mount('#app');
-document.body.classList.add('app-ready');
+const routeInfo = {
+  '1': { line:'機場 → Sukhumvit 2 飯店 → 晚餐 / 外送 → 回飯店', note:'抵達日以入住為主，晚餐看體力，不要硬排行程。' },
+  '2': { line:'Sukhumvit 2 → Here Hai → CentralWorld / Siam → 飯店', note:'曼谷市區日以冷氣點串接，逛街與帶娃可分流。' },
+  '3': { line:'Sukhumvit 2 → 綠山動物園 → Somerset Pattaya → 海景晚餐', note:'包車去程日，重點是順利移動與入住，不要再加太多點。' },
+  '4': { line:'Somerset Pattaya → House of Benedict → 海景午餐 → 百貨 / 飯店 → 夜市', note:'芭達雅日先室內，再看天氣決定晚上是否夜市。' },
+  '5': { line:'Somerset Pattaya → Pattaya Sheep Farm → 象神廟 / 曼谷 → Eastin Phayathai', note:'包車回程日，小孩上車午睡，象神視 7/2 是否已去決定。' },
+  '6': { line:'Eastin Phayathai → Museum of Siam → ICONSIAM / Big C → 家族晚宴', note:'購物日容易超時，午餐後先判斷小孩與長輩體力。' },
+  '7': { line:'Eastin Phayathai → 分組退房 / King Power / The Commons → 機場', note:'回程日只求順，交通時間抓寬，不排硬景點。' }
 };
+const dayWeatherMeta = {
+  '1': { iso:'2026-07-02', place:'bangkok' },
+  '2': { iso:'2026-07-03', place:'bangkok' },
+  '3': { iso:'2026-07-04', place:'pattaya' },
+  '4': { iso:'2026-07-05', place:'pattaya' },
+  '5': { iso:'2026-07-06', place:'pattaya' },
+  '6': { iso:'2026-07-07', place:'bangkok' },
+  '7': { iso:'2026-07-08', place:'bangkok' }
+};
+days.forEach(day => {
+  day.routeLine = routeInfo[day.no]?.line || day.title;
+  day.routeNote = routeInfo[day.no]?.note || day.transportShort;
+  day.weatherIso = dayWeatherMeta[day.no]?.iso;
+  day.weatherPlace = dayWeatherMeta[day.no]?.place || 'bangkok';
+});
 
-(function loadVueStable(){
-  const sources = [
-    'https://unpkg.com/vue@3/dist/vue.global.prod.js',
-    'https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.prod.js'
-  ];
-  let i = 0;
-  function failSafe(){
-    document.body.classList.add('app-fallback');
+const gSearch = (q) => 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(q);
+const gDir = (origin, destination, waypoints='', mode='driving') => {
+  const wp = waypoints ? '&waypoints=' + encodeURIComponent(waypoints) : '';
+  return 'https://www.google.com/maps/dir/?api=1&origin=' + encodeURIComponent(origin) + '&destination=' + encodeURIComponent(destination) + wp + '&travelmode=' + mode;
+};
+const friendlyMaps = {
+  '1': {
+    mapTip:'抵達日不要給家人一長串搜尋字。建議只開「飯店定位」與「晚餐/象神二選一」，晚了就直接外送。',
+    maps:[
+      {label:'先定位飯店｜Sukhumvit 2', desc:'給 Grab / 家人集合用，先確認今晚住宿位置。', url:gSearch('Bangkok Sukhothai style hotel 66/1 Sukhumvit 2 Bangkok')},
+      {label:'晚餐主線｜Je Oh Chula → 象神廟', desc:'有體力才走；適合夜貓組，不適合小孩太累時硬衝。', url:gDir('66/1 Sukhumvit 2 Bangkok','Huai Khwang Ganesha Shrine','Jeh O Chula Bangkok')},
+      {label:'輕鬆冷氣｜Emsphere 美食街', desc:'最適合帶娃與長輩，吃完可直接回飯店。', url:gDir('66/1 Sukhumvit 2 Bangkok','Emsphere Bangkok')},
+      {label:'回飯店｜晚餐後用', desc:'不管在哪裡，最後用這個回 Sukhumvit 2。', url:gSearch('66/1 Sukhumvit 2 Bangkok')}
+    ]
+  },
+  '2': {
+    mapTip:'這天景點多，改成「午餐主線、帶娃主線、夜市備案」三顆按鈕，現場不用重新找。',
+    maps:[
+      {label:'午餐主線｜Here Hai 爆量蟹肉炒飯', desc:'全員合體午餐定位。', url:gDir('66/1 Sukhumvit 2 Bangkok','Here Hai Bangkok')},
+      {label:'帶娃冷氣｜SEA LIFE / CentralwOrld', desc:'下午帶娃組用，百貨與海洋世界互相支援。', url:gDir('66/1 Sukhumvit 2 Bangkok','CentralWorld Bangkok','SEA LIFE Bangkok Ocean World')},
+      {label:'大人逛街｜Siam / EVEANDBOY', desc:'美妝與潮流組用，與 CentralwOrld 距離近。', url:gSearch('Siam Square EVEANDBOY Bangkok')},
+      {label:'晚上備案｜Jodd Fairs Rama 9', desc:'有體力再去；孩子累就取消。', url:gDir('CentralWorld Bangkok','Jodd Fairs Rama 9 Bangkok')}
+    ]
+  },
+  '3': {
+    mapTip:'包車日最需要司機看得懂。這裡做成「完整包車路線」＋「各站單點」，方便丟給司機。',
+    maps:[
+      {label:'包車完整路線｜曼谷 → 綠山 → Somerset', desc:'給司機看整天大方向；中途可依體力刪減。', url:gDir('66/1 Sukhumvit 2 Bangkok','Somerset Pattaya','Khao Kheow Open Zoo')},
+      {label:'第一站｜Khao Kheow 綠山動物園', desc:'司機直接導航到動物園；園內可租高爾夫球車。', url:gSearch('Khao Kheow Open Zoo')},
+      {label:'飯店入住｜Somerset Pattaya', desc:'下午入住與泳池放電定位。', url:gSearch('Somerset Pattaya')},
+      {label:'晚餐｜The Glass House Pattaya', desc:'海景晚餐；從飯店叫 Grab/Bolt 用。', url:gDir('Somerset Pattaya','The Glass House Pattaya')},
+      {label:'夜市｜Thepprasit 大帕夜市', desc:'週末限定，累了就刪。', url:gSearch('Thepprasit Night Market Pattaya')}
+    ]
+  },
+  '4': {
+    mapTip:'芭達雅這天改成「上午、午餐、晚上」三段，不要把全部景點塞在同一個地圖搜尋。',
+    maps:[
+      {label:'上午｜House of Benedict', desc:'室內冷氣網美棚，從 Somerset 叫車。', url:gDir('Somerset Pattaya','House of Benedict Pattaya')},
+      {label:'午餐 A｜3 Mermaids', desc:'拍照強、有鳥巢；適合想打卡。', url:gDir('House of Benedict Pattaya','3 Mermaids Pattaya')},
+      {label:'午餐 B｜The Sky Gallery', desc:'草皮與推車動線較寬，親子更穩。', url:gDir('House of Benedict Pattaya','The Sky Gallery Pattaya')},
+      {label:'補貨｜Central Pattaya', desc:'回飯店前後可買伴手禮，走路/短程叫車都可。', url:gSearch('Central Pattaya')},
+      {label:'晚上｜Runway Street Food', desc:'747 飛機夜市，平坦推車友善；晚了可取消。', url:gDir('Somerset Pattaya','Runway Street Food Pattaya')}
+    ]
+  },
+  '5': {
+    mapTip:'回程包車重點是「退房後一路回曼谷」。已分成完整包車線、農莊、象神、飯店四個按鈕。',
+    maps:[
+      {label:'包車完整路線｜Somerset → 農莊 → 象神 → Eastin', desc:'給司機看整天主線；象神可視 7/2 是否已去再決定。', url:gDir('Somerset Pattaya','Eastin Grand Hotel Phayathai','Pattaya Sheep Farm|Huai Khwang Ganesha Shrine')},
+      {label:'第一站｜Pattaya Sheep Farm', desc:'親子餵羊駝與小綿羊，之後上車午睡。', url:gSearch('Pattaya Sheep Farm')},
+      {label:'安插｜Huai Khwang Ganesha Shrine', desc:'若 7/2 沒去象神廟，今天最順。', url:gSearch('Huai Khwang Ganesha Shrine')},
+      {label:'入住｜Eastin Grand Phayathai', desc:'最後請司機開到飯店。', url:gSearch('Eastin Grand Hotel Phayathai')},
+      {label:'晚餐備案｜ICONSIAM / SookSiam', desc:'想輕鬆吃室內冷氣就用這個。', url:gDir('Eastin Grand Hotel Phayathai','ICONSIAM Bangkok')}
+    ]
+  },
+  '6': {
+    mapTip:'購物日容易失控，所以做成「上午體驗、午餐購物、晚餐」分段導航。',
+    maps:[
+      {label:'上午｜Museum of Siam', desc:'泰服拍照、互動裝置、法力貼紙。', url:gDir('Eastin Grand Hotel Phayathai','Museum of Siam')},
+      {label:'午餐購物｜ICONSIAM', desc:'瀑布餐廳與 SookSiam，冷氣好休息。', url:gDir('Museum of Siam','ICONSIAM Bangkok')},
+      {label:'伴手禮｜Big C Supercenter', desc:'掃貨用；先列清單再買。', url:gSearch('Big C Supercenter Bangkok')},
+      {label:'家庭晚宴｜Somboon Siam Square One', desc:'無腦家庭友善版。', url:gDir('Eastin Grand Hotel Phayathai','Somboon Seafood Siam Square One')},
+      {label:'米其林晚宴｜Saneh Jaan', desc:'想吃精緻泰菜時使用，建議先訂位。', url:gSearch('Saneh Jaan Bangkok')}
+    ]
+  },
+  '7': {
+    mapTip:'回程日只做分流，不排硬景點。每組直接按自己的路線。',
+    maps:[
+      {label:'第一組｜飯店 → 機場', desc:'退房後 Grab 大車直奔機場。', url:gDir('Eastin Grand Hotel Phayathai','Suvarnabhumi Airport')},
+      {label:'第二組晚班機｜King Power 免稅', desc:'行李寄放後採購，小孩可飯店泳池放電。', url:gDir('Eastin Grand Hotel Phayathai','King Power Rangnam Bangkok')},
+      {label:'第三組慢活｜The Commons Saladaeng', desc:'精品咖啡早午餐＋大人按摩前後使用。', url:gDir('Eastin Grand Hotel Phayathai','The Commons Saladaeng')},
+      {label:'最後回機場｜The Commons → BKK', desc:'15:50 提行李後視情況改從飯店或 The Commons 出發。', url:gDir('The Commons Saladaeng','Suvarnabhumi Airport')}
+    ]
   }
-  function loadNext(){
-    if (window.Vue) { window.__startThaiApp(); return; }
-    if (i >= sources.length) { failSafe(); return; }
-    const s = document.createElement('script');
-    s.src = sources[i++];
-    s.async = false;
-    s.onload = function(){ window.__startThaiApp(); };
-    s.onerror = loadNext;
-    document.head.appendChild(s);
+};
+const enhancedMaps = {
+  '1': {
+    mapTip:'抵達日用三顆核心按鈕：先定位飯店、晚餐/象神看體力、最後一鍵回飯店。小孩累或太晚，直接外送回房。',
+    mapMain:[
+      {label:'D1 今日大路線｜機場 → 飯店 → 晚餐備案', desc:'給大人看今晚大方向；抵達太晚就只完成入住。', url:gDir('Suvarnabhumi Airport','66/1 Sukhumvit 2 Bangkok')}
+    ],
+    mapTaxi:[
+      {label:'直接叫車｜Sukhumvit 2 飯店', desc:'三組集合與入住定位。', url:gSearch('66/1 Sukhumvit 2 Bangkok')},
+      {label:'直接叫車｜Je Oh Chula', desc:'有體力才去的晚餐主線。', url:gSearch('Jeh O Chula Bangkok')},
+      {label:'直接叫車｜Emsphere 美食街', desc:'冷氣、廁所、用餐都方便，親子比較穩。', url:gSearch('Emsphere Bangkok')},
+      {label:'直接叫車｜匯狂象神廟', desc:'晚上還有精神再去；也可留到 7/6 包車日。', url:gSearch('Huai Khwang Ganesha Shrine')}
+    ],
+    mapHotel:[
+      {label:'回 Sukhumvit 2 飯店', desc:'小孩累、下雨、太晚時直接按這顆。', url:gSearch('66/1 Sukhumvit 2 Bangkok')}
+    ]
+  },
+  '2': {
+    mapTip:'曼谷市區日景點較多，分成午餐主線、帶娃冷氣、大人逛街與回飯店，現場依體力切換。',
+    mapMain:[
+      {label:'D2 今日大路線｜飯店 → Here Hai → CentralWorld / Siam', desc:'上午美食、下午分流，晚上看體力。', url:gDir('66/1 Sukhumvit 2 Bangkok','CentralWorld Bangkok','Here Hai Bangkok')}
+    ],
+    mapTaxi:[
+      {label:'直接叫車｜Here Hai', desc:'全員合體午餐定位。', url:gSearch('Here Hai Bangkok')},
+      {label:'直接叫車｜SEA LIFE / CentralWorld', desc:'帶娃冷氣主線，百貨與海洋世界互相支援。', url:gSearch('SEA LIFE Bangkok Ocean World CentralWorld')},
+      {label:'直接叫車｜Siam Square / EVEANDBOY', desc:'大人美妝與潮流逛街用。', url:gSearch('Siam Square EVEANDBOY Bangkok')},
+      {label:'直接叫車｜Jodd Fairs Rama 9', desc:'晚上有體力才去的夜市備案。', url:gSearch('Jodd Fairs Rama 9 Bangkok')}
+    ],
+    mapHotel:[
+      {label:'回 Sukhumvit 2 飯店', desc:'下午午睡、晚上小孩累或下雨時用。', url:gSearch('66/1 Sukhumvit 2 Bangkok')}
+    ]
+  },
+  '3': {
+    mapTip:'包車去芭達雅日用「完整包車路線＋單點叫車＋回飯店」三層設計，方便丟給司機也方便臨時刪點。',
+    mapMain:[
+      {label:'D3 包車大路線｜曼谷 → 綠山動物園 → Somerset', desc:'給司機看整體方向；中途可依天氣與小孩體力調整。', url:gDir('66/1 Sukhumvit 2 Bangkok','Somerset Pattaya','Khao Kheow Open Zoo')}
+    ],
+    mapTaxi:[
+      {label:'直接定位｜Khao Kheow 綠山動物園', desc:'包車第一站，園內可租高爾夫球車。', url:gSearch('Khao Kheow Open Zoo')},
+      {label:'直接定位｜Somerset Pattaya', desc:'下午入住與泳池放電。', url:gSearch('Somerset Pattaya')},
+      {label:'直接叫車｜The Glass House Pattaya', desc:'晚上海景晚餐，從飯店叫 Grab/Bolt。', url:gSearch('The Glass House Pattaya')},
+      {label:'直接叫車｜Thepprasit 大帕夜市', desc:'週末限定，累了就刪。', url:gSearch('Thepprasit Night Market Pattaya')}
+    ],
+    mapHotel:[
+      {label:'回 Somerset Pattaya', desc:'包車日小孩累了，直接回飯店最重要。', url:gSearch('Somerset Pattaya')}
+    ]
+  },
+  '4': {
+    mapTip:'芭達雅親子日分成上午主景點、午餐、冷氣補貨、晚上夜市。下午一定要保留回飯店或百貨休息。',
+    mapMain:[
+      {label:'D4 今日大路線｜Somerset → House of Benedict → 海景午餐 → 百貨/飯店', desc:'上午完成主景點，下午降溫休息。', url:gDir('Somerset Pattaya','Central Pattaya','House of Benedict Pattaya|The Sky Gallery Pattaya')}
+    ],
+    mapTaxi:[
+      {label:'直接叫車｜House of Benedict', desc:'室內冷氣網美棚，上午主景點。', url:gSearch('House of Benedict Pattaya')},
+      {label:'直接叫車｜3 Mermaids', desc:'巨型鳥巢打卡餐廳，拍照感強。', url:gSearch('3 Mermaids Pattaya')},
+      {label:'直接叫車｜The Sky Gallery', desc:'草皮寬敞，親子用餐較穩。', url:gSearch('The Sky Gallery Pattaya')},
+      {label:'直接叫車｜Central Pattaya', desc:'冷氣、補貨、廁所、餐廳都方便。', url:gSearch('Central Pattaya')},
+      {label:'直接叫車｜Runway Street Food', desc:'晚上有體力才去的飛機夜市。', url:gSearch('Runway Street Food Pattaya')}
+    ],
+    mapHotel:[
+      {label:'回 Somerset Pattaya', desc:'下午午睡、泳池或外送時直接按。', url:gSearch('Somerset Pattaya')}
+    ]
+  },
+  '5': {
+    mapTip:'包車回曼谷日重點是退房、農莊、車上午睡、進曼谷。象神廟視 7/2 是否已去與孩子狀態決定。',
+    mapMain:[
+      {label:'D5 包車大路線｜Somerset → 小綿羊農莊 → 象神 → Eastin', desc:'給司機看整天主線；象神可刪可補。', url:gDir('Somerset Pattaya','Eastin Grand Hotel Phayathai','Pattaya Sheep Farm|Huai Khwang Ganesha Shrine')}
+    ],
+    mapTaxi:[
+      {label:'直接定位｜Pattaya Sheep Farm', desc:'親子餵羊駝與小綿羊，之後上車午睡。', url:gSearch('Pattaya Sheep Farm')},
+      {label:'直接定位｜匯狂象神廟', desc:'若 7/2 沒去，今天包車順路補。', url:gSearch('Huai Khwang Ganesha Shrine')},
+      {label:'直接定位｜Eastin Grand Phayathai', desc:'最後曼谷住宿，請司機開到飯店。', url:gSearch('Eastin Grand Hotel Phayathai')},
+      {label:'直接叫車｜ICONSIAM / SookSiam', desc:'晚上想吃冷氣室內美食可用。', url:gSearch('ICONSIAM Bangkok SookSiam')}
+    ],
+    mapHotel:[
+      {label:'回 Eastin Grand Phayathai', desc:'回曼谷後小孩累、下雨、塞車時直接回飯店。', url:gSearch('Eastin Grand Hotel Phayathai')}
+    ]
+  },
+  '6': {
+    mapTip:'購物日很容易失控，所以分成上午體驗、午餐購物、伴手禮、晚宴與回飯店；累了就縮短購物。',
+    mapMain:[
+      {label:'D6 今日大路線｜Eastin → Museum of Siam → ICONSIAM → Big C', desc:'體驗＋購物日，大人小孩都要保留休息空檔。', url:gDir('Eastin Grand Hotel Phayathai','Big C Supercenter Ratchadamri','Museum of Siam|ICONSIAM Bangkok')}
+    ],
+    mapTaxi:[
+      {label:'直接叫車｜Museum of Siam', desc:'泰服拍照、互動裝置、法力貼紙。', url:gSearch('Museum of Siam')},
+      {label:'直接叫車｜ICONSIAM', desc:'午餐、冷氣、SookSiam、伴手禮。', url:gSearch('ICONSIAM Bangkok')},
+      {label:'直接叫車｜Big C Supercenter', desc:'終極伴手禮掃貨，建議先列清單。', url:gSearch('Big C Supercenter Ratchadamri Bangkok')},
+      {label:'直接叫車｜Somboon Siam Square One', desc:'家庭友善晚餐版本。', url:gSearch('Somboon Seafood Siam Square One')},
+      {label:'直接叫車｜Saneh Jaan', desc:'精緻泰菜版本，建議先訂位。', url:gSearch('Saneh Jaan Bangkok')}
+    ],
+    mapHotel:[
+      {label:'回 Eastin Grand Phayathai', desc:'午休、放戰利品、孩子累了直接回。', url:gSearch('Eastin Grand Hotel Phayathai')}
+    ]
+  },
+  '7': {
+    mapTip:'回程日只分流，不排硬景點。每組按自己的路線，重點是提早到機場、行李不要出錯。',
+    mapMain:[
+      {label:'D7 今日大路線｜Eastin → 機場 / King Power / The Commons', desc:'依三組航班分流，回程日不硬跑。', url:gDir('Eastin Grand Hotel Phayathai','Suvarnabhumi Airport')}
+    ],
+    mapTaxi:[
+      {label:'第一組｜直接叫車到機場', desc:'退房後 Grab 大車直奔機場。', url:gSearch('Suvarnabhumi Airport')},
+      {label:'第二組｜King Power Rangnam', desc:'晚班機可寄行李後採買。', url:gSearch('King Power Rangnam Bangkok')},
+      {label:'第三組｜The Commons Saladaeng', desc:'精品咖啡早午餐慢活。', url:gSearch('The Commons Saladaeng')},
+      {label:'最後叫車｜The Commons → BKK', desc:'15:50 後抓寬時間前往機場。', url:gDir('The Commons Saladaeng','Suvarnabhumi Airport')}
+    ],
+    mapHotel:[
+      {label:'回 Eastin Grand Phayathai', desc:'退房前後拿行李、集合、孩子休息用。', url:gSearch('Eastin Grand Hotel Phayathai')}
+    ]
   }
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', loadNext);
-  } else {
-    loadNext();
-  }
-  setTimeout(function(){ if (!document.body.classList.contains('app-ready')) failSafe(); }, 6000);
+};
+days.forEach(day => {
+  Object.assign(day, friendlyMaps[day.no] || { mapTip:'開啟今日重要地點。', maps:[{label:'今日 Google Maps', desc:'開啟今日重要地點搜尋。', url:day.mapUrl}]});
+  Object.assign(day, enhancedMaps[day.no] || {
+    mapMain: day.maps || [{label:'今日大路線', desc:'開啟今日重要地點搜尋。', url:day.mapUrl}],
+    mapTaxi: day.maps || [{label:'直接叫車地點', desc:'開啟今日重要地點搜尋。', url:day.mapUrl}],
+    mapHotel: [{label:'回住宿', desc:'小孩累或下雨時直接回住宿。', url:day.mapUrl}]
+  });
+});
+const routes = {
+  bangkok:[
+    {day:'Day 1', start:'BKK / DMK', end:'Sukhumvit 2', type:'Grab / ARL', time:'約 45–90 分', title:'機場進曼谷市區', note:'第二組行李多可 Grab 六人大車；第三組可 ARL 到 Phayathai 避塞車，再轉乘。', mapUrl:'https://www.google.com/maps/search/?api=1&query=66%2F1%20Sukhumvit%202%20Bangkok'},
+    {day:'Day 2', start:'Sukhumvit 2', end:'CentralWorld / Siam', type:'BTS＋步行', time:'約 15–30 分', title:'曼谷市區冷氣動線', note:'四面佛、Gaysorn、CentralwOrld、Siam Square 可連成一條；帶娃組可插 SEA LIFE。', mapUrl:'https://www.google.com/maps/search/?api=1&query=CentralWorld%20Siam%20Square%20SEA%20LIFE%20Bangkok'},
+    {day:'Day 6', start:'Eastin Phayathai', end:'Museum / ICONSIAM', type:'BTS/MRT＋Grab', time:'約 20–45 分', title:'Phayathai 出發購物日', note:'Museum of Siam、ICONSIAM、Big C 距離不算近，照體力分段。', mapUrl:'https://www.google.com/maps/search/?api=1&query=Eastin%20Grand%20Phayathai%20Museum%20of%20Siam%20ICONSIAM'}
+  ],
+  pattaya:[
+    {day:'Day 4', start:'Somerset', end:'House of Benedict', type:'Grab/Bolt', time:'約 20–35 分', title:'芭達雅室內網美棚', note:'上午先去冷氣景點，避免中午後戶外太熱。', mapUrl:'https://www.google.com/maps/search/?api=1&query=Somerset%20Pattaya%20House%20of%20Benedict'},
+    {day:'Day 4', start:'Somerset', end:'3 Mermaids / Sky Gallery', type:'Grab/Bolt', time:'約 15–30 分', title:'海景午餐區', note:'3 Mermaids 拍照強；The Sky Gallery 推車動線更寬。', mapUrl:'https://www.google.com/maps/search/?api=1&query=3%20Mermaids%20Pattaya%20The%20Sky%20Gallery'},
+    {day:'Day 4', start:'Somerset', end:'Runway Street Food', type:'Grab/Bolt', time:'約 15–25 分', title:'飛機夜市', note:'晚上看體力，累了就刪掉。', mapUrl:'https://www.google.com/maps/search/?api=1&query=Runway%20Street%20Food%20Pattaya'}
+  ],
+  charter:[
+    {day:'Day 3', start:'曼谷', end:'芭達雅', type:'15人座包車', time:'整日', title:'去程包車：曼谷 → 綠山動物園 → 芭達雅', note:'包車價值在於沿路景點可彈性替換，不去綠山可改甜點樂園、冰雕館或 Terminal 21。', mapUrl:'https://www.google.com/maps/search/?api=1&query=Khao%20Kheow%20Open%20Zoo%20Pattaya'},
+    {day:'Day 5', start:'芭達雅', end:'曼谷', type:'15人座包車', time:'整日', title:'回程包車：小綿羊農莊 → 曼谷 → 象神', note:'農場後小孩車上午睡，進曼谷可安插象神廟，最後回 Eastin Phayathai。', mapUrl:'https://www.google.com/maps/search/?api=1&query=Pattaya%20Sheep%20Farm%20Huai%20Khwang%20Ganesha'}
+  ]
+};
+const dayMaps = days.map(d => ({ no:d.no, day:d.date, title:d.title, steps:d.details.map(x=>x.title).slice(0,5), note:d.note }));
+const playRules = [
+  {label:'原則 1', title:'上午只排一個主景點', desc:'泰國 7 月熱，上午先完成最想去的地方，中午後不要硬拼戶外。'},
+  {label:'原則 2', title:'下午一定要有冷氣或泳池', desc:'百貨、飯店、室內景點是親子行程穩定器。'},
+  {label:'原則 3', title:'夜市是加分，不是必去', desc:'孩子累了就外送回房；大人想逛再分流。'},
+  {label:'原則 4', title:'包車日保留替代景點', desc:'7/4、7/6 的沿路備案都已列好，當天看天氣和體力選。'}
+];
+const rideGuides = [
+  {icon:'🚕', label:'Grab / Bolt', title:'叫車原則', tips:['多人＋行李請叫大車，不要省小車。','上車點盡量選飯店大門、百貨正門，不要在路邊臨停混亂處。','夜市回程先避開人潮最多出口，走到寬路再叫車。']},
+  {icon:'🚐', label:'15人座包車', title:'包車日操作', tips:['前一天確認司機、集合時間、兒童用品、車上是否可放行李。','7/4 重點是去程景點＋入住；7/6 重點是回程睡覺＋象神安插。','包車日不要臨時加太多點，避免孩子午睡被切碎。']},
+  {icon:'🚆', label:'ARL / BTS / MRT', title:'市區軌道交通', tips:['機場快線適合避塞車，但行李多與孩子多時要評估。','BTS/MRT 適合曼谷市中心短距離；推車要抓找電梯時間。','Phayathai 最後兩天可利用機場快線做回程備案。']}
+];
+const spotGuides = [
+  {badge:'動物', name:'Khao Kheow 綠山野生動物園', type:'親子主景點', area:'去芭達雅沿路', desc:'可租高爾夫球車，近距離看長頸鹿、水豚等動物。', note:'適合 4 歲娃放電；中午熱，記得水、防曬、帽子。', mapUrl:'https://www.google.com/maps/search/?api=1&query=Khao%20Kheow%20Open%20Zoo'},
+  {badge:'冷氣', name:'House of Benedict', type:'室內網美棚', area:'芭達雅', desc:'全室內冷氣，拍照場景多，推車好走。', note:'適合熱天避暑，不用曬。', mapUrl:'https://www.google.com/maps/search/?api=1&query=House%20of%20Benedict'},
+  {badge:'海景', name:'The Glass House Pattaya', type:'海景晚餐', area:'芭達雅', desc:'海邊玻璃屋與木松樹林氛圍，主打海鮮晚餐。', note:'孩子累了可縮短用餐，不硬接夜市。', mapUrl:'https://www.google.com/maps/search/?api=1&query=The%20Glass%20House%20Pattaya'},
+  {badge:'祈福', name:'匯狂象神廟', type:'24H 祈福', area:'曼谷', desc:'若 7/2 太晚沒去，可 7/6 包車進曼谷時安插。', note:'帶小孩不宜停太久，簡單參拜即可。', mapUrl:'https://www.google.com/maps/search/?api=1&query=Huai%20Khwang%20Ganesha%20Shrine'},
+  {badge:'夜市', name:'Runway Street Food', type:'飛機地標夜市', area:'芭達雅', desc:'747 飛機地標，空地大且平坦。', note:'推車友善，但時間晚，孩子累就刪。', mapUrl:'https://www.google.com/maps/search/?api=1&query=Runway%20Street%20Food%20Pattaya'},
+  {badge:'購物', name:'ICONSIAM＋Big C', type:'伴手禮與午餐', area:'曼谷', desc:'ICONSIAM 室內冷氣，Big C 適合終極掃貨。', note:'購物日容易失控，先列清單再買。', mapUrl:'https://www.google.com/maps/search/?api=1&query=ICONSIAM%20Big%20C%20Bangkok'}
+];
+const backups = [
+  {title:'下雨版', desc:'優先百貨、SEA LIFE、House of Benedict、Terminal 21、ICONSIAM；夜市直接取消。'},
+  {title:'太熱版', desc:'戶外景點縮短到 1–2 小時，改冷氣餐廳、按摩、飯店泳池。'},
+  {title:'小孩累了', desc:'不追行程，回飯店睡覺或外送回房；夜市與晚餐景觀餐廳都可刪。'},
+  {title:'長輩累了', desc:'分組行動：長輩回飯店或 SPA，大人帶小孩去近距離放電點。'},
+  {title:'曼谷塞車', desc:'市中心用 BTS/MRT；跨區用 Grab 但提早出門；回機場保留 3 小時以上。'},
+  {title:'包車日想改點', desc:'7/4 動物園可改甜點樂園/冰雕館/Terminal 21；7/6 農莊可改大象保護區/真理寺。'}
+];
+
+const guideCards = [
+  {icon:'🎯', label:'怎麼玩', title:'每天只抓一個主景點', tips:['上午先完成最想玩的地方，中午後改冷氣、百貨或飯店。','夜市是加分，不是必去；小孩累了就外送回房。','包車日重點是移動順，不是塞滿景點。']},
+  {icon:'🚕', label:'怎麼搭', title:'叫車和包車原則', tips:['Grab / Bolt 目的地用「叫車直接按這裡」。','上車點選飯店大門、百貨正門，比路邊好找。','15人座包車日先確認司機、集合時間、兒童用品與行李。']},
+  {icon:'🌦', label:'天氣變臉', title:'下雨或太熱怎麼辦', tips:['可能下雨：上午先跑戶外，下午改室內。','雨勢明顯：夜市取消，改百貨美食街或外送。','太熱：戶外縮短，多補水、防曬，午後回住宿。']},
+  {icon:'👶', label:'小孩狀況', title:'小孩累了就是最高指令', tips:['先讓小孩吃飯、喝水、睡覺，大人行程再調整。','推車、濕紙巾、備用衣、水壺每天都要帶。','餐廳先點飯、蛋、湯、不辣菜，小孩先吃。']}
+];
+const tasks = ['護照、機票、飯店確認信截圖', '旅平險、eSIM / 漫遊設定、信用卡', 'Grab、Bolt、Google Maps、Google 翻譯先裝好', '泰銖現金、小額鈔、信用卡分開放', '包車日司機資訊、集合時間、飯店地址', '小孩藥品、退燒藥、腸胃藥、防蚊、防曬', '推車、雨罩、薄外套、泳衣、備用衣', '行動電源、充電線、轉接頭、防水袋'];
+const kidItems = ['推車 / 雨罩','防曬 / 防蚊','泳衣 / 泳圈','備用衣 2 套','濕紙巾','小零食','水壺','退燒藥','腸胃藥','薄外套','帽子','小玩具'];
+const spas = [
+  {area:'Sukhumvit 2 周邊', items:['Let’s Relax Sukhumvit 31｜1,000–2,500 THB','Oasis Spa Sukhumvit 31｜2,500–4,500 THB','Health Land Asoke｜650–1,500 THB']},
+  {area:'Somerset Pattaya 周邊', items:['Let’s Relax Terminal 21｜800–2,000 THB','Health Land Pattaya North｜650–1,200 THB','Oasis Spa Pattaya｜2,500–4,000 THB']},
+  {area:'Eastin Phayathai 周邊', items:['Let’s Relax Phayathai｜800–2,000 THB','Divana Virtue Spa Sathon｜2,500–4,500 THB','Oasis Spa Sukhumvit 31｜2,500–4,500 THB']}
+];
+const restaurants = [
+  {day:'D1', area:'bangkok', areaLabel:'曼谷', type:'晚餐/宵夜', name:'Jeh O Chula', desc:'抵達日有體力才衝的宵夜名店；主角是酸辣媽媽麵大鍋，適合大人分享。', dishes:['⭐ 必點｜Mama Tom Yum 酸辣媽媽麵大鍋','👍 推薦｜脆皮豬肉 Crispy Pork','👍 推薦｜豬肉丸 / 海鮮配料','👶 小孩可吃｜白飯、蛋類、炸物或少量不辣配菜'], groupOrder:['1 鍋 Mama Tom Yum 大鍋給大人分享','1 份脆皮豬肉或炸物','1 份豬肉丸 / 海鮮配料','1～2 份白飯或不辣主食給小孩','飲料先點，辣湯不要給小孩直接喝'], kid:'小孩不建議喝酸辣湯底；如果抵達太晚、孩子累，這間直接改外送或取消。', spicyNote:'招牌 Mama Tom Yum 偏辣且常排隊；建議大人當宵夜，不要當小孩正餐。', orderTip:'6大2小不用每人一碗，點一鍋招牌分食，再補不辣飯類與炸物比較穩。', sourceNote:'食記普遍把 Mama Tom Yum 視為招牌，也提醒份量大、辣度高、排隊久。', mapUrl:gSearch('Jeh O Chula Bangkok')},
+  {day:'D1 / D2', area:'bangkok', areaLabel:'曼谷', type:'百貨美食', name:'Emsphere / CentralWorld 美食街', desc:'最穩的親子備案：冷氣、廁所、推車、選擇多，適合第一天或下雨天。', dishes:['⭐ 必選｜每人自由選一份主食','👍 推薦｜Pad Thai / 海南雞飯 / 湯麵','👶 小孩可吃｜雞飯、蛋料理、白飯、湯麵','🍨 甜點｜芒果糯米飯、泰奶、椰子冰沙'], groupOrder:['大人各自點想吃的泰式或日式','小孩先買雞飯 / 湯麵 / 白飯','再補 2～3 份大家分的炸物或青菜','最後買甜點飲料集合吃','先找座位，再分頭買餐'], kid:'不用等上菜，最適合小孩餓、下雨、塞車後臨時吃。', spicyNote:'美食街選擇多，怕辣就選雞飯、湯麵、日式或西式。', orderTip:'三組家庭建議先指定集合桌，再派代表分頭買，避免推車和小孩在人潮裡亂跑。', sourceNote:'以百貨美食街實用性為主，屬行程備案，不是單一名店推薦。', mapUrl:gSearch('Emsphere Bangkok food court CentralWorld Bangkok')},
+  {day:'D2', area:'bangkok', areaLabel:'曼谷', type:'午餐主線', name:'Here Hai', desc:'曼谷午餐合體點，主打滿滿蟹肉炒飯與海鮮熱炒。', dishes:['⭐ 必點｜Insane Crab Fried Rice 招牌蟹肉炒飯','⭐ 必點｜Lump Crab Meat Fried Rice 大塊蟹肉炒飯','👍 推薦｜Crab Omelette 蟹肉煎蛋','👍 推薦｜Mantis Shrimp with Garlic and Pepper 蒜胡椒螳螂蝦','👶 小孩可吃｜不辣蟹肉炒飯、蟹肉煎蛋'], groupOrder:['蟹肉炒飯大份 2 份或中份 3 份','蟹肉煎蛋 1～2 份','螳螂蝦或蒜胡椒海鮮 1 份','青菜或清淡配菜 1 份','小孩先分不辣炒飯＋煎蛋'], kid:'點餐時可說 not spicy；小孩優先吃炒飯和蛋，辣醬另外放。', spicyNote:'熱門店可能要等，建議避開正中午或先預留時間。', orderTip:'6大2小不要點太散，主軸就是蟹肉炒飯＋蟹蛋＋一份海鮮，簡單又有記憶點。', sourceNote:'米其林與多篇食記都把蟹肉炒飯列為核心招牌，食記也常提到螳螂蝦與蟹蛋。', mapUrl:gSearch('Here Hai Bangkok')},
+  {day:'D2 / D6', area:'bangkok', areaLabel:'曼谷', type:'家庭餐廳', name:'Savoey / Kub Kao Kub Pla', desc:'百貨裡的泰式家庭餐廳，適合長輩、小孩、不想冒險的晚餐。', dishes:['⭐ Savoey 必點｜咖哩炒蟹','👍 Savoey 推薦｜炸蟹肉餅、鳳梨海鮮炒飯、檸檬蒸魚','⭐ Kub Kao 推薦｜蟹肉煎蛋、蟹肉炒飯','👍 Kub Kao 推薦｜不辣冬蔭湯、炒空心菜、炸鱸魚','👶 小孩可吃｜鳳梨炒飯、蟹肉煎蛋、白飯、清湯'], groupOrder:['招牌海鮮 1 道：咖哩炒蟹或蟹肉煎蛋','主食 2 道：炒飯 / Pad Thai / 白飯','青菜 1～2 道：空心菜或高麗菜','湯 1 道：不辣湯或清湯優先','魚或炸物 1 道給小孩分食'], kid:'百貨分店最穩，冷氣和廁所方便；可請店家少辣或不辣。', spicyNote:'咖哩炒蟹通常不會太辣但偏濃郁；怕油膩可改點蒸魚、炸魚、蟹蛋。', orderTip:'一桌先確保 2 道小孩能吃，再點大人想吃的咖哩蟹或辣味菜。', sourceNote:'Savoey 食記常列咖哩蟹、炸蟹肉餅、鳳梨炒飯；Kub Kao 評論常提蟹蛋、蟹炒飯與不辣湯。', mapUrl:gSearch('Kub Kao Kub Pla CentralWorld Bangkok')},
+  {day:'D3', area:'pattaya', areaLabel:'芭達雅', type:'海景晚餐', name:'The Glass House Pattaya', desc:'芭達雅海景晚餐，適合入住後吃海鮮、看海、拍照。', dishes:['⭐ 必點｜烤蝦 / 海鮮類','👍 推薦｜Tom Yum Goong 清湯或冬蔭功','👍 推薦｜炸鱸魚 / 魚露炸魚','👍 推薦｜蟹類、蝦類、海鮮熱炒','👶 小孩可吃｜炒飯、義大利麵、炸物'], groupOrder:['烤蝦或海鮮主菜 1～2 份','魚類 1 份：炸鱸魚或蒸魚','炒飯 / 義大利麵 2 份給小孩與長輩','湯品 1 鍋，大人分食','青菜或不辣配菜 1～2 道'], kid:'海景很美，但入住日小孩容易累；吃完就回飯店，不硬接夜市。', spicyNote:'海鮮與湯品可能偏酸辣，點餐請註明 not spicy / less spicy。', orderTip:'重點是海景＋海鮮，不用點太複雜；先讓小孩吃飽，大人再慢慢吃海鮮。', sourceNote:'官方菜單主打 sea-to-table 海鮮與泰式菜，Tripadvisor 也以海鮮和海景評價為主。', mapUrl:gSearch('The Glass House Pattaya')},
+  {day:'D4', area:'pattaya', areaLabel:'芭達雅', type:'海景午餐', name:'3 Mermaids Pattaya', desc:'鳥巢座位和拍照感強的一餐，適合想拍照但不適合趕時間。', dishes:['⭐ 推薦｜海鮮炒飯 / 蟹肉炒飯','👍 推薦｜烤蝦 / 炸物拼盤','👍 推薦｜泰式酸辣湯或海鮮湯','👶 小孩可吃｜薯條、炸雞、義大利麵、炒飯','🍹 拍照加分｜飲料、甜點'], groupOrder:['炒飯或義大利麵 2 份先給小孩','海鮮主菜 1～2 道給大人','炸物拼盤 1 份大家分','湯品 1 份，辣度請調低','飲料甜點視拍照需求加點'], kid:'鳥巢與階梯要顧小孩；推車和座位動線要現場評估。', spicyNote:'景觀餐廳以拍照氣氛為主，不建議點太多辣味菜。', orderTip:'如果主要想拍照，餐點簡單點就好；小孩先吃飽，拍照才不會崩潰。', sourceNote:'以景觀與打卡口碑為主，餐點建議採安全點法。', mapUrl:gSearch('3 Mermaids Pattaya')},
+  {day:'D4', area:'pattaya', areaLabel:'芭達雅', type:'海景親子', name:'The Sky Gallery Pattaya', desc:'空間感、草皮和海景都舒服，比純打卡店更適合坐著休息。', dishes:['⭐ 推薦｜海鮮義大利麵 / 披薩','👍 推薦｜泰式炒飯','👍 推薦｜烤蝦 / 炸花枝','👶 小孩可吃｜披薩、義大利麵、薯條、甜點','🍹 推薦｜飲料與冰沙'], groupOrder:['披薩或義大利麵 2 份給小孩','泰式炒飯 1～2 份','海鮮主菜 1～2 道','炸物 1 份','飲料甜點看小孩狀況'], kid:'小孩點西式餐，大人點泰式海鮮，是最不容易踩雷的組合。', spicyNote:'海景餐廳不要硬點全泰式辣菜，保留不辣主食比較穩。', orderTip:'6大2小建議用「西式給小孩＋泰式給大人」分流點法。', sourceNote:'以親子動線與海景用餐情境整理，搭配公開菜單常見品項。', mapUrl:gSearch('The Sky Gallery Pattaya')},
+  {day:'D4', area:'pattaya', areaLabel:'芭達雅', type:'夜市小吃', name:'Runway Street Food / Thepprasit Night Market', desc:'夜市適合有體力再去，目標是少量多樣，不是吃很飽的大餐。', dishes:['⭐ 推薦｜烤大頭蝦 / 烤海鮮','👍 推薦｜泰式烤肉串 / 炸物','🌶 大人吃｜青木瓜沙拉 Som Tam','👶 小孩可吃｜白飯、烤肉串、炸雞、玉米、水果','🍹 飲料｜椰子冰沙、水果切盤'], groupOrder:['先買不辣烤肉串 6～8 串','白飯或簡單主食 2～3 份','烤蝦 / 海鮮 1～2 份大人分','水果或飲料 2～3 份','辣味小吃最後少量加點'], kid:'夜市時間較晚，小孩累就取消；推車要注意人潮與地面。', spicyNote:'青木瓜沙拉、泰式辣醬常很辣；小孩吃的要分開買。', orderTip:'夜市不要一次買太多，邊走邊補；看到座位先坐再派人買。', sourceNote:'以夜市常見攤位品項與親子現場操作整理。', mapUrl:gSearch('Runway Street Food Pattaya Thepprasit Night Market Pattaya')},
+  {day:'D5 / D6', area:'bangkok', areaLabel:'曼谷', type:'海鮮聚餐', name:'Somboon Seafood', desc:'曼谷經典海鮮餐廳，最適合家庭聚餐與長輩。', dishes:['⭐ 必點｜Fried Curry Crab 咖哩炒蟹','👍 推薦｜Deep-fried Seabass 炸鱸魚','👍 推薦｜Thai seafood spicy soup 泰式海鮮湯','👍 推薦｜粉絲蝦煲 / 蒜味蝦','👶 小孩可吃｜白飯、粉絲、炸魚、炒青菜'], groupOrder:['咖哩炒蟹 1～2 份，配白飯','炸鱸魚或魚類 1 份','粉絲蝦煲或蒜味蝦 1 份','炒青菜 1～2 份','湯 1 份，大人分食，小孩少喝辣湯'], kid:'小孩主食抓白飯＋粉絲＋炸魚；咖哩蟹醬可以少量拌飯但先確認辣度。', spicyNote:'咖哩炒蟹偏濃郁、可能偏油；怕膩就加青菜和魚類平衡。', orderTip:'6大2小最穩：咖哩蟹＋炸魚＋蝦＋青菜＋白飯，不用點太多重口味。', sourceNote:'米其林介紹 Somboon 以咖哩蟹聞名，也推薦炸鱸魚與泰式海鮮湯；多篇評論也確認咖哩蟹是招牌。', mapUrl:gSearch('Somboon Seafood Bangkok')},
+  {day:'D5 / D6', area:'bangkok', areaLabel:'曼谷', type:'河景晚餐', name:'Chom Arun / Rongros', desc:'昭披耶河景餐廳，適合想看鄭王廟夜景的大人組；全員親子不一定最輕鬆。', dishes:['⭐ 推薦｜河蝦 / 海鮮主菜','👍 推薦｜冬蔭功或泰式湯品','👍 推薦｜Pad Thai / 炒飯','👶 小孩可吃｜炒飯、蛋料理、甜點','📸 重點｜河景座位與拍照'], groupOrder:['海鮮主菜 1～2 道','炒飯 / Pad Thai 2 份','湯品 1 份','不辣配菜 1～2 份','甜點飲料看孩子狀況'], kid:'景觀餐廳時間容易拉長，孩子累建議改 ICONSIAM / SookSiam。', spicyNote:'河景餐廳建議先訂位；若天氣不好，體驗會打折。', orderTip:'這餐重點是氣氛，不是吃很多；點法簡單、控制時間。', sourceNote:'以河景晚餐情境整理，適合大人組優先。', mapUrl:gSearch('Chom Arun Bangkok Rongros Bangkok')},
+  {day:'D5 / D6', area:'bangkok', areaLabel:'曼谷', type:'冷氣備案', name:'ICONSIAM / SookSiam', desc:'冷氣、選擇多、廁所方便，雨天或回曼谷後最穩。', dishes:['⭐ 推薦｜船麵 / 湯麵','👍 推薦｜泰式烤雞 / 炸雞','👍 推薦｜Pad Thai / 炒飯','👶 小孩可吃｜雞飯、湯麵、炸物、水果','🍨 甜點｜芒果糯米飯、泰奶、椰子冰沙'], groupOrder:['先找座位與集合點','小孩先買雞飯 / 湯麵 / 炸物','大人分頭買想吃的泰式小吃','甜點飲料最後補','人多時用 LINE 傳定位集合'], kid:'不需要全員吃同一家，最適合三組家庭各自點餐。', spicyNote:'人潮多，重點是集合點和推車動線，不是點哪一家。', orderTip:'像美食戰場一樣分工：顧小孩、佔位、買餐、買飲料，各一組。', sourceNote:'以大型百貨美食區與親子備案情境整理。', mapUrl:gSearch('ICONSIAM SookSiam Bangkok')},
+  {day:'D6', area:'bangkok', areaLabel:'曼谷', type:'家族晚宴', name:'Nara Thai / Saneh Jaan / Paste', desc:'Nara Thai 比較適合全家；Saneh Jaan / Paste 偏精緻大人晚宴。', dishes:['⭐ Nara 推薦｜Pad Thai','👍 Nara 推薦｜Ayutthaya Boat Noodles 船麵','👍 Nara 推薦｜Grilled River Prawns 烤河蝦','👍 Nara 推薦｜Deep Fried Pomfret 炸魚','👶 小孩可吃｜Pad Thai、炸魚、白飯、甜點'], groupOrder:['如果全家用餐：優先選 Nara Thai','Pad Thai 或炒飯 2 份','烤河蝦或海鮮 1～2 道','炸魚或不辣肉類 1 道','青菜 1 道＋甜點 1～2 份'], kid:'Nara Thai 對家庭較友善；精緻餐廳比較適合大人分流。', spicyNote:'船麵和咖哩可能偏重口味，小孩以 Pad Thai、炸魚、白飯為主。', orderTip:'全員 6大2小建議 Nara；大人想吃精緻再分流去 Saneh Jaan / Paste。', sourceNote:'Nara 官方菜單列出推薦菜如 Pad Thai、船麵、炸魚與烤河蝦；精緻餐廳建議先訂位。', mapUrl:gSearch('Nara Thai CentralWorld Bangkok Saneh Jaan Bangkok Paste Bangkok')},
+  {day:'D7', area:'bangkok', areaLabel:'曼谷', type:'早午餐', name:'The Commons Saladaeng', desc:'回程日慢活早午餐，適合寄行李後簡單吃，不適合拖太久。', dishes:['⭐ 推薦｜精品咖啡','👍 推薦｜早午餐蛋料理','👍 推薦｜三明治 / 麵包','👶 小孩可吃｜麵包、蛋、薯條、甜點','🍰 甜點｜蛋糕或冰品'], groupOrder:['大人咖啡 3～4 杯','早午餐主食 4～5 份分食','小孩麵包 / 蛋 / 薯條先點','甜點 1～2 份','不要點太久，保留去機場時間'], kid:'回程日時間最重要，吃簡單就好，不要排太滿。', spicyNote:'不是重口味泰菜，適合收尾；但要留意回飯店拿行李和去機場時間。', orderTip:'回程日的點餐原則是快、穩、舒服，不追求必吃。', sourceNote:'以回程日早午餐與親子操作需求整理。', mapUrl:gSearch('The Commons Saladaeng')}
+];
+const lineQuick = days.map(d => `【${d.date}｜${d.title}】${d.note}｜親子重點：${d.kid}`);
+
+const weatherLocations = {
+  bangkok: { name:'曼谷', latitude:13.7563, longitude:100.5018 },
+  pattaya: { name:'芭達雅', latitude:12.9236, longitude:100.8825 }
+};
+let activeTab = 'home';
+let openedDay = '1';
+let restaurantArea = 'all';
+let expandedRestaurants = {};
+let weatherStore = {};
+const $ = (id)=>document.getElementById(id);
+const esc = (s)=>String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const badgeClass = 'bg-gradient-to-br from-cyan-500 to-teal-600';
+function weatherCodeText(code) {
+  const c = Number(code);
+  if ([0].includes(c)) return ['☀️','晴朗'];
+  if ([1,2,3].includes(c)) return ['⛅','多雲'];
+  if ([45,48].includes(c)) return ['🌫️','有霧'];
+  if ([51,53,55,56,57].includes(c)) return ['🌦','毛毛雨'];
+  if ([61,63,65,66,67,80,81,82].includes(c)) return ['🌧','可能下雨'];
+  if ([95,96,99].includes(c)) return ['⛈','雷陣雨'];
+  return ['🌤','天氣變化'];
+}
+function offlineWeather(placeKey) {
+  const name = weatherLocations[placeKey]?.name || '泰國';
+  return { icon:'🌦', title:'天氣待確認', summary:'出門前再看一次天氣，泰國雨季午後容易變臉。', placeName:name, tempText:'--°C', rainText:'--%', action:'先照原行程，下午保留室內備案', advice:'上午先玩戶外，下午準備百貨、室內景點或飯店泳池。' };
+}
+function buildWeatherView(placeKey, daily, targetIso) {
+  if (!daily || !daily.time) return offlineWeather(placeKey);
+  let idx = daily.time.indexOf(targetIso);
+  if (idx < 0) idx = 0;
+  const [icon, titleBase] = weatherCodeText(daily.weather_code?.[idx]);
+  const tmin = Math.round(daily.temperature_2m_min?.[idx] ?? 0);
+  const tmax = Math.round(daily.temperature_2m_max?.[idx] ?? 0);
+  const rain = Math.round(daily.precipitation_probability_max?.[idx] ?? 0);
+  let action = '照玩，但下午保留休息時間';
+  let advice = '上午先完成主景點，下午視體力回飯店或百貨。';
+  let title = titleBase;
+  if (rain >= 70) { action = '下午優先改室內，夜市看情況'; advice = '雨勢明顯就取消夜市，改百貨、美食街、外送或飯店休息。'; title = '雨天機率高'; }
+  else if (rain >= 45) { action = '上午先玩戶外，下午準備備案'; advice = '午後可能變臉，下午準備百貨、室內景點或飯店泳池。'; title = '可能午後雨'; }
+  if (tmax >= 34) { action = action + '，戶外縮短'; advice = advice + ' 氣溫高，記得補水、防曬、防蚊。'; }
+  return { icon, title, summary:`${weatherLocations[placeKey].name}｜${titleBase}｜${tmin}–${tmax}°C｜降雨 ${rain}%`, placeName:weatherLocations[placeKey].name, tempText:`${tmin}–${tmax}°C`, rainText:`${rain}%`, action, advice };
+}
+function weatherForDay(day) {
+  const key = day?.weatherPlace || 'bangkok';
+  const store = weatherStore[key];
+  if (!store || store.loading || store.error) return offlineWeather(key);
+  return buildWeatherView(key, store.daily, day.weatherIso);
+}
+async function fetchWeather(placeKey) {
+  const loc = weatherLocations[placeKey];
+  try {
+    weatherStore[placeKey] = {loading:true};
+    const url = `https://api.open-meteo.com/v1/forecast?latitude=${loc.latitude}&longitude=${loc.longitude}&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,precipitation_sum&timezone=Asia%2FBangkok&forecast_days=10`;
+    const res = await fetch(url);
+    if (!res.ok) throw new Error('weather failed');
+    const data = await res.json();
+    weatherStore[placeKey] = {loading:false, daily:data.daily};
+  } catch(e) { weatherStore[placeKey] = {loading:false, error:true}; }
+  render();
+}
+function dateKey(d) { return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; }
+function todayStatus() {
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const start = new Date(2026, 6, 2), end = new Date(2026, 6, 8);
+  const todayLabel = `${now.getMonth()+1}/${now.getDate()}`;
+  const map = {'2026-07-02':'1','2026-07-03':'2','2026-07-04':'3','2026-07-05':'4','2026-07-06':'5','2026-07-07':'6','2026-07-08':'7'};
+  if (today < start) return { label:'出發前總控台', displayDate:todayLabel, title:'還沒到旅遊日期，先看 D1 抵達日', message:'出發前先確認護照、eSIM、旅平險、Grab/Bolt、包車資訊與小孩用品。到 7/2 後，首頁會自動顯示當日行程。', day:days[0] };
+  if (today > end) return { label:'旅程已結束', displayDate:todayLabel, title:'泰國親子旅行回顧', message:'行程已結束，首頁保留最後一天回程資訊；之後可以用餐廳與提醒頁回查資料。', day:days[6] };
+  const day = days.find(d=>d.no === (map[dateKey(today)] || '1')) || days[0];
+  return { label:'今天要幹嘛？', displayDate:day.date, title:`D${day.no}｜${day.title}`, message:day.strategy, day };
+}
+function setTab(tab) { activeTab = tab; render(); }
+function openToday() { const st=todayStatus(); openedDay = st.day?.no || '1'; setTab('trip'); }
+function card(cls, inner) { return `<div class="rounded-[1.7rem] bg-white p-4 shadow-sm ring-1 ring-slate-100 ${cls||''}">${inner}</div>`; }
+function renderHome() {
+  const st=todayStatus(), tw=weatherForDay(st.day);
+  $('home').innerHTML = `
+    ${card('', `<p class="text-xs font-bold text-cyan-600">今日總控台</p><h2 class="mt-2 text-2xl font-black text-slate-900">今天要幹嘛？</h2><p class="mt-2 text-sm leading-6 text-slate-500">先看今天、天氣、下一步。其他資訊需要再點。</p><div class="mt-4 rounded-3xl bg-gradient-to-br from-cyan-50 to-teal-50 p-4"><p class="text-xs font-bold text-cyan-700">${esc(st.displayDate)}｜${esc(st.label)}</p><h3 class="mt-1 text-lg font-black text-slate-900">${esc(st.title)}</h3><p class="mt-2 text-sm leading-6 text-slate-600">${esc(st.message)}</p><div class="mt-3 grid grid-cols-2 gap-2 text-sm"><div class="rounded-2xl bg-white p-3"><p class="text-xs text-slate-400">今晚睡哪</p><p class="mt-1 font-bold text-slate-800">${esc(st.day.stayShort)}</p></div><div class="rounded-2xl bg-white p-3"><p class="text-xs text-slate-400">今天怎麼走</p><p class="mt-1 font-bold text-slate-800">${esc(st.day.transportShort)}</p></div></div></div><div class="mt-4 grid grid-cols-3 gap-2"><button id="homeTrip" class="rounded-2xl bg-cyan-600 px-3 py-3 text-xs font-bold text-white">看今天</button><button id="homeFood" class="rounded-2xl bg-slate-900 px-3 py-3 text-xs font-bold text-white">找好吃</button><button id="homeTips" class="rounded-2xl bg-white px-3 py-3 text-xs font-bold text-cyan-700 shadow-sm">出門檢查</button></div>` )}
+    ${card('', `<p class="text-xs font-bold text-cyan-600">今天會不會下雨？</p><h3 class="mt-1 text-lg font-black text-slate-900">${tw.icon} ${esc(tw.title)}</h3><p class="mt-2 text-sm leading-6 text-slate-600">${esc(tw.summary)}</p><div class="mt-3 grid grid-cols-3 gap-2 text-xs"><div class="rounded-2xl bg-slate-50 p-3"><p class="text-slate-400">地點</p><p class="mt-1 font-black text-slate-800">${esc(tw.placeName)}</p></div><div class="rounded-2xl bg-slate-50 p-3"><p class="text-slate-400">氣溫</p><p class="mt-1 font-black text-slate-800">${esc(tw.tempText)}</p></div><div class="rounded-2xl bg-slate-50 p-3"><p class="text-slate-400">降雨</p><p class="mt-1 font-black text-slate-800">${esc(tw.rainText)}</p></div></div><div class="mt-3 rounded-2xl bg-amber-50 p-3 text-sm leading-6 text-amber-900"><b>小秘書建議：</b>${esc(tw.advice)}</div>` )}
+    <div class="grid grid-cols-3 gap-3"><article class="rounded-3xl bg-white p-4 shadow-sm"><p class="text-xs text-slate-400">天數</p><p class="mt-1 text-xl font-black text-slate-900">7</p></article><article class="rounded-3xl bg-white p-4 shadow-sm"><p class="text-xs text-slate-400">包車</p><p class="mt-1 text-xl font-black text-slate-900">2天</p></article><article class="rounded-3xl bg-white p-4 shadow-sm"><p class="text-xs text-slate-400">親子</p><p class="mt-1 text-xl font-black text-slate-900">OK</p></article></div>
+    ${card('', `<h3 class="font-bold text-slate-900">旅行基地</h3><div class="mt-3 grid grid-cols-1 gap-2 text-sm"><div class="rounded-2xl bg-slate-50 p-3"><b>曼谷前段：</b>Sukhumvit 2</div><div class="rounded-2xl bg-slate-50 p-3"><b>芭達雅：</b>Somerset Pattaya</div><div class="rounded-2xl bg-slate-50 p-3"><b>曼谷後段：</b>Eastin Phayathai</div></div>` )}
+  `;
+  $('homeTrip').onclick=openToday; $('homeFood').onclick=()=>setTab('restaurants'); $('homeTips').onclick=()=>setTab('tips');
+}
+function renderMapGroup(title, btnText, maps=[]) { return `<div class="mt-3"><p class="text-sm font-black text-slate-900">${title}</p><div class="mt-2 grid grid-cols-1 gap-2 map-grid">${maps.map(m=>`<a href="${m.url}" target="_blank" class="rounded-2xl border border-slate-100 bg-slate-50 p-3 active:scale-[0.99]"><div class="flex items-center justify-between gap-3"><div><p class="text-sm font-black text-slate-800">${esc(m.label)}</p><p class="mt-1 text-xs leading-5 text-slate-500">${esc(m.desc)}</p></div><span class="shrink-0 rounded-xl bg-slate-900 px-3 py-2 text-xs font-bold text-white">${btnText}</span></div></a>`).join('')}</div></div>`; }
+function renderTrip() {
+  $('trip').innerHTML = `<div class="mb-2 flex items-center justify-between"><div><h2 class="text-base font-bold text-slate-900">我們要去哪玩</h2><p class="mt-1 text-xs text-slate-500">先看重點，再展開細節。</p></div><span class="text-xs text-slate-500">點卡片展開</span></div>` + days.map(day=>{
+    const w=weatherForDay(day); const open=openedDay===day.no;
+    const mapSec = open ? `<div class="mt-4 rounded-3xl bg-slate-50 p-4"><div class="rounded-2xl bg-white p-3 ring-1 ring-slate-100"><p class="text-xs font-bold text-cyan-600">今天怎麼玩</p><p class="mt-1 text-sm leading-6 text-slate-600">${esc(day.strategy)}</p></div><div class="mt-3 rounded-2xl bg-white p-3 ring-1 ring-slate-100"><p class="text-xs font-bold text-cyan-600">今天怎麼走</p><p class="mt-1 text-sm font-bold text-slate-800">${esc(day.routeLine)}</p><p class="mt-1 text-xs leading-5 text-slate-500">${esc(day.routeNote)}</p></div><div class="mt-3 rounded-2xl bg-amber-50 p-3 text-sm leading-6 text-amber-900"><b>${w.icon} 天氣小提醒｜${esc(w.placeName)}：</b>${esc(w.title)}，${esc(w.action)}。${esc(w.advice)}</div><h4 class="mb-3 mt-4 text-sm font-bold text-slate-900">今天幾點做什麼</h4><div class="space-y-3">${day.details.map(item=>`<div class="flex gap-3"><div class="w-16 shrink-0 text-xs font-bold text-slate-500">${esc(item.time)}</div><div class="flex-1 border-l-2 border-slate-200 pl-3"><p class="text-sm font-bold text-slate-800">${esc(item.title)}</p><p class="mt-1 text-xs leading-5 text-slate-500">${esc(item.desc)}</p></div></div>`).join('')}</div><div class="mt-4 grid grid-cols-1 gap-3"><div class="rounded-2xl bg-white p-3 ring-1 ring-slate-100"><p class="text-xs font-bold text-slate-400">小孩友善提醒</p><p class="mt-1 text-sm leading-6 text-slate-600">${esc(day.kid)}</p></div><div class="rounded-2xl bg-white p-3 ring-1 ring-slate-100"><p class="text-xs font-bold text-slate-400">大概花多少</p><p class="mt-1 text-sm leading-6 text-slate-600">${esc(day.budget)}</p></div></div><div class="mt-4 rounded-2xl bg-white p-3 ring-1 ring-slate-100"><p class="text-xs font-bold text-cyan-600">地圖按這裡</p><p class="mt-1 text-sm leading-6 text-slate-600">${esc(day.mapTip)}</p>${renderMapGroup('① 今天怎麼走','看路',day.mapMain)}${renderMapGroup('② 叫車去這裡','叫車',day.mapTaxi)}${renderMapGroup('③ 回飯店','回家',day.mapHotel)}<p class="mt-3 text-xs leading-5 text-slate-400">小秘書提醒：多點路線只看大方向；真的叫車請按「叫車去這裡」。</p></div></div>` : '';
+    return `<article class="rounded-[1.7rem] bg-white p-4 shadow-sm ring-1 ring-slate-100"><button data-day="${day.no}" class="day-toggle w-full text-left transition active:scale-[0.99]"><div class="flex items-start gap-3"><div class="${badgeClass} flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl text-lg font-black text-white">${day.no}</div><div class="min-w-0 flex-1"><div class="flex items-start justify-between gap-2"><div><p class="text-xs font-semibold text-slate-400">${esc(day.date)}</p><h3 class="mt-1 font-bold text-slate-900">${esc(day.title)}</h3></div><span class="rounded-full bg-slate-100 px-2.5 py-1 text-[11px] font-semibold text-slate-500">${open?'收合':'展開'}</span></div><div class="mt-2 flex flex-wrap items-center gap-2 text-xs text-slate-500"><span>${esc(day.tag)}</span><span>•</span><span>${esc(day.transportShort)}</span><span>•</span><span>${w.icon} ${esc(w.action)}</span></div><p class="mt-2 text-sm leading-6 text-slate-500">${esc(day.note)}</p></div></div></button>${mapSec}</article>`;
+  }).join('');
+  document.querySelectorAll('.day-toggle').forEach(btn=>btn.onclick=()=>{ openedDay = openedDay===btn.dataset.day ? '' : btn.dataset.day; render(); });
+}
+function renderRestaurants() {
+  const list = restaurantArea==='all' ? restaurants : restaurants.filter(r=>r.area===restaurantArea);
+  $('restaurants').innerHTML = `<div><p class="text-xs font-bold text-cyan-600">Food Control Center</p><h2 class="mt-1 text-base font-bold text-slate-900">有什麼好吃</h2><p class="mt-1 text-xs text-slate-500">先看必點前三名，真的要點餐再展開 6 大 2 小完整版本。</p></div><div class="grid grid-cols-3 gap-2 rounded-[1.5rem] bg-white p-2 shadow-sm ring-1 ring-slate-100"><button data-area="all" class="area-btn rounded-2xl px-2 py-3 text-xs font-bold">全部</button><button data-area="bangkok" class="area-btn rounded-2xl px-2 py-3 text-xs font-bold">曼谷</button><button data-area="pattaya" class="area-btn rounded-2xl px-2 py-3 text-xs font-bold">芭達雅</button></div>` + list.map(r=>{ const open=!!expandedRestaurants[r.name]; return `<article class="rounded-[1.7rem] bg-white p-4 shadow-sm ring-1 ring-slate-100"><div class="flex items-start justify-between gap-3"><div><p class="text-xs font-bold text-cyan-600">${esc(r.day)}｜${esc(r.areaLabel)}｜${esc(r.type)}</p><h3 class="mt-1 text-lg font-black text-slate-900">${esc(r.name)}</h3></div><button data-r="${esc(r.name)}" class="rest-toggle shrink-0 rounded-full bg-slate-100 px-3 py-1.5 text-xs font-bold text-slate-600">${open?'收合':'展開'}</button></div><p class="mt-2 text-sm leading-6 text-slate-600">${esc(r.desc)}</p><div class="mt-3 rounded-2xl bg-cyan-50 p-3"><p class="text-xs font-bold text-cyan-700">先點這三個</p>${r.dishes.slice(0,3).map(d=>`<p class="mt-1 text-sm leading-6 text-slate-700">・${esc(d)}</p>`).join('')}</div><div class="mt-3 grid grid-cols-2 gap-2"><button data-r="${esc(r.name)}" class="rest-toggle rounded-2xl bg-slate-900 px-4 py-3 text-center text-xs font-bold text-white">${open?'收合點餐建議':'看6大2小點法'}</button><a href="${r.mapUrl}" target="_blank" class="rounded-2xl bg-cyan-600 px-4 py-3 text-center text-xs font-bold text-white">要去的地方</a></div>${open?`<div class="mt-4 space-y-3"><div class="rounded-2xl bg-slate-50 p-3"><p class="text-xs font-bold text-slate-500">6大2小建議點法</p>${r.groupOrder.map(i=>`<p class="mt-1 text-sm leading-6 text-slate-700">・${esc(i)}</p>`).join('')}</div><div class="rounded-2xl bg-white p-3 ring-1 ring-slate-100"><p class="text-xs font-bold text-slate-400">其他也可點</p>${r.dishes.slice(3).map(d=>`<p class="mt-1 text-sm leading-6 text-slate-600">・${esc(d)}</p>`).join('')}</div><p class="rounded-2xl bg-amber-50 p-3 text-sm leading-6 text-amber-900"><b>小孩友善提醒：</b>${esc(r.kid)}</p><p class="rounded-2xl bg-red-50 p-3 text-sm leading-6 text-red-900"><b>辣度 / 排隊提醒：</b>${esc(r.spicyNote)}</p><p class="rounded-2xl bg-slate-50 p-3 text-sm leading-6 text-slate-600"><b>點餐小抄：</b>${esc(r.orderTip)}</p><p class="rounded-2xl bg-slate-50 p-3 text-xs leading-5 text-slate-500"><b>參考口碑：</b>${esc(r.sourceNote)}</p></div>`:''}</article>`; }).join('');
+  document.querySelectorAll('.area-btn').forEach(b=>{ b.className += (b.dataset.area===restaurantArea?' bg-cyan-600 text-white shadow-sm':' text-slate-500'); b.onclick=()=>{restaurantArea=b.dataset.area; render();}; });
+  document.querySelectorAll('.rest-toggle').forEach(b=>b.onclick=()=>{ expandedRestaurants[b.dataset.r]=!expandedRestaurants[b.dataset.r]; render(); });
+}
+function renderGuide() { $('guide').innerHTML = `<div><p class="text-xs font-bold text-cyan-600">Tiny Travel Guide</p><h2 class="mt-1 text-base font-bold text-slate-900">旅行小攻略</h2><p class="mt-1 text-xs text-slate-500">不用看長篇說明，現場遇到狀況就看這裡。</p></div>` + guideCards.map(item=>card('', `<div class="flex items-start gap-3"><div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-cyan-100 text-lg">${item.icon}</div><div><p class="text-xs font-bold text-cyan-600">${esc(item.label)}</p><h3 class="mt-1 font-black text-slate-900">${esc(item.title)}</h3><div class="mt-3 space-y-2">${item.tips.map(t=>`<p class="rounded-2xl bg-slate-50 p-3 text-sm leading-6 text-slate-600">${esc(t)}</p>`).join('')}</div></div></div>`)).join(''); }
+function renderTips() { $('tips').innerHTML = `<div><p class="text-xs font-bold text-cyan-600">Family Trip Reminder</p><h2 class="mt-1 text-base font-bold text-slate-900">出門前看一下</h2><p class="mt-1 text-xs text-slate-500">出門前先掃一眼：證件、交通、小孩用品、雨天備案、回程時間都在這裡。</p></div>${card('', `<h2 class="font-bold text-slate-900">出門前 30 秒檢查</h2><div class="mt-3 grid grid-cols-1 gap-2">${['護照 / 房卡 / 現金','手機 / 行動電源','水 / 小孩零食','濕紙巾 / 尿布','防曬 / 防蚊','薄外套 / 雨具'].map(t=>`<label class="flex items-center gap-3 rounded-2xl bg-slate-50 p-3 text-sm text-slate-700"><input type="checkbox" class="h-5 w-5 rounded border-slate-300" />${t}</label>`).join('')}</div>`)}${card('', `<h2 class="font-bold text-slate-900">下雨 / 太熱怎麼辦</h2><div class="mt-3 space-y-2 text-sm leading-6 text-slate-600"><p>🌤 天氣 OK：上午戶外照走，下午仍保留冷氣 / 泳池休息。</p><p>🌦 可能下雨：上午先跑主景點，下午改百貨、室內景點、飯店泳池。</p><p>☔ 雨勢明顯：取消夜市，改外送、百貨美食街或飯店休息。</p><p>🔥 太熱：戶外縮短，補水、防曬，午後回住宿或冷氣餐廳。</p></div>`)}${card('', `<h2 class="font-bold text-slate-900">出發前大檢查</h2>${tasks.map(t=>`<label class="flex items-center gap-3 border-t border-slate-100 py-3 first:border-t-0"><input type="checkbox" class="h-5 w-5 rounded border-slate-300" /><span class="text-sm text-slate-600">${esc(t)}</span></label>`).join('')}`)}${card('', `<h2 class="font-bold text-slate-900">小孩補給包</h2><div class="mt-3 grid grid-cols-2 gap-2 text-sm text-slate-600">${kidItems.map(i=>`<div class="rounded-2xl bg-slate-50 p-3">${esc(i)}</div>`).join('')}</div>`)}${card('', `<h2 class="font-bold text-slate-900">叫車與移動提醒</h2><div class="mt-3 space-y-2 text-sm leading-6 text-slate-600"><p>🚕 Grab / Bolt：多人＋行李請叫大車，上車點選飯店大門或百貨正門。</p><p>🚐 包車日：前一天確認司機、集合時間、兒童用品與行李空間。</p><p>✈️ 回機場：三組家庭加小孩，建議比一般旅客多抓 30–60 分鐘。</p></div>`)}`; }
+function render() {
+  ['home','trip','restaurants','guide','tips'].forEach(id=>$(id).classList.toggle('active', id===activeTab));
+  document.querySelectorAll('.nav-btn').forEach(b=>{ b.classList.toggle('text-cyan-600', b.dataset.tab===activeTab); b.classList.toggle('text-slate-400', b.dataset.tab!==activeTab); });
+  $('progressBar').style.width = `${Math.round((Number(openedDay || '1')/days.length)*100)}%`;
+  renderHome(); renderTrip(); renderRestaurants(); renderGuide(); renderTips();
+}
+document.querySelectorAll('.nav-btn').forEach(b=>b.onclick=()=>setTab(b.dataset.tab));
+$('jumpTodayBtn').onclick=openToday;
+fetchWeather('bangkok'); fetchWeather('pattaya'); render();
 })();
 </script>
 </body>
