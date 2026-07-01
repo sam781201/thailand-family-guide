@@ -256,14 +256,66 @@
           <div class="rounded-[1.7rem] bg-white p-4 shadow-sm ring-1 ring-slate-100"><h2 class="font-bold text-slate-900">LINE 快速版</h2><div class="mt-3 space-y-2"><div v-for="item in lineQuick" :key="item" class="rounded-2xl bg-cyan-50 p-3 text-sm leading-6 text-slate-700">{{ item }}</div></div></div>
           <div class="rounded-[1.7rem] bg-white p-4 shadow-sm ring-1 ring-slate-100"><h2 class="font-bold text-slate-900">原始資料</h2><p class="mt-2 text-sm leading-6 text-slate-500">保留原本 PDF，遇到細節需要查完整版本時可直接開啟。</p><a href="assets/original-guide.pdf" target="_blank" class="mt-4 block rounded-2xl bg-cyan-600 px-4 py-3 text-center text-sm font-bold text-white shadow-sm active:scale-[0.99]">打開原始 PDF</a></div>
         </div>
+
+        <div v-if="activeTab === 'restaurants'" class="space-y-4">
+          <div class="mb-2">
+            <h2 class="text-base font-bold text-slate-900">餐廳必點</h2>
+            <p class="mt-1 text-xs text-slate-500">每間餐廳先看「必點、親子友善、要去的地方」，現場不用重新查。</p>
+          </div>
+
+          <div class="rounded-[1.7rem] bg-gradient-to-br from-orange-500 to-amber-500 p-5 text-white shadow-sm">
+            <p class="text-xs font-bold opacity-80">Food Guide</p>
+            <h3 class="mt-2 text-xl font-black">點餐原則</h3>
+            <div class="mt-4 grid grid-cols-2 gap-2 text-sm">
+              <div class="rounded-2xl bg-white/15 p-3 glass">先點招牌</div>
+              <div class="rounded-2xl bg-white/15 p-3 glass">再點不辣</div>
+              <div class="rounded-2xl bg-white/15 p-3 glass">小孩吃白飯/蛋/湯</div>
+              <div class="rounded-2xl bg-white/15 p-3 glass">尖峰先訂位</div>
+            </div>
+            <p class="mt-3 text-xs leading-5 text-white/90">菜單可能會調整，這裡是出發前的點餐方向；現場以餐廳菜單為準。</p>
+          </div>
+
+          <div class="grid grid-cols-3 gap-2 rounded-[1.5rem] bg-white p-2 shadow-sm ring-1 ring-slate-100">
+            <button @click="restaurantArea='all'" :class="restaurantArea==='all' ? 'bg-cyan-600 text-white shadow-sm' : 'text-slate-500'" class="rounded-2xl px-2 py-3 text-xs font-bold transition active:scale-95">全部</button>
+            <button @click="restaurantArea='bangkok'" :class="restaurantArea==='bangkok' ? 'bg-cyan-600 text-white shadow-sm' : 'text-slate-500'" class="rounded-2xl px-2 py-3 text-xs font-bold transition active:scale-95">曼谷</button>
+            <button @click="restaurantArea='pattaya'" :class="restaurantArea==='pattaya' ? 'bg-cyan-600 text-white shadow-sm' : 'text-slate-500'" class="rounded-2xl px-2 py-3 text-xs font-bold transition active:scale-95">芭達雅</button>
+          </div>
+
+          <article v-for="r in activeRestaurants" :key="r.name" class="overflow-hidden rounded-[1.7rem] bg-white shadow-sm ring-1 ring-slate-100">
+            <div class="bg-gradient-to-br from-orange-50 to-amber-50 p-4">
+              <div class="flex items-start justify-between gap-3">
+                <div>
+                  <p class="text-xs font-bold text-orange-600">{{ r.day }}｜{{ r.areaLabel }}</p>
+                  <h3 class="mt-1 text-lg font-black leading-6 text-slate-900">{{ r.name }}</h3>
+                  <p class="mt-2 text-sm leading-6 text-slate-600">{{ r.desc }}</p>
+                </div>
+                <span class="shrink-0 rounded-full bg-white px-2.5 py-1 text-[11px] font-bold text-orange-700 shadow-sm">{{ r.type }}</span>
+              </div>
+            </div>
+            <div class="p-4">
+              <p class="text-xs font-bold text-cyan-600">推薦必點</p>
+              <div class="mt-3 space-y-2">
+                <div v-for="dish in r.dishes" :key="dish" class="rounded-2xl bg-slate-50 p-3 text-sm leading-6 text-slate-700">🍽️ {{ dish }}</div>
+              </div>
+              <div class="mt-3 rounded-2xl bg-cyan-50 p-3 text-xs leading-5 text-cyan-800">
+                <span class="font-bold">親子提醒：</span>{{ r.kid }}
+              </div>
+              <div class="mt-3 rounded-2xl bg-amber-50 p-3 text-xs leading-5 text-amber-800">
+                <span class="font-bold">點餐小抄：</span>{{ r.orderTip }}
+              </div>
+              <a :href="r.mapUrl" target="_blank" class="mt-3 block rounded-2xl bg-slate-900 px-4 py-3 text-center text-sm font-bold text-white shadow-sm active:scale-[0.99]">要去的地方</a>
+            </div>
+          </article>
+        </div>
       </section>
 
       <nav class="absolute inset-x-4 bottom-4 z-20 rounded-[1.6rem] border border-white/40 bg-white/85 px-2 py-3 shadow-lg glass safe-bottom">
-        <div class="grid grid-cols-5 text-center text-[11px] font-semibold">
+        <div class="grid grid-cols-6 text-center text-[10px] font-semibold">
           <button @click="activeTab='home'" :class="activeTab==='home' ? 'text-cyan-600' : 'text-slate-400'" class="rounded-2xl py-2 active:scale-95">首頁</button>
           <button @click="activeTab='trip'" :class="activeTab==='trip' ? 'text-cyan-600' : 'text-slate-400'" class="rounded-2xl py-2 active:scale-95">行程</button>
           <button @click="activeTab='transport'" :class="activeTab==='transport' ? 'text-cyan-600' : 'text-slate-400'" class="rounded-2xl py-2 active:scale-95">路線</button>
           <button @click="activeTab='guide'" :class="activeTab==='guide' ? 'text-cyan-600' : 'text-slate-400'" class="rounded-2xl py-2 active:scale-95">攻略</button>
+          <button @click="activeTab='restaurants'" :class="activeTab==='restaurants' ? 'text-cyan-600' : 'text-slate-400'" class="rounded-2xl py-2 active:scale-95">餐廳</button>
           <button @click="activeTab='tips'" :class="activeTab==='tips' ? 'text-cyan-600' : 'text-slate-400'" class="rounded-2xl py-2 active:scale-95">提醒</button>
         </div>
       </nav>
@@ -278,6 +330,7 @@ createApp({ setup() {
   const openedDay = ref('1');
   const routeMode = ref('bangkok');
   const guideSection = ref('play');
+  const restaurantArea = ref('all');
   const theme = { body:'bg-gradient-to-br from-cyan-100 via-teal-50 to-amber-50', hero:'bg-gradient-to-br from-cyan-500 via-teal-500 to-amber-500', badge:'bg-gradient-to-br from-cyan-500 to-teal-600', progress:'bg-white' };
   const days = [
     { no:'1', date:'7/2（四）', title:'深夜大會師 ➜ 晚餐與夜遊', tag:'抵達日', stayShort:'曼谷 Sukhumvit 2', transportShort:'Grab / ARL', note:'機場分流進市區，晚餐三選一，視體力安插匯狂象神廟。', strategy:'今天重點不是跑景點，而是讓三組順利進市區、孩子不要崩潰。太晚就外送回房，象神廟可留到 7/6 包車日。', kid:'3歲娃建議車上小睡；晚餐避免排隊太久，外送派對是最穩版本。', backup:'太晚或塞車：直接 Grab Food 外送回飯店；還有精神再去象神廟。', budget:'晚餐約 350–700 THB / 人。', mapUrl:'https://www.google.com/maps/search/?api=1&query=66%2F1%20Sukhumvit%202%20Bangkok%20Je%20Oh%20Chula%20Huai%20Khwang%20Ganesha', details:[{time:'18:00',title:'第二組抵達',desc:'行李上 Grab 六人大車走高速，3歲娃車上小憩。'},{time:'17:50',title:'第三組抵達',desc:'可搭 ARL 機場快線，避開地面塞車，至 Phayathai 轉乘。'},{time:'20:30+',title:'晚餐三選一',desc:'A Je Oh Chula＋象神廟；B Emsphere 美食街；C Grab Food 外送回飯店。'}] },
@@ -531,12 +584,28 @@ createApp({ setup() {
     {area:'Somerset Pattaya 周邊', items:['Let’s Relax Terminal 21｜800–2,000 THB','Health Land Pattaya North｜650–1,200 THB','Oasis Spa Pattaya｜2,500–4,000 THB']},
     {area:'Eastin Phayathai 周邊', items:['Let’s Relax Phayathai｜800–2,000 THB','Divana Virtue Spa Sathon｜2,500–4,500 THB','Oasis Spa Sukhumvit 31｜2,500–4,500 THB']}
   ];
+  const restaurants = [
+    {day:'D1', area:'bangkok', areaLabel:'曼谷', type:'晚餐/宵夜', name:'Jeh O Chula', desc:'抵達日晚餐主線，適合有體力的大人組；小孩累了可改外送。', dishes:['招牌 Mama Tom Yum 鍋 / 酸辣媽媽麵','脆皮豬肉 Crispy Pork','鮭魚酸辣沙拉 Yum Salmon','不辣備案：白飯、蛋類、炸物分食'], kid:'排隊時間可能較長，孩子累了就不要硬去。', orderTip:'先點一鍋招牌麵，再補脆皮豬肉與不辣配菜。', mapUrl:gSearch('Jeh O Chula Bangkok')},
+    {day:'D1 / D2', area:'bangkok', areaLabel:'曼谷', type:'百貨美食', name:'Emsphere / CentralWorld 美食街', desc:'最適合親子、長輩與雨天備案，冷氣、廁所、推車都方便。', dishes:['泰式炒河粉 Pad Thai','海南雞飯 / 烤雞飯','芒果糯米飯','小孩不辣：白飯、雞肉、蛋料理、湯麵'], kid:'不用排太久，適合第一天抵達或小孩累時使用。', orderTip:'分組各自點，最後找座位集合，比大餐廳更彈性。', mapUrl:gSearch('Emsphere Bangkok food court CentralWorld Bangkok')},
+    {day:'D2', area:'bangkok', areaLabel:'曼谷', type:'午餐主線', name:'Here Hai', desc:'曼谷午餐合體點，以蟹肉炒飯與海鮮菜色為主。', dishes:['招牌蟹肉炒飯 Insane Crab Fried Rice','大塊蟹肉炒飯 Lump Crab Fried Rice','蟹肉蛋捲 / 蟹肉煎蛋','螳螂蝦或海鮮炒類'], kid:'可請店家做不辣，白飯與蛋類比較適合小孩。', orderTip:'多人可先點大份蟹肉炒飯，再加一份蛋類與海鮮分食。', mapUrl:gSearch('Here Hai Bangkok')},
+    {day:'D2 / D6', area:'bangkok', areaLabel:'曼谷', type:'家庭餐廳', name:'Savoey / Kub Kao Kub Pla', desc:'百貨裡的泰式家庭餐廳，適合長輩、小孩與不想跑夜市時。', dishes:['炒空心菜 / 炒高麗菜','泰式炒河粉 Pad Thai','椰奶雞湯 Tom Kha Gai','不辣海鮮或雞肉料理'], kid:'環境穩定、冷氣舒服，適合當晚餐備案。', orderTip:'一桌點 2 道不辣、1 道湯、1 道招牌辣菜，大人小孩都能吃。', mapUrl:gSearch('Kub Kao Kub Pla CentralWorld Bangkok')},
+    {day:'D3', area:'pattaya', areaLabel:'芭達雅', type:'海景晚餐', name:'The Glass House Pattaya', desc:'芭達雅海景晚餐，適合入住後輕鬆吃海鮮。', dishes:['泰式海鮮拼盤 / 烤蝦','冬蔭功 Tom Yum Goong','咖哩炒蟹 / 咖哩炒海鮮','不辣備案：炒飯、炸雞、義大利麵'], kid:'海景漂亮但用餐時間不要拖太久，孩子累了就直接回飯店。', orderTip:'先點海鮮、炒飯、湯品；大人想吃辣再加一兩道泰式熱炒。', mapUrl:gSearch('The Glass House Pattaya')},
+    {day:'D4', area:'pattaya', areaLabel:'芭達雅', type:'海景午餐', name:'3 Mermaids Pattaya', desc:'鳥巢拍照強、景觀漂亮，適合想打卡的一餐。', dishes:['海鮮炒飯 / 蟹肉炒飯','泰式酸辣湯','烤蝦 / 炸物拼盤','兒童友善：薯條、炸雞、義大利麵'], kid:'拍照點多，但階梯與座位要注意小孩安全。', orderTip:'想拍照就早點到；餐點以海鮮與不辣炸物搭配。', mapUrl:gSearch('3 Mermaids Pattaya')},
+    {day:'D4', area:'pattaya', areaLabel:'芭達雅', type:'海景親子', name:'The Sky Gallery Pattaya', desc:'草皮與空間感比較舒服，推車與親子動線相對穩。', dishes:['海鮮義大利麵 / 披薩','泰式炒飯','烤蝦 / 炸花枝','飲料與甜點'], kid:'比純打卡餐廳更適合小孩坐著休息。', orderTip:'小孩點西式餐，大人點泰式海鮮，最不容易踩雷。', mapUrl:gSearch('The Sky Gallery Pattaya')},
+    {day:'D4', area:'pattaya', areaLabel:'芭達雅', type:'夜市小吃', name:'Runway Street Food Pattaya', desc:'747 飛機地標夜市，適合有體力時晚上散步吃小吃。', dishes:['烤大頭蝦 / 烤海鮮','青木瓜沙拉 Som Tam','泰式烤肉串 / 炸物','椰子冰沙 / 水果切盤'], kid:'時間較晚，孩子累了就取消，不要硬跑。', orderTip:'少量多樣，先買不辣烤肉、飯、飲料，再補大人想吃的辣味小吃。', mapUrl:gSearch('Runway Street Food Pattaya')},
+    {day:'D5 / D6', area:'bangkok', areaLabel:'曼谷', type:'海鮮聚餐', name:'Somboon Seafood', desc:'曼谷經典海鮮餐廳，適合家庭聚餐與長輩。', dishes:['招牌咖哩炒蟹 Fried Curry Crab','粉絲蝦煲 Roasted Prawns with Glass Noodles','炸鱸魚 / 炸魚','炒青菜與白飯'], kid:'點白飯、粉絲蝦、炸魚，比較適合小孩。', orderTip:'必點咖哩炒蟹，記得配白飯；再加一菜一湯比較完整。', mapUrl:gSearch('Somboon Seafood Bangkok')},
+    {day:'D5 / D6', area:'bangkok', areaLabel:'曼谷', type:'河景晚餐', name:'Chom Arun / Rongros', desc:'昭披耶河景餐廳，適合想看鄭王廟夜景的大人組。', dishes:['泰式河蝦 / 海鮮料理','冬蔭功或泰式湯品','泰式炒飯 / Pad Thai','甜點或飲料'], kid:'景觀餐廳用餐時間可能較長，孩子累了建議改 ICONSIAM。', orderTip:'重點是河景與氣氛，餐點不用點太多，保留小孩耐心。', mapUrl:gSearch('Chom Arun Bangkok Rongros Bangkok')},
+    {day:'D5 / D6', area:'bangkok', areaLabel:'曼谷', type:'冷氣備案', name:'ICONSIAM / SookSiam', desc:'冷氣、選擇多、廁所方便，適合雨天與回曼谷後的晚餐備案。', dishes:['船麵 / 湯麵','泰式烤雞 / 炸雞','芒果糯米飯','泰奶 / 椰子冰沙'], kid:'不用固定餐廳，最適合三組家庭分散點餐。', orderTip:'先找座位與集合點，再分頭買餐，避免人多走散。', mapUrl:gSearch('ICONSIAM SookSiam Bangkok')},
+    {day:'D6', area:'bangkok', areaLabel:'曼谷', type:'家族晚宴', name:'Saneh Jaan / Paste', desc:'想吃精緻泰菜時的晚宴選項，建議大人組或提前訂位。', dishes:['主廚套餐 / Tasting Menu','泰式咖哩類','精緻海鮮料理','甜點'], kid:'比較正式，孩子若累了不一定適合。', orderTip:'適合當作大人晚宴；親子全員建議選 Somboon 或 Nara Thai 較穩。', mapUrl:gSearch('Saneh Jaan Bangkok Paste Bangkok')},
+    {day:'D7', area:'bangkok', areaLabel:'曼谷', type:'早午餐', name:'The Commons Saladaeng', desc:'回程日慢活早午餐，適合第三組寄行李後使用。', dishes:['精品咖啡','早午餐蛋料理','三明治 / 麵包','甜點'], kid:'空間較輕鬆，但回程日要注意時間。', orderTip:'吃簡單就好，不要排太滿，保留回飯店拿行李與去機場時間。', mapUrl:gSearch('The Commons Saladaeng')}
+  ];
   const lineQuick = days.map(d => `【${d.date}｜${d.title}】${d.note}｜親子重點：${d.kid}`);
   const activeRoutes = computed(()=>routes[routeMode.value]);
+  const activeRestaurants = computed(()=> restaurantArea.value === 'all' ? restaurants : restaurants.filter(r => r.area === restaurantArea.value));
   const progressWidth = computed(()=> `${Math.round((Number(openedDay.value || '1')/days.length)*100)}%`);
   const toggleDay = (n)=>{ openedDay.value = openedDay.value === n ? '' : n; };
   const jumpToday = ()=>{ activeTab.value='trip'; openedDay.value='1'; };
-  return { activeTab, openedDay, routeMode, guideSection, theme, days, activeRoutes, dayMaps, playRules, rideGuides, spotGuides, backups, tasks, kidItems, spas, lineQuick, progressWidth, toggleDay, jumpToday, window };
+  return { activeTab, openedDay, routeMode, guideSection, restaurantArea, theme, days, activeRoutes, activeRestaurants, dayMaps, playRules, rideGuides, spotGuides, backups, tasks, kidItems, spas, lineQuick, progressWidth, toggleDay, jumpToday, window };
 }}).mount('#app');
 </script>
 </body>
