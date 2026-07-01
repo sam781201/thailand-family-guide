@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#0891b2" />
-  <title>2026 曼谷＋芭達雅親子行程｜泰國 Web App 2.0 五頁優化版</title>
+  <title>2026 曼谷＋芭達雅親子行程</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
   <style>
@@ -423,15 +423,31 @@
               </div>
             </div>
             <div class="p-4">
-              <p class="text-xs font-bold text-cyan-600">必吃清單</p>
+              <p class="text-xs font-bold text-cyan-600">推薦必點</p>
               <div class="mt-3 space-y-2">
-                <div v-for="dish in r.dishes" :key="dish" class="rounded-2xl bg-slate-50 p-3 text-sm leading-6 text-slate-700">🍽️ {{ dish }}</div>
+                <div v-for="dish in r.dishes" :key="dish" class="rounded-2xl bg-slate-50 p-3 text-sm leading-6 text-slate-700">{{ dish }}</div>
               </div>
-              <div class="mt-3 rounded-2xl bg-cyan-50 p-3 text-xs leading-5 text-cyan-800">
-                <span class="font-bold">小孩友善提醒：</span>{{ r.kid }}
+
+              <div class="mt-4 rounded-2xl bg-orange-50 p-3 ring-1 ring-orange-100">
+                <p class="text-xs font-black text-orange-700">6大2小建議點法</p>
+                <div class="mt-2 space-y-2">
+                  <div v-for="item in r.groupOrder" :key="item" class="rounded-xl bg-white/80 px-3 py-2 text-xs leading-5 text-slate-700">{{ item }}</div>
+                </div>
               </div>
-              <div class="mt-3 rounded-2xl bg-amber-50 p-3 text-xs leading-5 text-amber-800">
-                <span class="font-bold">點餐小抄：</span>{{ r.orderTip }}
+
+              <div class="mt-3 grid grid-cols-1 gap-2">
+                <div class="rounded-2xl bg-cyan-50 p-3 text-xs leading-5 text-cyan-800">
+                  <span class="font-bold">小孩友善提醒：</span>{{ r.kid }}
+                </div>
+                <div class="rounded-2xl bg-rose-50 p-3 text-xs leading-5 text-rose-800">
+                  <span class="font-bold">辣度 / 排隊提醒：</span>{{ r.spicyNote }}
+                </div>
+                <div class="rounded-2xl bg-amber-50 p-3 text-xs leading-5 text-amber-800">
+                  <span class="font-bold">點餐小抄：</span>{{ r.orderTip }}
+                </div>
+                <div class="rounded-2xl bg-slate-50 p-3 text-[11px] leading-5 text-slate-500">
+                  <span class="font-bold">參考口碑：</span>{{ r.sourceNote }}
+                </div>
               </div>
               <a :href="r.mapUrl" target="_blank" class="mt-3 block rounded-2xl bg-slate-900 px-4 py-3 text-center text-sm font-bold text-white shadow-sm active:scale-[0.99]">要去的地方</a>
             </div>
@@ -738,19 +754,19 @@ createApp({ setup() {
     {area:'Eastin Phayathai 周邊', items:['Let’s Relax Phayathai｜800–2,000 THB','Divana Virtue Spa Sathon｜2,500–4,500 THB','Oasis Spa Sukhumvit 31｜2,500–4,500 THB']}
   ];
   const restaurants = [
-    {day:'D1', area:'bangkok', areaLabel:'曼谷', type:'晚餐/宵夜', name:'Jeh O Chula', desc:'抵達日晚餐主線，適合有體力的大人組；小孩累了可改外送。', dishes:['招牌 Mama Tom Yum 鍋 / 酸辣媽媽麵','脆皮豬肉 Crispy Pork','鮭魚酸辣沙拉 Yum Salmon','不辣備案：白飯、蛋類、炸物分食'], kid:'排隊時間可能較長，孩子累了就不要硬去。', orderTip:'先點一鍋招牌麵，再補脆皮豬肉與不辣配菜。', mapUrl:gSearch('Jeh O Chula Bangkok')},
-    {day:'D1 / D2', area:'bangkok', areaLabel:'曼谷', type:'百貨美食', name:'Emsphere / CentralWorld 美食街', desc:'最適合親子、長輩與雨天備案，冷氣、廁所、推車都方便。', dishes:['泰式炒河粉 Pad Thai','海南雞飯 / 烤雞飯','芒果糯米飯','小孩不辣：白飯、雞肉、蛋料理、湯麵'], kid:'不用排太久，適合第一天抵達或小孩累時使用。', orderTip:'分組各自點，最後找座位集合，比大餐廳更彈性。', mapUrl:gSearch('Emsphere Bangkok food court CentralWorld Bangkok')},
-    {day:'D2', area:'bangkok', areaLabel:'曼谷', type:'午餐主線', name:'Here Hai', desc:'曼谷午餐合體點，以蟹肉炒飯與海鮮菜色為主。', dishes:['招牌蟹肉炒飯 Insane Crab Fried Rice','大塊蟹肉炒飯 Lump Crab Fried Rice','蟹肉蛋捲 / 蟹肉煎蛋','螳螂蝦或海鮮炒類'], kid:'可請店家做不辣，白飯與蛋類比較適合小孩。', orderTip:'多人可先點大份蟹肉炒飯，再加一份蛋類與海鮮分食。', mapUrl:gSearch('Here Hai Bangkok')},
-    {day:'D2 / D6', area:'bangkok', areaLabel:'曼谷', type:'家庭餐廳', name:'Savoey / Kub Kao Kub Pla', desc:'百貨裡的泰式家庭餐廳，適合長輩、小孩與不想跑夜市時。', dishes:['炒空心菜 / 炒高麗菜','泰式炒河粉 Pad Thai','椰奶雞湯 Tom Kha Gai','不辣海鮮或雞肉料理'], kid:'環境穩定、冷氣舒服，適合當晚餐備案。', orderTip:'一桌點 2 道不辣、1 道湯、1 道招牌辣菜，大人小孩都能吃。', mapUrl:gSearch('Kub Kao Kub Pla CentralWorld Bangkok')},
-    {day:'D3', area:'pattaya', areaLabel:'芭達雅', type:'海景晚餐', name:'The Glass House Pattaya', desc:'芭達雅海景晚餐，適合入住後輕鬆吃海鮮。', dishes:['泰式海鮮拼盤 / 烤蝦','冬蔭功 Tom Yum Goong','咖哩炒蟹 / 咖哩炒海鮮','不辣備案：炒飯、炸雞、義大利麵'], kid:'海景漂亮但用餐時間不要拖太久，孩子累了就直接回飯店。', orderTip:'先點海鮮、炒飯、湯品；大人想吃辣再加一兩道泰式熱炒。', mapUrl:gSearch('The Glass House Pattaya')},
-    {day:'D4', area:'pattaya', areaLabel:'芭達雅', type:'海景午餐', name:'3 Mermaids Pattaya', desc:'鳥巢拍照強、景觀漂亮，適合想打卡的一餐。', dishes:['海鮮炒飯 / 蟹肉炒飯','泰式酸辣湯','烤蝦 / 炸物拼盤','兒童友善：薯條、炸雞、義大利麵'], kid:'拍照點多，但階梯與座位要注意小孩安全。', orderTip:'想拍照就早點到；餐點以海鮮與不辣炸物搭配。', mapUrl:gSearch('3 Mermaids Pattaya')},
-    {day:'D4', area:'pattaya', areaLabel:'芭達雅', type:'海景親子', name:'The Sky Gallery Pattaya', desc:'草皮與空間感比較舒服，推車與親子動線相對穩。', dishes:['海鮮義大利麵 / 披薩','泰式炒飯','烤蝦 / 炸花枝','飲料與甜點'], kid:'比純打卡餐廳更適合小孩坐著休息。', orderTip:'小孩點西式餐，大人點泰式海鮮，最不容易踩雷。', mapUrl:gSearch('The Sky Gallery Pattaya')},
-    {day:'D4', area:'pattaya', areaLabel:'芭達雅', type:'夜市小吃', name:'Runway Street Food Pattaya', desc:'747 飛機地標夜市，適合有體力時晚上散步吃小吃。', dishes:['烤大頭蝦 / 烤海鮮','青木瓜沙拉 Som Tam','泰式烤肉串 / 炸物','椰子冰沙 / 水果切盤'], kid:'時間較晚，孩子累了就取消，不要硬跑。', orderTip:'少量多樣，先買不辣烤肉、飯、飲料，再補大人想吃的辣味小吃。', mapUrl:gSearch('Runway Street Food Pattaya')},
-    {day:'D5 / D6', area:'bangkok', areaLabel:'曼谷', type:'海鮮聚餐', name:'Somboon Seafood', desc:'曼谷經典海鮮餐廳，適合家庭聚餐與長輩。', dishes:['招牌咖哩炒蟹 Fried Curry Crab','粉絲蝦煲 Roasted Prawns with Glass Noodles','炸鱸魚 / 炸魚','炒青菜與白飯'], kid:'點白飯、粉絲蝦、炸魚，比較適合小孩。', orderTip:'必點咖哩炒蟹，記得配白飯；再加一菜一湯比較完整。', mapUrl:gSearch('Somboon Seafood Bangkok')},
-    {day:'D5 / D6', area:'bangkok', areaLabel:'曼谷', type:'河景晚餐', name:'Chom Arun / Rongros', desc:'昭披耶河景餐廳，適合想看鄭王廟夜景的大人組。', dishes:['泰式河蝦 / 海鮮料理','冬蔭功或泰式湯品','泰式炒飯 / Pad Thai','甜點或飲料'], kid:'景觀餐廳用餐時間可能較長，孩子累了建議改 ICONSIAM。', orderTip:'重點是河景與氣氛，餐點不用點太多，保留小孩耐心。', mapUrl:gSearch('Chom Arun Bangkok Rongros Bangkok')},
-    {day:'D5 / D6', area:'bangkok', areaLabel:'曼谷', type:'冷氣備案', name:'ICONSIAM / SookSiam', desc:'冷氣、選擇多、廁所方便，適合雨天與回曼谷後的晚餐備案。', dishes:['船麵 / 湯麵','泰式烤雞 / 炸雞','芒果糯米飯','泰奶 / 椰子冰沙'], kid:'不用固定餐廳，最適合三組家庭分散點餐。', orderTip:'先找座位與集合點，再分頭買餐，避免人多走散。', mapUrl:gSearch('ICONSIAM SookSiam Bangkok')},
-    {day:'D6', area:'bangkok', areaLabel:'曼谷', type:'家族晚宴', name:'Saneh Jaan / Paste', desc:'想吃精緻泰菜時的晚宴選項，建議大人組或提前訂位。', dishes:['主廚套餐 / Tasting Menu','泰式咖哩類','精緻海鮮料理','甜點'], kid:'比較正式，孩子若累了不一定適合。', orderTip:'適合當作大人晚宴；親子全員建議選 Somboon 或 Nara Thai 較穩。', mapUrl:gSearch('Saneh Jaan Bangkok Paste Bangkok')},
-    {day:'D7', area:'bangkok', areaLabel:'曼谷', type:'早午餐', name:'The Commons Saladaeng', desc:'回程日慢活早午餐，適合第三組寄行李後使用。', dishes:['精品咖啡','早午餐蛋料理','三明治 / 麵包','甜點'], kid:'空間較輕鬆，但回程日要注意時間。', orderTip:'吃簡單就好，不要排太滿，保留回飯店拿行李與去機場時間。', mapUrl:gSearch('The Commons Saladaeng')}
+    {day:'D1', area:'bangkok', areaLabel:'曼谷', type:'晚餐/宵夜', name:'Jeh O Chula', desc:'抵達日有體力才衝的宵夜名店；主角是酸辣媽媽麵大鍋，適合大人分享。', dishes:['⭐ 必點｜Mama Tom Yum 酸辣媽媽麵大鍋','👍 推薦｜脆皮豬肉 Crispy Pork','👍 推薦｜豬肉丸 / 海鮮配料','👶 小孩可吃｜白飯、蛋類、炸物或少量不辣配菜'], groupOrder:['1 鍋 Mama Tom Yum 大鍋給大人分享','1 份脆皮豬肉或炸物','1 份豬肉丸 / 海鮮配料','1～2 份白飯或不辣主食給小孩','飲料先點，辣湯不要給小孩直接喝'], kid:'小孩不建議喝酸辣湯底；如果抵達太晚、孩子累，這間直接改外送或取消。', spicyNote:'招牌 Mama Tom Yum 偏辣且常排隊；建議大人當宵夜，不要當小孩正餐。', orderTip:'6大2小不用每人一碗，點一鍋招牌分食，再補不辣飯類與炸物比較穩。', sourceNote:'食記普遍把 Mama Tom Yum 視為招牌，也提醒份量大、辣度高、排隊久。', mapUrl:gSearch('Jeh O Chula Bangkok')},
+    {day:'D1 / D2', area:'bangkok', areaLabel:'曼谷', type:'百貨美食', name:'Emsphere / CentralWorld 美食街', desc:'最穩的親子備案：冷氣、廁所、推車、選擇多，適合第一天或下雨天。', dishes:['⭐ 必選｜每人自由選一份主食','👍 推薦｜Pad Thai / 海南雞飯 / 湯麵','👶 小孩可吃｜雞飯、蛋料理、白飯、湯麵','🍨 甜點｜芒果糯米飯、泰奶、椰子冰沙'], groupOrder:['大人各自點想吃的泰式或日式','小孩先買雞飯 / 湯麵 / 白飯','再補 2～3 份大家分的炸物或青菜','最後買甜點飲料集合吃','先找座位，再分頭買餐'], kid:'不用等上菜，最適合小孩餓、下雨、塞車後臨時吃。', spicyNote:'美食街選擇多，怕辣就選雞飯、湯麵、日式或西式。', orderTip:'三組家庭建議先指定集合桌，再派代表分頭買，避免推車和小孩在人潮裡亂跑。', sourceNote:'以百貨美食街實用性為主，屬行程備案，不是單一名店推薦。', mapUrl:gSearch('Emsphere Bangkok food court CentralWorld Bangkok')},
+    {day:'D2', area:'bangkok', areaLabel:'曼谷', type:'午餐主線', name:'Here Hai', desc:'曼谷午餐合體點，主打滿滿蟹肉炒飯與海鮮熱炒。', dishes:['⭐ 必點｜Insane Crab Fried Rice 招牌蟹肉炒飯','⭐ 必點｜Lump Crab Meat Fried Rice 大塊蟹肉炒飯','👍 推薦｜Crab Omelette 蟹肉煎蛋','👍 推薦｜Mantis Shrimp with Garlic and Pepper 蒜胡椒螳螂蝦','👶 小孩可吃｜不辣蟹肉炒飯、蟹肉煎蛋'], groupOrder:['蟹肉炒飯大份 2 份或中份 3 份','蟹肉煎蛋 1～2 份','螳螂蝦或蒜胡椒海鮮 1 份','青菜或清淡配菜 1 份','小孩先分不辣炒飯＋煎蛋'], kid:'點餐時可說 not spicy；小孩優先吃炒飯和蛋，辣醬另外放。', spicyNote:'熱門店可能要等，建議避開正中午或先預留時間。', orderTip:'6大2小不要點太散，主軸就是蟹肉炒飯＋蟹蛋＋一份海鮮，簡單又有記憶點。', sourceNote:'米其林與多篇食記都把蟹肉炒飯列為核心招牌，食記也常提到螳螂蝦與蟹蛋。', mapUrl:gSearch('Here Hai Bangkok')},
+    {day:'D2 / D6', area:'bangkok', areaLabel:'曼谷', type:'家庭餐廳', name:'Savoey / Kub Kao Kub Pla', desc:'百貨裡的泰式家庭餐廳，適合長輩、小孩、不想冒險的晚餐。', dishes:['⭐ Savoey 必點｜咖哩炒蟹','👍 Savoey 推薦｜炸蟹肉餅、鳳梨海鮮炒飯、檸檬蒸魚','⭐ Kub Kao 推薦｜蟹肉煎蛋、蟹肉炒飯','👍 Kub Kao 推薦｜不辣冬蔭湯、炒空心菜、炸鱸魚','👶 小孩可吃｜鳳梨炒飯、蟹肉煎蛋、白飯、清湯'], groupOrder:['招牌海鮮 1 道：咖哩炒蟹或蟹肉煎蛋','主食 2 道：炒飯 / Pad Thai / 白飯','青菜 1～2 道：空心菜或高麗菜','湯 1 道：不辣湯或清湯優先','魚或炸物 1 道給小孩分食'], kid:'百貨分店最穩，冷氣和廁所方便；可請店家少辣或不辣。', spicyNote:'咖哩炒蟹通常不會太辣但偏濃郁；怕油膩可改點蒸魚、炸魚、蟹蛋。', orderTip:'一桌先確保 2 道小孩能吃，再點大人想吃的咖哩蟹或辣味菜。', sourceNote:'Savoey 食記常列咖哩蟹、炸蟹肉餅、鳳梨炒飯；Kub Kao 評論常提蟹蛋、蟹炒飯與不辣湯。', mapUrl:gSearch('Kub Kao Kub Pla CentralWorld Bangkok')},
+    {day:'D3', area:'pattaya', areaLabel:'芭達雅', type:'海景晚餐', name:'The Glass House Pattaya', desc:'芭達雅海景晚餐，適合入住後吃海鮮、看海、拍照。', dishes:['⭐ 必點｜烤蝦 / 海鮮類','👍 推薦｜Tom Yum Goong 清湯或冬蔭功','👍 推薦｜炸鱸魚 / 魚露炸魚','👍 推薦｜蟹類、蝦類、海鮮熱炒','👶 小孩可吃｜炒飯、義大利麵、炸物'], groupOrder:['烤蝦或海鮮主菜 1～2 份','魚類 1 份：炸鱸魚或蒸魚','炒飯 / 義大利麵 2 份給小孩與長輩','湯品 1 鍋，大人分食','青菜或不辣配菜 1～2 道'], kid:'海景很美，但入住日小孩容易累；吃完就回飯店，不硬接夜市。', spicyNote:'海鮮與湯品可能偏酸辣，點餐請註明 not spicy / less spicy。', orderTip:'重點是海景＋海鮮，不用點太複雜；先讓小孩吃飽，大人再慢慢吃海鮮。', sourceNote:'官方菜單主打 sea-to-table 海鮮與泰式菜，Tripadvisor 也以海鮮和海景評價為主。', mapUrl:gSearch('The Glass House Pattaya')},
+    {day:'D4', area:'pattaya', areaLabel:'芭達雅', type:'海景午餐', name:'3 Mermaids Pattaya', desc:'鳥巢座位和拍照感強的一餐，適合想拍照但不適合趕時間。', dishes:['⭐ 推薦｜海鮮炒飯 / 蟹肉炒飯','👍 推薦｜烤蝦 / 炸物拼盤','👍 推薦｜泰式酸辣湯或海鮮湯','👶 小孩可吃｜薯條、炸雞、義大利麵、炒飯','🍹 拍照加分｜飲料、甜點'], groupOrder:['炒飯或義大利麵 2 份先給小孩','海鮮主菜 1～2 道給大人','炸物拼盤 1 份大家分','湯品 1 份，辣度請調低','飲料甜點視拍照需求加點'], kid:'鳥巢與階梯要顧小孩；推車和座位動線要現場評估。', spicyNote:'景觀餐廳以拍照氣氛為主，不建議點太多辣味菜。', orderTip:'如果主要想拍照，餐點簡單點就好；小孩先吃飽，拍照才不會崩潰。', sourceNote:'以景觀與打卡口碑為主，餐點建議採安全點法。', mapUrl:gSearch('3 Mermaids Pattaya')},
+    {day:'D4', area:'pattaya', areaLabel:'芭達雅', type:'海景親子', name:'The Sky Gallery Pattaya', desc:'空間感、草皮和海景都舒服，比純打卡店更適合坐著休息。', dishes:['⭐ 推薦｜海鮮義大利麵 / 披薩','👍 推薦｜泰式炒飯','👍 推薦｜烤蝦 / 炸花枝','👶 小孩可吃｜披薩、義大利麵、薯條、甜點','🍹 推薦｜飲料與冰沙'], groupOrder:['披薩或義大利麵 2 份給小孩','泰式炒飯 1～2 份','海鮮主菜 1～2 道','炸物 1 份','飲料甜點看小孩狀況'], kid:'小孩點西式餐，大人點泰式海鮮，是最不容易踩雷的組合。', spicyNote:'海景餐廳不要硬點全泰式辣菜，保留不辣主食比較穩。', orderTip:'6大2小建議用「西式給小孩＋泰式給大人」分流點法。', sourceNote:'以親子動線與海景用餐情境整理，搭配公開菜單常見品項。', mapUrl:gSearch('The Sky Gallery Pattaya')},
+    {day:'D4', area:'pattaya', areaLabel:'芭達雅', type:'夜市小吃', name:'Runway Street Food / Thepprasit Night Market', desc:'夜市適合有體力再去，目標是少量多樣，不是吃很飽的大餐。', dishes:['⭐ 推薦｜烤大頭蝦 / 烤海鮮','👍 推薦｜泰式烤肉串 / 炸物','🌶 大人吃｜青木瓜沙拉 Som Tam','👶 小孩可吃｜白飯、烤肉串、炸雞、玉米、水果','🍹 飲料｜椰子冰沙、水果切盤'], groupOrder:['先買不辣烤肉串 6～8 串','白飯或簡單主食 2～3 份','烤蝦 / 海鮮 1～2 份大人分','水果或飲料 2～3 份','辣味小吃最後少量加點'], kid:'夜市時間較晚，小孩累就取消；推車要注意人潮與地面。', spicyNote:'青木瓜沙拉、泰式辣醬常很辣；小孩吃的要分開買。', orderTip:'夜市不要一次買太多，邊走邊補；看到座位先坐再派人買。', sourceNote:'以夜市常見攤位品項與親子現場操作整理。', mapUrl:gSearch('Runway Street Food Pattaya Thepprasit Night Market Pattaya')},
+    {day:'D5 / D6', area:'bangkok', areaLabel:'曼谷', type:'海鮮聚餐', name:'Somboon Seafood', desc:'曼谷經典海鮮餐廳，最適合家庭聚餐與長輩。', dishes:['⭐ 必點｜Fried Curry Crab 咖哩炒蟹','👍 推薦｜Deep-fried Seabass 炸鱸魚','👍 推薦｜Thai seafood spicy soup 泰式海鮮湯','👍 推薦｜粉絲蝦煲 / 蒜味蝦','👶 小孩可吃｜白飯、粉絲、炸魚、炒青菜'], groupOrder:['咖哩炒蟹 1～2 份，配白飯','炸鱸魚或魚類 1 份','粉絲蝦煲或蒜味蝦 1 份','炒青菜 1～2 份','湯 1 份，大人分食，小孩少喝辣湯'], kid:'小孩主食抓白飯＋粉絲＋炸魚；咖哩蟹醬可以少量拌飯但先確認辣度。', spicyNote:'咖哩炒蟹偏濃郁、可能偏油；怕膩就加青菜和魚類平衡。', orderTip:'6大2小最穩：咖哩蟹＋炸魚＋蝦＋青菜＋白飯，不用點太多重口味。', sourceNote:'米其林介紹 Somboon 以咖哩蟹聞名，也推薦炸鱸魚與泰式海鮮湯；多篇評論也確認咖哩蟹是招牌。', mapUrl:gSearch('Somboon Seafood Bangkok')},
+    {day:'D5 / D6', area:'bangkok', areaLabel:'曼谷', type:'河景晚餐', name:'Chom Arun / Rongros', desc:'昭披耶河景餐廳，適合想看鄭王廟夜景的大人組；全員親子不一定最輕鬆。', dishes:['⭐ 推薦｜河蝦 / 海鮮主菜','👍 推薦｜冬蔭功或泰式湯品','👍 推薦｜Pad Thai / 炒飯','👶 小孩可吃｜炒飯、蛋料理、甜點','📸 重點｜河景座位與拍照'], groupOrder:['海鮮主菜 1～2 道','炒飯 / Pad Thai 2 份','湯品 1 份','不辣配菜 1～2 份','甜點飲料看孩子狀況'], kid:'景觀餐廳時間容易拉長，孩子累建議改 ICONSIAM / SookSiam。', spicyNote:'河景餐廳建議先訂位；若天氣不好，體驗會打折。', orderTip:'這餐重點是氣氛，不是吃很多；點法簡單、控制時間。', sourceNote:'以河景晚餐情境整理，適合大人組優先。', mapUrl:gSearch('Chom Arun Bangkok Rongros Bangkok')},
+    {day:'D5 / D6', area:'bangkok', areaLabel:'曼谷', type:'冷氣備案', name:'ICONSIAM / SookSiam', desc:'冷氣、選擇多、廁所方便，雨天或回曼谷後最穩。', dishes:['⭐ 推薦｜船麵 / 湯麵','👍 推薦｜泰式烤雞 / 炸雞','👍 推薦｜Pad Thai / 炒飯','👶 小孩可吃｜雞飯、湯麵、炸物、水果','🍨 甜點｜芒果糯米飯、泰奶、椰子冰沙'], groupOrder:['先找座位與集合點','小孩先買雞飯 / 湯麵 / 炸物','大人分頭買想吃的泰式小吃','甜點飲料最後補','人多時用 LINE 傳定位集合'], kid:'不需要全員吃同一家，最適合三組家庭各自點餐。', spicyNote:'人潮多，重點是集合點和推車動線，不是點哪一家。', orderTip:'像美食戰場一樣分工：顧小孩、佔位、買餐、買飲料，各一組。', sourceNote:'以大型百貨美食區與親子備案情境整理。', mapUrl:gSearch('ICONSIAM SookSiam Bangkok')},
+    {day:'D6', area:'bangkok', areaLabel:'曼谷', type:'家族晚宴', name:'Nara Thai / Saneh Jaan / Paste', desc:'Nara Thai 比較適合全家；Saneh Jaan / Paste 偏精緻大人晚宴。', dishes:['⭐ Nara 推薦｜Pad Thai','👍 Nara 推薦｜Ayutthaya Boat Noodles 船麵','👍 Nara 推薦｜Grilled River Prawns 烤河蝦','👍 Nara 推薦｜Deep Fried Pomfret 炸魚','👶 小孩可吃｜Pad Thai、炸魚、白飯、甜點'], groupOrder:['如果全家用餐：優先選 Nara Thai','Pad Thai 或炒飯 2 份','烤河蝦或海鮮 1～2 道','炸魚或不辣肉類 1 道','青菜 1 道＋甜點 1～2 份'], kid:'Nara Thai 對家庭較友善；精緻餐廳比較適合大人分流。', spicyNote:'船麵和咖哩可能偏重口味，小孩以 Pad Thai、炸魚、白飯為主。', orderTip:'全員 6大2小建議 Nara；大人想吃精緻再分流去 Saneh Jaan / Paste。', sourceNote:'Nara 官方菜單列出推薦菜如 Pad Thai、船麵、炸魚與烤河蝦；精緻餐廳建議先訂位。', mapUrl:gSearch('Nara Thai CentralWorld Bangkok Saneh Jaan Bangkok Paste Bangkok')},
+    {day:'D7', area:'bangkok', areaLabel:'曼谷', type:'早午餐', name:'The Commons Saladaeng', desc:'回程日慢活早午餐，適合寄行李後簡單吃，不適合拖太久。', dishes:['⭐ 推薦｜精品咖啡','👍 推薦｜早午餐蛋料理','👍 推薦｜三明治 / 麵包','👶 小孩可吃｜麵包、蛋、薯條、甜點','🍰 甜點｜蛋糕或冰品'], groupOrder:['大人咖啡 3～4 杯','早午餐主食 4～5 份分食','小孩麵包 / 蛋 / 薯條先點','甜點 1～2 份','不要點太久，保留去機場時間'], kid:'回程日時間最重要，吃簡單就好，不要排太滿。', spicyNote:'不是重口味泰菜，適合收尾；但要留意回飯店拿行李和去機場時間。', orderTip:'回程日的點餐原則是快、穩、舒服，不追求必吃。', sourceNote:'以回程日早午餐與親子操作需求整理。', mapUrl:gSearch('The Commons Saladaeng')}
   ];
   const lineQuick = days.map(d => `【${d.date}｜${d.title}】${d.note}｜親子重點：${d.kid}`);
   const weatherLocations = {
