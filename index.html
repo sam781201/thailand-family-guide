@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#0891b2" />
-  <title>2026 曼谷＋芭達雅親子行程</title>
+  <title>2026 曼谷＋芭達雅親子行程｜泰國 Web App 3.1 現場操作完成版</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
   <style>
@@ -14,6 +14,7 @@
     .glass { backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); }
     .safe-bottom { padding-bottom: env(safe-area-inset-bottom); }
     [v-cloak] { display: none; }
+    .line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
     @media print {
       body { background: #fff !important; }
       nav, .no-print { display: none !important; }
@@ -32,7 +33,7 @@
       <header class="relative z-10 px-5 pb-4 pt-5 text-white">
         <div class="flex items-center justify-between">
           <div>
-            <p class="text-xs opacity-80">Thailand Family Web App 3.0</p>
+            <p class="text-xs opacity-80">Thailand Family Web App 3.1</p>
             <h1 class="mt-1 text-2xl font-bold tracking-tight">曼谷＋芭達雅</h1>
           </div>
           <button @click="jumpToday" class="rounded-full bg-white/20 px-3 py-2 text-sm font-semibold glass active:scale-95">今日</button>
@@ -55,40 +56,43 @@
 
       <section class="relative z-10 flex-1 overflow-y-auto rounded-t-[2rem] bg-slate-50 px-5 pb-28 pt-5">
         <div v-if="activeTab === 'home'" class="space-y-4">
-          <div class="rounded-[1.7rem] bg-gradient-to-br from-cyan-600 to-teal-600 p-5 text-white shadow-sm">
-            <p class="text-xs font-bold opacity-80">Thailand Family Control Center</p>
-            <h2 class="mt-2 text-2xl font-black tracking-tight">今天要怎麼玩？</h2>
-            <p class="mt-2 text-sm leading-6 text-white/90">打開首頁只看三件事：今天去哪、會不會下雨、現在要按哪裡。</p>
-            <div class="mt-4 grid grid-cols-3 gap-2 text-center text-sm">
-              <button @click="openToday" class="rounded-2xl bg-white/15 p-3 font-bold glass active:scale-95">看今天</button>
-              <button @click="activeTab='restaurants'" class="rounded-2xl bg-white/15 p-3 font-bold glass active:scale-95">找好吃</button>
-              <button @click="activeTab='tips'" class="rounded-2xl bg-white/15 p-3 font-bold glass active:scale-95">出門檢查</button>
-            </div>
-          </div>
-
-          <div class="rounded-[1.7rem] bg-white p-4 shadow-sm ring-1 ring-slate-100">
+          <div class="rounded-[1.9rem] bg-gradient-to-br from-cyan-600 via-teal-600 to-amber-500 p-5 text-white shadow-sm">
             <div class="flex items-start justify-between gap-3">
               <div>
-                <p class="text-xs font-bold text-cyan-600">{{ todayStatus.label }}</p>
-                <h3 class="mt-1 text-xl font-black leading-7 text-slate-900">{{ todayStatus.title }}</h3>
-                <p class="mt-2 text-sm leading-6 text-slate-500">{{ todayStatus.message }}</p>
+                <p class="text-xs font-bold opacity-80">今日總控台</p>
+                <h2 class="mt-2 text-2xl font-black tracking-tight">今天要幹嘛？</h2>
+                <p class="mt-2 text-sm leading-6 text-white/90">先看今天、天氣、下一步。其他資訊需要再點。</p>
               </div>
-              <span class="shrink-0 rounded-full bg-cyan-50 px-3 py-1 text-[11px] font-bold text-cyan-700">{{ todayStatus.displayDate }}</span>
+              <span class="shrink-0 rounded-full bg-white/20 px-3 py-1 text-[11px] font-bold glass">{{ todayStatus.displayDate }}</span>
             </div>
-            <div v-if="todayStatus.day" class="mt-4 grid grid-cols-2 gap-2 text-sm">
-              <div class="rounded-2xl bg-slate-50 p-3"><p class="text-xs text-slate-400">今晚睡哪</p><p class="mt-1 font-bold text-slate-800">{{ todayStatus.day.stayShort }}</p></div>
-              <div class="rounded-2xl bg-slate-50 p-3"><p class="text-xs text-slate-400">怎麼移動</p><p class="mt-1 font-bold text-slate-800">{{ todayStatus.day.transportShort }}</p></div>
+
+            <div class="mt-5 rounded-3xl bg-white/16 p-4 glass">
+              <p class="text-xs font-bold opacity-80">{{ todayStatus.label }}</p>
+              <h3 class="mt-1 text-xl font-black leading-7">{{ todayStatus.title }}</h3>
+              <p class="mt-2 text-sm leading-6 text-white/90">{{ todayStatus.message }}</p>
+              <div v-if="todayStatus.day" class="mt-4 grid grid-cols-2 gap-2 text-sm">
+                <div class="rounded-2xl bg-white/15 p-3">
+                  <p class="text-xs opacity-80">今晚睡哪</p>
+                  <p class="mt-1 font-black">{{ todayStatus.day.stayShort }}</p>
+                </div>
+                <div class="rounded-2xl bg-white/15 p-3">
+                  <p class="text-xs opacity-80">今天怎麼走</p>
+                  <p class="mt-1 font-black">{{ todayStatus.day.transportShort }}</p>
+                </div>
+              </div>
             </div>
-            <div v-if="todayStatus.day" class="mt-4 rounded-2xl bg-cyan-50 p-3">
-              <p class="text-xs font-bold text-cyan-700">今日一句話</p>
-              <p class="mt-1 text-sm leading-6 text-slate-700">{{ todayStatus.day.note }}</p>
+
+            <div class="mt-3 grid grid-cols-3 gap-2 text-center text-sm">
+              <button @click="openToday" class="rounded-2xl bg-white px-3 py-3 font-black text-cyan-700 shadow-sm active:scale-95">看今天</button>
+              <button @click="activeTab='restaurants'" class="rounded-2xl bg-white/18 px-3 py-3 font-black glass active:scale-95">找好吃</button>
+              <button @click="activeTab='tips'" class="rounded-2xl bg-white/18 px-3 py-3 font-black glass active:scale-95">出門檢查</button>
             </div>
           </div>
 
           <div class="rounded-[1.7rem] bg-white p-4 shadow-sm ring-1 ring-slate-100">
             <div class="flex items-start justify-between gap-3">
               <div>
-                <p class="text-xs font-bold text-cyan-600">天氣小秘書</p>
+                <p class="text-xs font-bold text-cyan-600">今天會不會下雨？</p>
                 <h3 class="mt-1 text-lg font-black text-slate-900">{{ todayWeather.icon }} {{ todayWeather.title }}</h3>
                 <p class="mt-2 text-sm leading-6 text-slate-500">{{ todayWeather.summary }}</p>
               </div>
@@ -97,30 +101,21 @@
             <div class="mt-4 grid grid-cols-3 gap-2 text-center text-xs">
               <div class="rounded-2xl bg-slate-50 p-3"><p class="text-slate-400">氣溫</p><p class="mt-1 font-black text-slate-800">{{ todayWeather.tempText }}</p></div>
               <div class="rounded-2xl bg-slate-50 p-3"><p class="text-slate-400">降雨</p><p class="mt-1 font-black text-slate-800">{{ todayWeather.rainText }}</p></div>
-              <div class="rounded-2xl bg-slate-50 p-3"><p class="text-slate-400">建議</p><p class="mt-1 font-black text-slate-800">{{ todayWeather.action }}</p></div>
+              <div class="rounded-2xl bg-slate-50 p-3"><p class="text-slate-400">行動</p><p class="mt-1 font-black text-slate-800">{{ todayWeather.action }}</p></div>
             </div>
-            <div class="mt-4 rounded-2xl bg-amber-50 p-3 text-sm leading-6 text-amber-900"><span class="font-bold">小秘書說：</span>{{ todayWeather.advice }}</div>
+            <div class="mt-4 rounded-2xl bg-amber-50 p-3 text-sm leading-6 text-amber-900"><span class="font-bold">小秘書建議：</span>{{ todayWeather.advice }}</div>
           </div>
 
-          <div class="grid grid-cols-2 gap-3">
-            <button @click="openToday" class="rounded-[1.3rem] bg-cyan-600 p-4 text-left text-white shadow-sm active:scale-95">
-              <p class="text-xs opacity-80">現在最常用</p><p class="mt-1 text-lg font-black">看今天怎麼玩</p>
-            </button>
-            <button @click="activeTab='restaurants'" class="rounded-[1.3rem] bg-amber-500 p-4 text-left text-white shadow-sm active:scale-95">
-              <p class="text-xs opacity-80">到餐廳前</p><p class="mt-1 text-lg font-black">6大2小點餐</p>
-            </button>
-            <button @click="activeTab='tips'" class="rounded-[1.3rem] bg-slate-900 p-4 text-left text-white shadow-sm active:scale-95">
-              <p class="text-xs opacity-80">出門前</p><p class="mt-1 text-lg font-black">30秒檢查</p>
-            </button>
-            <button @click="activeTab='guide'" class="rounded-[1.3rem] bg-white p-4 text-left shadow-sm ring-1 ring-slate-100 active:scale-95">
-              <p class="text-xs text-slate-400">遇到狀況</p><p class="mt-1 text-lg font-black text-slate-900">看小攻略</p>
-            </button>
+          <div class="grid grid-cols-4 gap-2 text-center text-xs font-bold">
+            <button @click="openToday" class="rounded-2xl bg-white p-3 text-cyan-700 shadow-sm ring-1 ring-slate-100 active:scale-95">去哪玩</button>
+            <button @click="activeTab='restaurants'" class="rounded-2xl bg-white p-3 text-orange-700 shadow-sm ring-1 ring-slate-100 active:scale-95">吃什麼</button>
+            <button @click="activeTab='guide'" class="rounded-2xl bg-white p-3 text-teal-700 shadow-sm ring-1 ring-slate-100 active:scale-95">小攻略</button>
+            <button @click="activeTab='tips'" class="rounded-2xl bg-white p-3 text-slate-700 shadow-sm ring-1 ring-slate-100 active:scale-95">提醒</button>
           </div>
 
           <div class="rounded-[1.7rem] bg-white p-4 shadow-sm ring-1 ring-slate-100">
-            <p class="text-xs font-bold text-cyan-600">三個住宿基地</p>
-            <h3 class="mt-1 font-black text-slate-900">累了就回住宿，不硬跑</h3>
-            <div class="mt-3 space-y-2 text-sm">
+            <p class="text-xs font-bold text-cyan-600">旅行基地</p>
+            <div class="mt-3 grid grid-cols-1 gap-2 text-sm">
               <div class="rounded-2xl bg-slate-50 p-3"><span class="font-bold text-slate-800">曼谷前段：</span>Sukhumvit 2</div>
               <div class="rounded-2xl bg-slate-50 p-3"><span class="font-bold text-slate-800">芭達雅：</span>Somerset Pattaya</div>
               <div class="rounded-2xl bg-slate-50 p-3"><span class="font-bold text-slate-800">曼谷後段：</span>Eastin Phayathai</div>
@@ -137,10 +132,14 @@
                 <div class="min-w-0 flex-1">
                   <div class="flex items-start justify-between gap-2">
                     <div><p class="text-xs font-semibold text-slate-400">{{ day.date }}</p><h3 class="mt-1 font-bold text-slate-900">{{ day.title }}</h3></div>
-                    <div class="flex items-center gap-2"><span class="rounded-full bg-slate-100 px-2.5 py-1 text-[11px] font-semibold text-slate-500">{{ day.tag }}</span><span class="text-lg font-bold text-slate-400">{{ openedDay === day.no ? '−' : '+' }}</span></div>
+                    <div class="flex items-center gap-2"><span class="rounded-full bg-slate-100 px-2.5 py-1 text-[11px] font-bold text-slate-500">{{ openedDay === day.no ? '收合' : '展開' }}</span></div>
                   </div>
-                  <p class="mt-2 text-sm leading-6 text-slate-500">{{ day.note }}</p>
-                  <div class="mt-3 flex flex-wrap items-center gap-2 text-xs text-slate-400"><span>🏨 {{ day.stayShort }}</span><span>•</span><span>🚕 {{ day.transportShort }}</span></div>
+                  <div class="mt-3 flex flex-wrap items-center gap-2 text-xs">
+                    <span class="rounded-full bg-cyan-50 px-2.5 py-1 font-bold text-cyan-700">{{ day.tag }}</span>
+                    <span class="rounded-full bg-slate-50 px-2.5 py-1 font-semibold text-slate-500">🚕 {{ day.transportShort }}</span>
+                    <span class="rounded-full bg-amber-50 px-2.5 py-1 font-semibold text-amber-700">{{ weatherForDay(day).icon }} {{ weatherForDay(day).action }}</span>
+                  </div>
+                  <p class="mt-2 line-clamp-2 text-sm leading-6 text-slate-500">{{ day.note }}</p>
                 </div>
               </div>
             </button>
@@ -177,7 +176,7 @@
               <div class="mt-4 rounded-2xl bg-white p-3 ring-1 ring-slate-100">
                 <div class="flex items-start justify-between gap-3">
                   <div>
-                    <p class="text-xs font-bold text-cyan-600">地圖按這裡｜三顆救命按鈕</p>
+                    <p class="text-xs font-bold text-cyan-600">地圖按這裡</p>
                     <p class="mt-1 text-sm leading-6 text-slate-600">{{ day.mapTip }}</p>
                   </div>
                   <span class="shrink-0 rounded-full bg-cyan-50 px-2.5 py-1 text-[11px] font-bold text-cyan-700">親子友善</span>
@@ -186,7 +185,7 @@
                 <div class="mt-3 space-y-3">
                   <div class="rounded-2xl border border-cyan-100 bg-cyan-50 p-3">
                     <div class="mb-2">
-                      <p class="text-sm font-black text-cyan-800">① 今天大概怎麼走</p>
+                      <p class="text-sm font-black text-cyan-800">① 今天怎麼走</p>
                       <p class="mt-1 text-xs leading-5 text-cyan-700">先看大方向，不用照順序硬跑。</p>
                     </div>
                     <a v-for="map in day.mapMain" :key="map.label" :href="map.url" target="_blank" class="mb-2 block rounded-2xl bg-white p-3 shadow-sm active:scale-[0.99] last:mb-0">
@@ -202,7 +201,7 @@
 
                   <div class="rounded-2xl border border-emerald-100 bg-emerald-50 p-3">
                     <div class="mb-2">
-                      <p class="text-sm font-black text-emerald-800">② 叫車直接按這裡</p>
+                      <p class="text-sm font-black text-emerald-800">② 叫車去這裡</p>
                       <p class="mt-1 text-xs leading-5 text-emerald-700">給 Grab / Bolt 搜尋目的地，避免跑錯分店。</p>
                     </div>
                     <a v-for="map in day.mapTaxi" :key="map.label" :href="map.url" target="_blank" class="mb-2 block rounded-2xl bg-white p-3 shadow-sm active:scale-[0.99] last:mb-0">
@@ -218,7 +217,7 @@
 
                   <div class="rounded-2xl border border-slate-200 bg-slate-50 p-3">
                     <div class="mb-2">
-                      <p class="text-sm font-black text-slate-800">③ 累了直接回飯店</p>
+                      <p class="text-sm font-black text-slate-800">③ 回飯店</p>
                       <p class="mt-1 text-xs leading-5 text-slate-600">小孩累、下雨、太熱、塞車，直接回住宿休息。</p>
                     </div>
                     <a v-for="map in day.mapHotel" :key="map.label" :href="map.url" target="_blank" class="mb-2 block rounded-2xl bg-white p-3 shadow-sm active:scale-[0.99] last:mb-0">
@@ -233,7 +232,7 @@
                   </div>
                 </div>
 
-                <p class="mt-3 text-xs leading-5 text-slate-400">小秘書提醒：多點路線只看大方向；真的叫車請按「叫車直接按這裡」，比較不會跑錯。</p>
+                <p class="mt-3 text-xs leading-5 text-slate-400">小秘書提醒：多點路線只看大方向；真的叫車請按「叫車去這裡」，比較不會跑錯。</p>
               </div>
             </div>
           </article>
@@ -268,17 +267,7 @@
 
 
           <div class="rounded-[1.7rem] bg-white p-4 shadow-sm ring-1 ring-slate-100">
-            <h2 class="font-bold text-slate-900">下雨 / 太熱怎麼辦</h2>
-            <div class="mt-3 space-y-2 text-sm leading-6 text-slate-600">
-              <div class="rounded-2xl bg-cyan-50 p-3"><span class="font-bold text-cyan-700">🌤 天氣 OK：</span>上午戶外照走，下午仍保留冷氣 / 泳池休息。</div>
-              <div class="rounded-2xl bg-amber-50 p-3"><span class="font-bold text-amber-700">🌦 可能下雨：</span>上午先跑主景點，下午改百貨、室內景點、飯店泳池。</div>
-              <div class="rounded-2xl bg-slate-50 p-3"><span class="font-bold text-slate-700">☔ 雨勢明顯：</span>取消夜市，改外送、百貨美食街或飯店休息。</div>
-              <div class="rounded-2xl bg-rose-50 p-3"><span class="font-bold text-rose-700">🔥 太熱：</span>戶外縮短，補水、防曬，午後回住宿或冷氣餐廳。</div>
-            </div>
-          </div>
-
-          <div class="rounded-[1.7rem] bg-white p-4 shadow-sm ring-1 ring-slate-100">
-            <h2 class="font-bold text-slate-900">出門前 30 秒快篩</h2>
+            <h2 class="font-bold text-slate-900">出門前 30 秒檢查</h2>
             <div class="mt-3 grid grid-cols-2 gap-2 text-sm text-slate-600">
               <div class="rounded-2xl bg-slate-50 p-3">護照 / 房卡 / 現金</div>
               <div class="rounded-2xl bg-slate-50 p-3">手機 / 行動電源</div>
@@ -286,6 +275,16 @@
               <div class="rounded-2xl bg-slate-50 p-3">濕紙巾 / 尿布</div>
               <div class="rounded-2xl bg-slate-50 p-3">防曬 / 防蚊</div>
               <div class="rounded-2xl bg-slate-50 p-3">薄外套 / 雨具</div>
+            </div>
+          </div>
+
+          <div class="rounded-[1.7rem] bg-white p-4 shadow-sm ring-1 ring-slate-100">
+            <h2 class="font-bold text-slate-900">下雨 / 太熱怎麼辦</h2>
+            <div class="mt-3 space-y-2 text-sm leading-6 text-slate-600">
+              <div class="rounded-2xl bg-cyan-50 p-3"><span class="font-bold text-cyan-700">🌤 天氣 OK：</span>上午戶外照走，下午仍保留冷氣 / 泳池休息。</div>
+              <div class="rounded-2xl bg-amber-50 p-3"><span class="font-bold text-amber-700">🌦 可能下雨：</span>上午先跑主景點，下午改百貨、室內景點、飯店泳池。</div>
+              <div class="rounded-2xl bg-slate-50 p-3"><span class="font-bold text-slate-700">☔ 雨勢明顯：</span>取消夜市，改外送、百貨美食街或飯店休息。</div>
+              <div class="rounded-2xl bg-rose-50 p-3"><span class="font-bold text-rose-700">🔥 太熱：</span>戶外縮短，補水、防曬，午後回住宿或冷氣餐廳。</div>
             </div>
           </div>
 
