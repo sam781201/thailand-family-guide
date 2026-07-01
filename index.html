@@ -56,13 +56,13 @@
       <section class="relative z-10 flex-1 overflow-y-auto rounded-t-[2rem] bg-slate-50 px-5 pb-28 pt-5">
         <div v-if="activeTab === 'home'" class="space-y-5">
           <div class="rounded-[1.7rem] bg-gradient-to-br from-cyan-600 to-teal-600 p-5 text-white shadow-sm">
-            <p class="text-xs font-bold opacity-80">Thailand Family Control Center</p>
-            <h2 class="mt-2 text-2xl font-black tracking-tight">泰國親子旅行總控台</h2>
-            <p class="mt-2 text-sm leading-6 text-white/90">三組家族會師｜0歲、3歲、4歲娃｜曼谷＋芭達雅 7天6夜。打開首頁先看今天要去哪、吃什麼、要注意什麼。</p>
+            <p class="text-xs font-bold opacity-80">Thailand Family Fun Control</p>
+            <h2 class="mt-2 text-2xl font-black tracking-tight">今天要幹嘛？</h2>
+            <p class="mt-2 text-sm leading-6 text-white/90">三組家族會師｜0歲、3歲、4歲娃｜曼谷＋芭達雅 7天6夜。打開先看去哪玩玩、會不會下雨、吃什麼好料。</p>
             <div class="mt-4 grid grid-cols-3 gap-2 text-center text-sm">
-              <button @click="activeTab='trip'" class="rounded-2xl bg-white/15 p-3 font-bold glass active:scale-95">今天去哪</button>
-              <button @click="activeTab='restaurants'" class="rounded-2xl bg-white/15 p-3 font-bold glass active:scale-95">餐廳必點</button>
-              <button @click="activeTab='tips'" class="rounded-2xl bg-white/15 p-3 font-bold glass active:scale-95">出門提醒</button>
+              <button @click="activeTab='trip'" class="rounded-2xl bg-white/15 p-3 font-bold glass active:scale-95">去哪玩</button>
+              <button @click="activeTab='restaurants'" class="rounded-2xl bg-white/15 p-3 font-bold glass active:scale-95">吃什麼</button>
+              <button @click="activeTab='tips'" class="rounded-2xl bg-white/15 p-3 font-bold glass active:scale-95">提醒一下</button>
             </div>
           </div>
 
@@ -93,10 +93,31 @@
             </div>
 
             <div class="mt-4 grid grid-cols-3 gap-2 text-center text-xs font-bold">
-              <button @click="openToday" class="rounded-2xl bg-cyan-600 px-3 py-3 text-white active:scale-95">查看今日行程</button>
-              <button @click="activeTab='restaurants'" class="rounded-2xl bg-amber-50 px-3 py-3 text-amber-700 active:scale-95">餐廳必點</button>
-              <button @click="activeTab='tips'" class="rounded-2xl bg-teal-50 px-3 py-3 text-teal-700 active:scale-95">出門提醒</button>
+              <button @click="openToday" class="rounded-2xl bg-cyan-600 px-3 py-3 text-white active:scale-95">看今天去哪</button>
+              <button @click="activeTab='restaurants'" class="rounded-2xl bg-amber-50 px-3 py-3 text-amber-700 active:scale-95">吃什麼</button>
+              <button @click="activeTab='tips'" class="rounded-2xl bg-teal-50 px-3 py-3 text-teal-700 active:scale-95">提醒一下</button>
             </div>
+          </div>
+
+
+          <div class="rounded-[1.7rem] bg-white p-4 shadow-sm ring-1 ring-slate-100">
+            <div class="flex items-start justify-between gap-3">
+              <div>
+                <p class="text-xs font-bold text-cyan-600">今天會不會下雨？</p>
+                <h3 class="mt-1 text-lg font-black text-slate-900">{{ todayWeather.icon }} {{ todayWeather.title }}</h3>
+                <p class="mt-2 text-sm leading-6 text-slate-500">{{ todayWeather.summary }}</p>
+              </div>
+              <span class="shrink-0 rounded-full bg-cyan-50 px-3 py-1 text-[11px] font-bold text-cyan-700">{{ todayWeather.placeName }}</span>
+            </div>
+            <div class="mt-4 grid grid-cols-3 gap-2 text-center text-xs">
+              <div class="rounded-2xl bg-slate-50 p-3"><p class="text-slate-400">氣溫</p><p class="mt-1 font-black text-slate-800">{{ todayWeather.tempText }}</p></div>
+              <div class="rounded-2xl bg-slate-50 p-3"><p class="text-slate-400">降雨</p><p class="mt-1 font-black text-slate-800">{{ todayWeather.rainText }}</p></div>
+              <div class="rounded-2xl bg-slate-50 p-3"><p class="text-slate-400">建議</p><p class="mt-1 font-black text-slate-800">{{ todayWeather.action }}</p></div>
+            </div>
+            <div class="mt-4 rounded-2xl bg-amber-50 p-3 text-sm leading-6 text-amber-900">
+              <span class="font-bold">小秘書建議：</span>{{ todayWeather.advice }}
+            </div>
+            <p class="mt-3 text-xs leading-5 text-slate-400">天氣來自 Open-Meteo 自動預報；臨場還是看天空，不硬跑最重要。</p>
           </div>
 
           <div class="grid grid-cols-3 gap-3">
@@ -108,8 +129,8 @@
           <div class="rounded-[1.7rem] bg-white p-4 shadow-sm ring-1 ring-slate-100">
             <div class="flex items-center justify-between gap-3">
               <div>
-                <p class="text-xs font-bold text-cyan-600">住宿基地</p>
-                <h3 class="mt-1 font-black text-slate-900">三段住宿，不用每天重新找</h3>
+                <p class="text-xs font-bold text-cyan-600">今晚睡哪裡</p>
+                <h3 class="mt-1 font-black text-slate-900">三個基地先記好，回飯店不迷路</h3>
               </div>
               <span class="rounded-full bg-cyan-50 px-3 py-1 text-[11px] font-bold text-cyan-700">已整理</span>
             </div>
@@ -121,7 +142,7 @@
           </div>
 
           <div class="rounded-[1.7rem] bg-white p-4 shadow-sm ring-1 ring-slate-100">
-            <div class="flex items-center justify-between"><h3 class="font-bold text-slate-900">每日一鍵入口</h3><span class="text-xs text-slate-400">點卡片看地圖</span></div>
+            <div class="flex items-center justify-between"><h3 class="font-bold text-slate-900">每天去哪玩</h3><span class="text-xs text-slate-400">點卡片看今天</span></div>
             <div class="mt-3 space-y-3">
               <button v-for="day in days" :key="day.no" @click="activeTab = 'trip'; openedDay = day.no" class="flex w-full items-center gap-3 rounded-2xl bg-slate-50 p-3 text-left transition active:scale-[0.99]">
                 <div :class="theme.badge" class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-sm font-black text-white">{{ day.no }}</div>
@@ -132,16 +153,16 @@
           </div>
 
           <div class="rounded-[1.7rem] bg-white p-4 shadow-sm ring-1 ring-slate-100">
-            <h3 class="font-bold text-slate-900">現場使用方式</h3>
+            <h3 class="font-bold text-slate-900">現場怎麼用</h3>
             <div class="mt-3 grid grid-cols-1 gap-2 text-sm leading-6 text-slate-600">
-              <div class="rounded-2xl bg-cyan-50 p-3"><span class="font-bold text-cyan-700">1｜先看行程：</span>今天幾點去哪裡、住哪裡、Google Maps 要按哪顆。</div>
-              <div class="rounded-2xl bg-amber-50 p-3"><span class="font-bold text-amber-700">2｜再看餐廳：</span>到餐廳前先看必點、不辣選擇與小孩可吃。</div>
+              <div class="rounded-2xl bg-cyan-50 p-3"><span class="font-bold text-cyan-700">1｜先看去哪玩：</span>今天去哪、住哪、地圖按哪顆。</div>
+              <div class="rounded-2xl bg-amber-50 p-3"><span class="font-bold text-amber-700">2｜再看吃什麼：</span>到餐廳前先看必吃、不辣、小孩能吃。</div>
               <div class="rounded-2xl bg-teal-50 p-3"><span class="font-bold text-teal-700">3｜出門前看提醒：</span>護照、現金、濕紙巾、水、防蚊、防曬、行動電源。</div>
             </div>
           </div>
 
           <div class="rounded-[1.7rem] bg-white p-4 shadow-sm ring-1 ring-slate-100">
-            <h3 class="font-bold text-slate-900">旅行原則</h3>
+            <h3 class="font-bold text-slate-900">玩樂原則</h3>
             <div class="mt-3 space-y-2 text-sm leading-6 text-slate-600">
               <p>・上午完成一個主景點，中午後以冷氣、泳池、百貨為主。</p>
               <p>・夜市是加分，不是必去；小孩累就外送回房。</p>
@@ -151,7 +172,7 @@
         </div>
 
         <div v-if="activeTab === 'trip'" class="space-y-3">
-          <div class="mb-2 flex items-center justify-between"><h2 class="text-base font-bold text-slate-900">每日詳細行程</h2><span class="text-xs text-slate-500">點卡片展開</span></div>
+          <div class="mb-2 flex items-center justify-between"><h2 class="text-base font-bold text-slate-900">我們要去哪玩</h2><span class="text-xs text-slate-500">點開看玩法</span></div>
           <article v-for="day in days" :key="day.no" class="rounded-[1.7rem] bg-white p-4 shadow-sm ring-1 ring-slate-100">
             <button type="button" @click="toggleDay(day.no)" class="w-full text-left transition active:scale-[0.99]">
               <div class="flex items-start gap-3">
@@ -167,8 +188,25 @@
               </div>
             </button>
             <div v-if="openedDay === day.no" class="mt-4 rounded-3xl bg-slate-50 p-4">
-              <div class="rounded-2xl bg-white p-3 ring-1 ring-slate-100"><p class="text-xs font-bold text-cyan-600">今日主軸</p><p class="mt-1 text-sm leading-6 text-slate-600">{{ day.strategy }}</p></div>
-              <h4 class="mb-3 mt-4 text-sm font-bold text-slate-900">詳細時間表</h4>
+              <div class="rounded-2xl bg-white p-3 ring-1 ring-slate-100"><p class="text-xs font-bold text-cyan-600">今天玩法</p><p class="mt-1 text-sm leading-6 text-slate-600">{{ day.strategy }}</p></div>
+
+              <div class="mt-3 rounded-2xl bg-cyan-50 p-3 ring-1 ring-cyan-100">
+                <p class="text-xs font-bold text-cyan-700">今天怎麼走</p>
+                <p class="mt-1 text-sm font-bold leading-6 text-slate-800">{{ day.routeLine }}</p>
+                <p class="mt-1 text-xs leading-5 text-slate-600">{{ day.routeNote }}</p>
+              </div>
+
+              <div class="mt-3 rounded-2xl bg-amber-50 p-3 ring-1 ring-amber-100">
+                <div class="flex items-start gap-2">
+                  <span class="text-lg">{{ weatherForDay(day).icon }}</span>
+                  <div class="min-w-0 flex-1">
+                    <p class="text-xs font-bold text-amber-700">天氣小提醒｜{{ weatherForDay(day).placeName }}</p>
+                    <p class="mt-1 text-sm leading-6 text-slate-700">{{ weatherForDay(day).title }}，{{ weatherForDay(day).action }}。{{ weatherForDay(day).advice }}</p>
+                  </div>
+                </div>
+              </div>
+
+              <h4 class="mb-3 mt-4 text-sm font-bold text-slate-900">今天時間表</h4>
               <div class="space-y-3">
                 <div v-for="item in day.details" :key="item.time + item.title" class="flex gap-3">
                   <div class="w-16 shrink-0 text-xs font-bold text-slate-500">{{ item.time }}</div>
@@ -176,13 +214,13 @@
                 </div>
               </div>
               <div class="mt-4 grid grid-cols-1 gap-3">
-                <div class="rounded-2xl bg-white p-3 ring-1 ring-slate-100"><p class="text-xs font-bold text-slate-400">親子提醒</p><p class="mt-1 text-sm leading-6 text-slate-600">{{ day.kid }}</p></div>
-                <div class="rounded-2xl bg-white p-3 ring-1 ring-slate-100"><p class="text-xs font-bold text-slate-400">預算速查</p><p class="mt-1 text-sm leading-6 text-slate-600">{{ day.budget }}</p></div>
+                <div class="rounded-2xl bg-white p-3 ring-1 ring-slate-100"><p class="text-xs font-bold text-slate-400">小孩友善提醒</p><p class="mt-1 text-sm leading-6 text-slate-600">{{ day.kid }}</p></div>
+                <div class="rounded-2xl bg-white p-3 ring-1 ring-slate-100"><p class="text-xs font-bold text-slate-400">大概花多少</p><p class="mt-1 text-sm leading-6 text-slate-600">{{ day.budget }}</p></div>
               </div>
               <div class="mt-4 rounded-2xl bg-white p-3 ring-1 ring-slate-100">
                 <div class="flex items-start justify-between gap-3">
                   <div>
-                    <p class="text-xs font-bold text-cyan-600">今日 Google Maps｜三種按鈕</p>
+                    <p class="text-xs font-bold text-cyan-600">Google Maps｜三顆救命按鈕</p>
                     <p class="mt-1 text-sm leading-6 text-slate-600">{{ day.mapTip }}</p>
                   </div>
                   <span class="shrink-0 rounded-full bg-cyan-50 px-2.5 py-1 text-[11px] font-bold text-cyan-700">親子友善</span>
@@ -191,8 +229,8 @@
                 <div class="mt-3 space-y-3">
                   <div class="rounded-2xl border border-cyan-100 bg-cyan-50 p-3">
                     <div class="mb-2">
-                      <p class="text-sm font-black text-cyan-800">① 今日大路線</p>
-                      <p class="mt-1 text-xs leading-5 text-cyan-700">給大人先看今天整體方向，不一定要照順序硬跑。</p>
+                      <p class="text-sm font-black text-cyan-800">① 今天大概怎麼走</p>
+                      <p class="mt-1 text-xs leading-5 text-cyan-700">先看大方向，不用照順序硬跑。</p>
                     </div>
                     <a v-for="map in day.mapMain" :key="map.label" :href="map.url" target="_blank" class="mb-2 block rounded-2xl bg-white p-3 shadow-sm active:scale-[0.99] last:mb-0">
                       <div class="flex items-center justify-between gap-3">
@@ -200,15 +238,15 @@
                           <p class="text-sm font-black text-slate-800">{{ map.label }}</p>
                           <p class="mt-1 text-xs leading-5 text-slate-500">{{ map.desc }}</p>
                         </div>
-                        <span class="shrink-0 rounded-xl bg-cyan-600 px-3 py-2 text-xs font-bold text-white">開圖</span>
+                        <span class="shrink-0 rounded-xl bg-cyan-600 px-3 py-2 text-xs font-bold text-white">看路</span>
                       </div>
                     </a>
                   </div>
 
                   <div class="rounded-2xl border border-emerald-100 bg-emerald-50 p-3">
                     <div class="mb-2">
-                      <p class="text-sm font-black text-emerald-800">② 直接叫車地點</p>
-                      <p class="mt-1 text-xs leading-5 text-emerald-700">給 Grab / Bolt 搜尋目的地用，避免司機跑錯分店。</p>
+                      <p class="text-sm font-black text-emerald-800">② 叫車直接按這裡</p>
+                      <p class="mt-1 text-xs leading-5 text-emerald-700">給 Grab / Bolt 搜尋目的地，避免跑錯分店。</p>
                     </div>
                     <a v-for="map in day.mapTaxi" :key="map.label" :href="map.url" target="_blank" class="mb-2 block rounded-2xl bg-white p-3 shadow-sm active:scale-[0.99] last:mb-0">
                       <div class="flex items-center justify-between gap-3">
@@ -223,8 +261,8 @@
 
                   <div class="rounded-2xl border border-slate-200 bg-slate-50 p-3">
                     <div class="mb-2">
-                      <p class="text-sm font-black text-slate-800">③ 回飯店</p>
-                      <p class="mt-1 text-xs leading-5 text-slate-600">小孩累、下雨、太熱、塞車時，直接回住宿休息。</p>
+                      <p class="text-sm font-black text-slate-800">③ 累了直接回飯店</p>
+                      <p class="mt-1 text-xs leading-5 text-slate-600">小孩累、下雨、太熱、塞車，直接回住宿休息。</p>
                     </div>
                     <a v-for="map in day.mapHotel" :key="map.label" :href="map.url" target="_blank" class="mb-2 block rounded-2xl bg-white p-3 shadow-sm active:scale-[0.99] last:mb-0">
                       <div class="flex items-center justify-between gap-3">
@@ -232,57 +270,20 @@
                           <p class="text-sm font-black text-slate-800">{{ map.label }}</p>
                           <p class="mt-1 text-xs leading-5 text-slate-500">{{ map.desc }}</p>
                         </div>
-                        <span class="shrink-0 rounded-xl bg-slate-900 px-3 py-2 text-xs font-bold text-white">回去</span>
+                        <span class="shrink-0 rounded-xl bg-slate-900 px-3 py-2 text-xs font-bold text-white">回家</span>
                       </div>
                     </a>
                   </div>
                 </div>
 
-                <p class="mt-3 text-xs leading-5 text-slate-400">SMART 小提醒：Google Maps 多點路線只看大方向；真正叫車時，請用「直接叫車地點」複製目的地名稱，避免司機跑錯分店。</p>
+                <p class="mt-3 text-xs leading-5 text-slate-400">小秘書提醒：多點路線只看大方向；真的叫車請按「叫車直接按這裡」，比較不會跑錯。</p>
               </div>
             </div>
           </article>
         </div>
 
-        <div v-if="activeTab === 'transport'" class="space-y-4">
-          <div class="mb-2"><h2 class="text-base font-bold text-slate-900">路線導覽</h2><p class="mt-1 text-xs text-slate-500">依現場情境選路線：先看「要去的地方」，再決定叫 Grab/Bolt、搭捷運或直接回住宿。</p></div>
-          <div class="rounded-[1.7rem] bg-white p-4 shadow-sm ring-1 ring-slate-100">
-            <p class="text-xs font-bold text-cyan-600">三段住宿基地</p>
-            <h3 class="mt-1 font-black leading-6 text-slate-900">Sukhumvit 2 → Somerset Pattaya → Eastin Phayathai</h3>
-            <p class="mt-2 text-sm leading-6 text-slate-500">出門前先確認今天住宿基地；移動時先按「要去的地方」確認定位，叫車時再複製地點名稱。小孩累、下雨或塞車時，直接切回住宿/百貨備案。</p>
-          </div>
-          <div class="rounded-[1.7rem] bg-white p-4 shadow-sm ring-1 ring-slate-100">
-            <p class="text-xs font-bold text-amber-600">SMART 路線使用法</p>
-            <div class="mt-3 grid grid-cols-1 gap-2 text-sm leading-6 text-slate-600">
-              <div class="rounded-2xl bg-amber-50 p-3"><span class="font-black text-amber-700">S｜Start</span>：先確認今天從哪個飯店出發。</div>
-              <div class="rounded-2xl bg-cyan-50 p-3"><span class="font-black text-cyan-700">M｜Map</span>：先按「要去的地方」看定位。</div>
-              <div class="rounded-2xl bg-emerald-50 p-3"><span class="font-black text-emerald-700">A｜Action</span>：叫車時複製地點名稱給 Grab / Bolt。</div>
-              <div class="rounded-2xl bg-slate-50 p-3"><span class="font-black text-slate-700">R｜Return</span>：小孩累、下雨、太熱就回住宿。</div>
-              <div class="rounded-2xl bg-rose-50 p-3"><span class="font-black text-rose-700">T｜Timing</span>：時間不夠就回住宿休息，不硬跑。</div>
-            </div>
-          </div>
-          <div class="grid grid-cols-3 gap-2 rounded-[1.5rem] bg-white p-2 shadow-sm ring-1 ring-slate-100">
-            <button @click="routeMode='bangkok'" :class="routeMode==='bangkok' ? 'bg-cyan-600 text-white shadow-sm' : 'text-slate-500'" class="rounded-2xl px-2 py-3 text-xs font-bold transition active:scale-95">曼谷</button>
-            <button @click="routeMode='pattaya'" :class="routeMode==='pattaya' ? 'bg-cyan-600 text-white shadow-sm' : 'text-slate-500'" class="rounded-2xl px-2 py-3 text-xs font-bold transition active:scale-95">芭達雅</button>
-            <button @click="routeMode='charter'" :class="routeMode==='charter' ? 'bg-cyan-600 text-white shadow-sm' : 'text-slate-500'" class="rounded-2xl px-2 py-3 text-xs font-bold transition active:scale-95">包車日</button>
-          </div>
-          <article v-for="route in activeRoutes" :key="route.title" class="overflow-hidden rounded-[1.7rem] bg-white shadow-sm ring-1 ring-slate-100">
-            <div class="bg-gradient-to-br from-cyan-50 to-teal-50 p-4">
-              <div class="flex items-center justify-between gap-3"><div class="rounded-2xl bg-white px-3 py-2 text-xs font-black text-cyan-700 shadow-sm">{{ route.start }}</div><div class="flex-1 border-t-2 border-dashed border-cyan-300"></div><div class="rounded-2xl bg-cyan-600 px-3 py-2 text-xs font-black text-white shadow-sm">{{ route.end }}</div></div>
-              <div class="mt-3 flex items-center justify-center gap-2 text-xs font-bold text-slate-500"><span>{{ route.type }}</span><span>・</span><span>{{ route.time }}</span></div>
-            </div>
-            <div class="p-4"><p class="text-xs font-bold text-cyan-600">{{ route.day }}</p><h3 class="mt-1 font-bold text-slate-900">{{ route.title }}</h3><p class="mt-3 text-sm leading-6 text-slate-600">{{ route.note }}</p><div class="mt-3 rounded-2xl bg-cyan-50 p-3 text-xs leading-5 text-cyan-800">SMART 用法：先按「要去的地方」確認定位，再到 Grab/Bolt 貼上地點名稱；若小孩累或下雨，直接改回住宿。</div><a :href="route.mapUrl" target="_blank" class="mt-3 block rounded-2xl bg-slate-900 px-4 py-3 text-center text-sm font-bold text-white shadow-sm active:scale-[0.99]">要去的地方</a></div>
-          </article>
-          <div class="rounded-[1.7rem] bg-white p-4 shadow-sm ring-1 ring-slate-100">
-            <h3 class="font-bold text-slate-900">每日 SMART 大動線</h3>
-            <div class="mt-3 space-y-3">
-              <div v-for="map in dayMaps" :key="map.day" class="rounded-2xl bg-slate-50 p-3"><p class="text-xs font-bold text-cyan-600">{{ map.day }}</p><p class="mt-1 text-sm font-bold text-slate-800">{{ map.title }}</p><div class="mt-3 flex flex-wrap items-center gap-2 text-xs leading-6 text-slate-600"><template v-for="(step, idx) in map.steps" :key="step"><span class="rounded-full bg-white px-3 py-1 font-semibold shadow-sm">{{ step }}</span><span v-if="idx < map.steps.length - 1" class="text-slate-300">→</span></template></div><p class="mt-2 text-xs leading-5 text-slate-500">{{ map.note }}</p><button @click="activeTab = 'trip'; openedDay = map.no" class="mt-3 w-full rounded-2xl bg-white px-4 py-3 text-center text-xs font-bold text-cyan-700 shadow-sm active:scale-[0.99]">查看當日三種地圖按鈕</button></div>
-            </div>
-          </div>
-        </div>
-
         <div v-if="activeTab === 'guide'" class="space-y-4">
-          <div class="mb-2"><h2 class="text-base font-bold text-slate-900">泰國親子攻略</h2><p class="mt-1 text-xs text-slate-500">把日本版「迪士尼攻略」改成泰國現場操作攻略。</p></div>
+          <div class="mb-2"><h2 class="text-base font-bold text-slate-900">旅行小攻略</h2><p class="mt-1 text-xs text-slate-500">把現場會遇到的玩法、交通、備案都先整理好。</p></div>
           <div class="grid grid-cols-4 gap-2 rounded-[1.5rem] bg-white p-2 shadow-sm ring-1 ring-slate-100">
             <button @click="guideSection='play'" :class="guideSection==='play' ? 'bg-cyan-600 text-white shadow-sm' : 'text-slate-500'" class="rounded-2xl px-2 py-3 text-xs font-bold transition active:scale-95">玩法</button>
             <button @click="guideSection='ride'" :class="guideSection==='ride' ? 'bg-cyan-600 text-white shadow-sm' : 'text-slate-500'" class="rounded-2xl px-2 py-3 text-xs font-bold transition active:scale-95">交通</button>
@@ -290,7 +291,7 @@
             <button @click="guideSection='backup'" :class="guideSection==='backup' ? 'bg-cyan-600 text-white shadow-sm' : 'text-slate-500'" class="rounded-2xl px-2 py-3 text-xs font-bold transition active:scale-95">備案</button>
           </div>
           <div v-if="guideSection==='play'" class="space-y-4">
-            <div class="rounded-[1.7rem] bg-gradient-to-br from-cyan-600 to-teal-600 p-5 text-white shadow-sm"><p class="text-xs font-bold opacity-80">Family Strategy</p><h3 class="mt-2 text-xl font-black">每日玩法方針</h3><p class="mt-3 text-sm leading-6 text-white/90">這趟不是把景點塞滿，而是用「上午主景點、下午冷氣/飯店、晚上彈性夜市或外送」維持小孩體力與大人心情。</p><div class="mt-4 grid grid-cols-2 gap-2 text-sm"><div class="rounded-2xl bg-white/15 p-3 glass">上午：主景點</div><div class="rounded-2xl bg-white/15 p-3 glass">中午：冷氣餐廳</div><div class="rounded-2xl bg-white/15 p-3 glass">下午：泳池/百貨</div><div class="rounded-2xl bg-white/15 p-3 glass">晚上：夜市/外送</div></div></div>
+            <div class="rounded-[1.7rem] bg-gradient-to-br from-cyan-600 to-teal-600 p-5 text-white shadow-sm"><p class="text-xs font-bold opacity-80">Family Strategy</p><h3 class="mt-2 text-xl font-black">怎麼玩比較不崩潰</h3><p class="mt-3 text-sm leading-6 text-white/90">這趟不是拚景點數，是拚小孩不崩潰、大人心情好。上午玩重點，下午吹冷氣或回飯店。</p><div class="mt-4 grid grid-cols-2 gap-2 text-sm"><div class="rounded-2xl bg-white/15 p-3 glass">上午：主景點</div><div class="rounded-2xl bg-white/15 p-3 glass">中午：冷氣餐廳</div><div class="rounded-2xl bg-white/15 p-3 glass">下午：泳池/百貨</div><div class="rounded-2xl bg-white/15 p-3 glass">晚上：夜市/外送</div></div></div>
             <div v-for="item in playRules" :key="item.title" class="rounded-[1.7rem] bg-white p-4 shadow-sm ring-1 ring-slate-100"><p class="text-xs font-bold text-cyan-600">{{ item.label }}</p><h3 class="mt-1 font-black text-slate-900">{{ item.title }}</h3><p class="mt-2 text-sm leading-6 text-slate-600">{{ item.desc }}</p></div>
           </div>
           <div v-if="guideSection==='ride'" class="space-y-4">
@@ -305,12 +306,23 @@
         <div v-if="activeTab === 'tips'" class="space-y-5">
           <div class="rounded-[1.7rem] bg-gradient-to-br from-amber-500 to-orange-500 p-5 text-white shadow-sm">
             <p class="text-xs font-bold opacity-80">Family Trip Reminder</p>
-            <h2 class="mt-2 text-xl font-black">提醒總整理</h2>
-            <p class="mt-2 text-sm leading-6 text-white/90">出門前先看這頁：證件、交通、親子用品、雨天備案、回程時間都集中在這裡。</p>
+            <h2 class="mt-2 text-xl font-black">出門前看一下</h2>
+            <p class="mt-2 text-sm leading-6 text-white/90">出門前先掃一眼：證件、交通、小孩用品、雨天備案、回程時間都在這裡。</p>
+          </div>
+
+
+          <div class="rounded-[1.7rem] bg-white p-4 shadow-sm ring-1 ring-slate-100">
+            <h2 class="font-bold text-slate-900">下雨 / 太熱怎麼辦</h2>
+            <div class="mt-3 space-y-2 text-sm leading-6 text-slate-600">
+              <div class="rounded-2xl bg-cyan-50 p-3"><span class="font-bold text-cyan-700">🌤 天氣 OK：</span>上午戶外照走，下午仍保留冷氣 / 泳池休息。</div>
+              <div class="rounded-2xl bg-amber-50 p-3"><span class="font-bold text-amber-700">🌦 可能下雨：</span>上午先跑主景點，下午改百貨、室內景點、飯店泳池。</div>
+              <div class="rounded-2xl bg-slate-50 p-3"><span class="font-bold text-slate-700">☔ 雨勢明顯：</span>取消夜市，改外送、百貨美食街或飯店休息。</div>
+              <div class="rounded-2xl bg-rose-50 p-3"><span class="font-bold text-rose-700">🔥 太熱：</span>戶外縮短，補水、防曬，午後回住宿或冷氣餐廳。</div>
+            </div>
           </div>
 
           <div class="rounded-[1.7rem] bg-white p-4 shadow-sm ring-1 ring-slate-100">
-            <h2 class="font-bold text-slate-900">每天出門前 30 秒檢查</h2>
+            <h2 class="font-bold text-slate-900">出門前 30 秒快篩</h2>
             <div class="mt-3 grid grid-cols-2 gap-2 text-sm text-slate-600">
               <div class="rounded-2xl bg-slate-50 p-3">護照 / 房卡 / 現金</div>
               <div class="rounded-2xl bg-slate-50 p-3">手機 / 行動電源</div>
@@ -322,18 +334,18 @@
           </div>
 
           <div class="rounded-[1.7rem] bg-white p-4 shadow-sm ring-1 ring-slate-100">
-            <h2 class="font-bold text-slate-900">出門前檢查清單</h2>
-            <p class="mt-1 text-xs leading-5 text-slate-500">適合出發前一天或每天早上勾選。</p>
+            <h2 class="font-bold text-slate-900">出發前大檢查</h2>
+            <p class="mt-1 text-xs leading-5 text-slate-500">出發前一天或每天早上都可以勾。</p>
             <div class="mt-3"><label v-for="task in tasks" :key="task" class="flex items-center gap-3 border-t border-slate-100 py-3 first:border-t-0"><input type="checkbox" class="h-5 w-5 rounded border-slate-300" /><span class="text-sm text-slate-600">{{ task }}</span></label></div>
           </div>
 
           <div class="rounded-[1.7rem] bg-white p-4 shadow-sm ring-1 ring-slate-100">
-            <h2 class="font-bold text-slate-900">親子必帶</h2>
+            <h2 class="font-bold text-slate-900">小孩補給包</h2>
             <div class="mt-3 grid grid-cols-2 gap-2 text-sm text-slate-600"><div v-for="item in kidItems" :key="item" class="rounded-2xl bg-slate-50 p-3">{{ item }}</div></div>
           </div>
 
           <div class="rounded-[1.7rem] bg-white p-4 shadow-sm ring-1 ring-slate-100">
-            <h2 class="font-bold text-slate-900">交通提醒</h2>
+            <h2 class="font-bold text-slate-900">叫車與移動提醒</h2>
             <div class="mt-3 space-y-2 text-sm leading-6 text-slate-600">
               <div class="rounded-2xl bg-cyan-50 p-3"><span class="font-bold text-cyan-700">Grab / Bolt：</span>多人＋行李請叫大車，上車點選飯店大門或百貨正門。</div>
               <div class="rounded-2xl bg-cyan-50 p-3"><span class="font-bold text-cyan-700">包車日：</span>前一天確認司機、集合時間、兒童用品與行李空間。</div>
@@ -346,7 +358,7 @@
             <div class="mt-3 space-y-2 text-sm leading-6 text-slate-600">
               <div class="rounded-2xl bg-amber-50 p-3">小孩累了：不要硬跑夜市，優先回飯店、外送、洗澡睡覺。</div>
               <div class="rounded-2xl bg-amber-50 p-3">太熱：戶外縮短，改百貨、海洋館、室內景點、飯店泳池。</div>
-              <div class="rounded-2xl bg-amber-50 p-3">餐廳等太久：先點白飯、蛋、湯、不辣菜，讓小孩先吃。</div>
+              <div class="rounded-2xl bg-amber-50 p-3">餐廳等太久：先點白飯、蛋、湯、不辣菜，小孩先吃，大人才有命吃。</div>
             </div>
           </div>
 
@@ -377,26 +389,26 @@
 
         <div v-if="activeTab === 'restaurants'" class="space-y-4">
           <div class="mb-2">
-            <h2 class="text-base font-bold text-slate-900">餐廳必點</h2>
-            <p class="mt-1 text-xs text-slate-500">每間餐廳先看「必點、不辣選擇、親子提醒、要去的地方」，現場比較好點餐。</p>
+            <h2 class="text-base font-bold text-slate-900">有什麼好吃</h2>
+            <p class="mt-1 text-xs text-slate-500">每間店先看必吃、不辣、小孩能吃，現場少一點研究，多一點享受。</p>
           </div>
 
           <div class="rounded-[1.7rem] bg-gradient-to-br from-orange-500 to-amber-500 p-5 text-white shadow-sm">
-            <p class="text-xs font-bold opacity-80">Food Guide</p>
-            <h3 class="mt-2 text-xl font-black">SMART 點餐原則</h3>
+            <p class="text-xs font-bold opacity-80">Food Cheat Sheet</p>
+            <h3 class="mt-2 text-xl font-black">點菜不踩雷公式</h3>
             <div class="mt-4 grid grid-cols-2 gap-2 text-sm">
               <div class="rounded-2xl bg-white/15 p-3 glass">先點招牌</div>
               <div class="rounded-2xl bg-white/15 p-3 glass">加一道不辣</div>
               <div class="rounded-2xl bg-white/15 p-3 glass">小孩先上飯/蛋/湯</div>
               <div class="rounded-2xl bg-white/15 p-3 glass">尖峰先訂位</div>
             </div>
-            <p class="mt-3 text-xs leading-5 text-white/90">現場點餐照這個順序：招牌菜 → 不辣菜 → 小孩可吃 → 飲料甜點。菜單仍以餐廳當天為準。</p>
+            <p class="mt-3 text-xs leading-5 text-white/90">現場照這個順序點：先招牌、再不辣、再補小孩能吃，最後才看甜點飲料。</p>
           </div>
 
           <div class="grid grid-cols-3 gap-2 rounded-[1.5rem] bg-white p-2 shadow-sm ring-1 ring-slate-100">
             <button @click="restaurantArea='all'" :class="restaurantArea==='all' ? 'bg-cyan-600 text-white shadow-sm' : 'text-slate-500'" class="rounded-2xl px-2 py-3 text-xs font-bold transition active:scale-95">全部</button>
-            <button @click="restaurantArea='bangkok'" :class="restaurantArea==='bangkok' ? 'bg-cyan-600 text-white shadow-sm' : 'text-slate-500'" class="rounded-2xl px-2 py-3 text-xs font-bold transition active:scale-95">曼谷</button>
-            <button @click="restaurantArea='pattaya'" :class="restaurantArea==='pattaya' ? 'bg-cyan-600 text-white shadow-sm' : 'text-slate-500'" class="rounded-2xl px-2 py-3 text-xs font-bold transition active:scale-95">芭達雅</button>
+            <button @click="restaurantArea='bangkok'" :class="restaurantArea==='bangkok' ? 'bg-cyan-600 text-white shadow-sm' : 'text-slate-500'" class="rounded-2xl px-2 py-3 text-xs font-bold transition active:scale-95">曼谷好吃</button>
+            <button @click="restaurantArea='pattaya'" :class="restaurantArea==='pattaya' ? 'bg-cyan-600 text-white shadow-sm' : 'text-slate-500'" class="rounded-2xl px-2 py-3 text-xs font-bold transition active:scale-95">芭達雅好吃</button>
           </div>
 
           <article v-for="r in activeRestaurants" :key="r.name" class="overflow-hidden rounded-[1.7rem] bg-white shadow-sm ring-1 ring-slate-100">
@@ -411,12 +423,12 @@
               </div>
             </div>
             <div class="p-4">
-              <p class="text-xs font-bold text-cyan-600">推薦必點</p>
+              <p class="text-xs font-bold text-cyan-600">必吃清單</p>
               <div class="mt-3 space-y-2">
                 <div v-for="dish in r.dishes" :key="dish" class="rounded-2xl bg-slate-50 p-3 text-sm leading-6 text-slate-700">🍽️ {{ dish }}</div>
               </div>
               <div class="mt-3 rounded-2xl bg-cyan-50 p-3 text-xs leading-5 text-cyan-800">
-                <span class="font-bold">親子提醒：</span>{{ r.kid }}
+                <span class="font-bold">小孩友善提醒：</span>{{ r.kid }}
               </div>
               <div class="mt-3 rounded-2xl bg-amber-50 p-3 text-xs leading-5 text-amber-800">
                 <span class="font-bold">點餐小抄：</span>{{ r.orderTip }}
@@ -430,9 +442,9 @@
       <nav class="absolute inset-x-4 bottom-4 z-20 rounded-[1.6rem] border border-white/40 bg-white/85 px-2 py-3 shadow-lg glass safe-bottom">
         <div class="grid grid-cols-5 text-center text-[11px] font-semibold">
           <button @click="activeTab='home'" :class="activeTab==='home' ? 'text-cyan-600' : 'text-slate-400'" class="rounded-2xl py-2 active:scale-95">首頁</button>
-          <button @click="activeTab='trip'" :class="activeTab==='trip' ? 'text-cyan-600' : 'text-slate-400'" class="rounded-2xl py-2 active:scale-95">行程</button>
-          <button @click="activeTab='restaurants'" :class="activeTab==='restaurants' ? 'text-cyan-600' : 'text-slate-400'" class="rounded-2xl py-2 active:scale-95">餐廳</button>
-          <button @click="activeTab='guide'" :class="activeTab==='guide' ? 'text-cyan-600' : 'text-slate-400'" class="rounded-2xl py-2 active:scale-95">攻略</button>
+          <button @click="activeTab='trip'" :class="activeTab==='trip' ? 'text-cyan-600' : 'text-slate-400'" class="rounded-2xl py-2 active:scale-95">去哪玩</button>
+          <button @click="activeTab='restaurants'" :class="activeTab==='restaurants' ? 'text-cyan-600' : 'text-slate-400'" class="rounded-2xl py-2 active:scale-95">吃什麼</button>
+          <button @click="activeTab='guide'" :class="activeTab==='guide' ? 'text-cyan-600' : 'text-slate-400'" class="rounded-2xl py-2 active:scale-95">小攻略</button>
           <button @click="activeTab='tips'" :class="activeTab==='tips' ? 'text-cyan-600' : 'text-slate-400'" class="rounded-2xl py-2 active:scale-95">提醒</button>
         </div>
       </nav>
@@ -441,11 +453,10 @@
 </div>
 
 <script>
-const { createApp, computed, ref } = Vue;
+const { createApp, computed, ref, onMounted } = Vue;
 createApp({ setup() {
   const activeTab = ref('home');
   const openedDay = ref('1');
-  const routeMode = ref('bangkok');
   const guideSection = ref('play');
   const restaurantArea = ref('all');
   const theme = { body:'bg-gradient-to-br from-cyan-100 via-teal-50 to-amber-50', hero:'bg-gradient-to-br from-cyan-500 via-teal-500 to-amber-500', badge:'bg-gradient-to-br from-cyan-500 to-teal-600', progress:'bg-white' };
@@ -458,6 +469,31 @@ createApp({ setup() {
     { no:'6', date:'7/7（二）', title:'法力貼紙 ➜ 購物 ➜ 家族晚宴', tag:'購物日', stayShort:'Eastin Phayathai', transportShort:'BTS/MRT＋Grab', note:'早餐彈性，Museum of Siam，ICONSIAM，Big C 掃貨，晚上家族晚宴。', strategy:'今天是補貨與體驗日，不要排太密。午餐後先判斷孩子與長輩體力，再決定 Big C 與晚宴。', kid:'購物日容易累，建議午餐後安排一次飯店或咖啡廳休息。', backup:'不想跑遠：飯店周邊＋King Power / CentralwOrld。', budget:'晚宴約 800–4000 THB / 人。', mapUrl:'https://www.google.com/maps/search/?api=1&query=Museum%20of%20Siam%20ICONSIAM%20Big%20C%20Supercenter%20Bangkok', details:[{time:'08:00',title:'早餐彈性',desc:'The Coffee Club Phayathai、站邊輕食、Nara Thai、Grab 外送安樂園。'},{time:'10:30',title:'Museum of Siam',desc:'泰服拍照、互動裝置、Yant Sticker 法力貼紙。'},{time:'13:00',title:'ICONSIAM＋Big C',desc:'瀑布餐廳合體午餐，接 Big C 終極伴手禮掃貨。'},{time:'18:30',title:'家族晚宴',desc:'米其林 Saneh Jaan / Paste，或 Somboon / Nara Thai 家庭友善。'}] },
     { no:'7', date:'7/8（三）', title:'完美終極無縫分流', tag:'回程日', stayShort:'退房日', transportShort:'Grab / ARL', note:'依三組航班分流：機場、King Power、飯店泳池、The Commons 慢活。', strategy:'返程日只求順，不求多。晚班機可寄行李，孩子用泳池放電，大人免稅/按摩。', kid:'不要安排硬景點，保留吃飯、泳池、免稅、交通緩衝。', backup:'遇到雨天或塞車：提早去機場，進免稅店吹冷氣。', budget:'The Commons 400–650；按摩 600–1100 THB / 人。', mapUrl:'https://www.google.com/maps/search/?api=1&query=Eastin%20Grand%20Hotel%20Phayathai%20The%20Commons%20Saladaeng%20Suvarnabhumi%20Airport', details:[{time:'10:00',title:'第一組退房',desc:'Grab 大車直奔機場。'},{time:'10:00+',title:'第二組 J 人備案',desc:'下午班機去機場；晚班機寄行李，King Power / 泳池，時間到搭機場快線。'},{time:'10:00',title:'第三組慢活',desc:'行李寄飯店，The Commons Saladaeng 精品咖啡早午餐。'},{time:'15:50',title:'第三組出發機場',desc:'領行李，Grab 直奔機場，18:50 班機。'}] }
   ];
+
+  const routeInfo = {
+    '1': { line:'機場 → Sukhumvit 2 飯店 → 晚餐 / 外送 → 回飯店', note:'抵達日以入住為主，晚餐看體力，不要硬排行程。' },
+    '2': { line:'Sukhumvit 2 → Here Hai → CentralWorld / Siam → 飯店', note:'曼谷市區日以冷氣點串接，逛街與帶娃可分流。' },
+    '3': { line:'Sukhumvit 2 → 綠山動物園 → Somerset Pattaya → 海景晚餐', note:'包車去程日，重點是順利移動與入住，不要再加太多點。' },
+    '4': { line:'Somerset Pattaya → House of Benedict → 海景午餐 → 百貨 / 飯店 → 夜市', note:'芭達雅日先室內，再看天氣決定晚上是否夜市。' },
+    '5': { line:'Somerset Pattaya → Pattaya Sheep Farm → 象神廟 / 曼谷 → Eastin Phayathai', note:'包車回程日，小孩上車午睡，象神視 7/2 是否已去決定。' },
+    '6': { line:'Eastin Phayathai → Museum of Siam → ICONSIAM / Big C → 家族晚宴', note:'購物日容易超時，午餐後先判斷小孩與長輩體力。' },
+    '7': { line:'Eastin Phayathai → 分組退房 / King Power / The Commons → 機場', note:'回程日只求順，交通時間抓寬，不排硬景點。' }
+  };
+  const dayWeatherMeta = {
+    '1': { iso:'2026-07-02', place:'bangkok' },
+    '2': { iso:'2026-07-03', place:'bangkok' },
+    '3': { iso:'2026-07-04', place:'pattaya' },
+    '4': { iso:'2026-07-05', place:'pattaya' },
+    '5': { iso:'2026-07-06', place:'pattaya' },
+    '6': { iso:'2026-07-07', place:'bangkok' },
+    '7': { iso:'2026-07-08', place:'bangkok' }
+  };
+  days.forEach(day => {
+    day.routeLine = routeInfo[day.no]?.line || day.title;
+    day.routeNote = routeInfo[day.no]?.note || day.transportShort;
+    day.weatherIso = dayWeatherMeta[day.no]?.iso;
+    day.weatherPlace = dayWeatherMeta[day.no]?.place || 'bangkok';
+  });
 
   const gSearch = (q) => 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(q);
   const gDir = (origin, destination, waypoints='', mode='driving') => {
@@ -717,6 +753,80 @@ createApp({ setup() {
     {day:'D7', area:'bangkok', areaLabel:'曼谷', type:'早午餐', name:'The Commons Saladaeng', desc:'回程日慢活早午餐，適合第三組寄行李後使用。', dishes:['精品咖啡','早午餐蛋料理','三明治 / 麵包','甜點'], kid:'空間較輕鬆，但回程日要注意時間。', orderTip:'吃簡單就好，不要排太滿，保留回飯店拿行李與去機場時間。', mapUrl:gSearch('The Commons Saladaeng')}
   ];
   const lineQuick = days.map(d => `【${d.date}｜${d.title}】${d.note}｜親子重點：${d.kid}`);
+  const weatherLocations = {
+    bangkok: { name:'曼谷', latitude:13.7563, longitude:100.5018 },
+    pattaya: { name:'芭達雅', latitude:12.9236, longitude:100.8825 }
+  };
+  const weatherStore = ref({
+    bangkok: { loading:true, daily:null, error:'' },
+    pattaya: { loading:true, daily:null, error:'' }
+  });
+  const offlineWeather = (placeKey='bangkok') => ({
+    icon:'⛅', title:'天氣資料讀取中', placeName:weatherLocations[placeKey]?.name || '泰國', tempText:'--', rainText:'--', action:'先看天空',
+    summary:'正在讀取 Open-Meteo 預報；如果網路較慢，先依雨季原則安排。',
+    advice:'上午先跑主景點，下午保留百貨、室內景點或飯店休息。'
+  });
+  const weatherCodeText = (code)=>{
+    if (code === 0) return '晴朗';
+    if ([1,2,3].includes(code)) return '多雲';
+    if ([45,48].includes(code)) return '有霧';
+    if ([51,53,55,56,57].includes(code)) return '毛毛雨';
+    if ([61,63,65,66,67,80,81,82].includes(code)) return '有雨';
+    if ([95,96,99].includes(code)) return '雷雨';
+    return '天氣變化';
+  };
+  const buildWeatherView = (placeKey, daily, isoDate)=>{
+    const placeName = weatherLocations[placeKey]?.name || '泰國';
+    if (!daily || !daily.time) return offlineWeather(placeKey);
+    let idx = daily.time.indexOf(isoDate);
+    if (idx < 0) idx = 0;
+    const tMax = Math.round(daily.temperature_2m_max?.[idx] ?? 0);
+    const tMin = Math.round(daily.temperature_2m_min?.[idx] ?? 0);
+    const rainProb = Math.round(daily.precipitation_probability_max?.[idx] ?? 0);
+    const precip = Number(daily.precipitation_sum?.[idx] ?? 0);
+    const code = daily.weather_code?.[idx] ?? null;
+    const text = weatherCodeText(code);
+    let icon='🌤', title='天氣看起來 OK', action='照玩', advice='上午戶外可以先衝，下午還是留冷氣或飯店休息。';
+    if (rainProb >= 70 || precip >= 10 || [65,80,81,82,95,96,99].includes(code)) {
+      icon='☔'; title='雨神可能報到'; action='改室內'; advice='夜市先不要硬衝，改百貨、室內景點、外送或回飯店。';
+    } else if (rainProb >= 45 || precip >= 3 || [51,53,55,61,63].includes(code)) {
+      icon='🌦'; title='午後可能變臉'; action='下午備案'; advice='上午先玩主景點，下午準備百貨、室內景點或飯店泳池。';
+    } else if (tMax >= 34) {
+      icon='🔥'; title='熱到要補水'; action='縮短戶外'; advice='戶外不要撐太久，多補水、防曬，午後回住宿或冷氣餐廳。';
+    }
+    return {
+      icon, title, action, advice, placeName,
+      tempText: tMax && tMin ? `${tMin}–${tMax}°C` : '--',
+      rainText: `${rainProb}%`,
+      summary: `${placeName}｜${text}，降雨機率約 ${rainProb}% ，預估雨量 ${precip.toFixed(1)} mm。`
+    };
+  };
+  const fetchWeather = async (placeKey)=>{
+    const loc = weatherLocations[placeKey];
+    if (!loc) return;
+    try {
+      weatherStore.value[placeKey] = { loading:true, daily:null, error:'' };
+      const url = `https://api.open-meteo.com/v1/forecast?latitude=${loc.latitude}&longitude=${loc.longitude}&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,precipitation_sum&timezone=Asia%2FBangkok&forecast_days=10`;
+      const res = await fetch(url);
+      if (!res.ok) throw new Error('weather fetch failed');
+      const data = await res.json();
+      weatherStore.value[placeKey] = { loading:false, daily:data.daily, error:'' };
+    } catch (err) {
+      weatherStore.value[placeKey] = { loading:false, daily:null, error:'天氣讀取失敗' };
+    }
+  };
+  const weatherForDay = (day)=>{
+    const placeKey = day?.weatherPlace || 'bangkok';
+    const store = weatherStore.value[placeKey];
+    if (!store || store.loading || store.error) return offlineWeather(placeKey);
+    return buildWeatherView(placeKey, store.daily, day.weatherIso);
+  };
+  const todayWeather = computed(()=> todayStatus.value.day ? weatherForDay(todayStatus.value.day) : offlineWeather('bangkok'));
+  onMounted(()=>{
+    fetchWeather('bangkok');
+    fetchWeather('pattaya');
+  });
+
   const tripDateMap = {
     '2026-07-02':'1',
     '2026-07-03':'2',
@@ -759,7 +869,7 @@ createApp({ setup() {
     const no = tripDateMap[dateKey(today)] || '1';
     const day = days.find(d=>d.no === no) || days[0];
     return {
-      label:'今日行程',
+      label:'今天要幹嘛？',
       displayDate:day.date,
       title:`D${day.no}｜${day.title}`,
       message:day.strategy,
@@ -770,12 +880,11 @@ createApp({ setup() {
     activeTab.value='trip';
     openedDay.value = todayStatus.value.day ? todayStatus.value.day.no : '1';
   };
-  const activeRoutes = computed(()=>routes[routeMode.value]);
   const activeRestaurants = computed(()=> restaurantArea.value === 'all' ? restaurants : restaurants.filter(r => r.area === restaurantArea.value));
   const progressWidth = computed(()=> `${Math.round((Number(openedDay.value || '1')/days.length)*100)}%`);
   const toggleDay = (n)=>{ openedDay.value = openedDay.value === n ? '' : n; };
   const jumpToday = ()=>{ openToday(); };
-  return { activeTab, openedDay, routeMode, guideSection, restaurantArea, theme, days, todayStatus, activeRoutes, activeRestaurants, dayMaps, playRules, rideGuides, spotGuides, backups, tasks, kidItems, spas, lineQuick, progressWidth, toggleDay, jumpToday, openToday, window };
+  return { activeTab, openedDay, guideSection, restaurantArea, theme, days, todayStatus, todayWeather, weatherForDay, activeRestaurants, dayMaps, playRules, rideGuides, spotGuides, backups, tasks, kidItems, spas, lineQuick, progressWidth, toggleDay, jumpToday, openToday, window };
 }}).mount('#app');
 </script>
 </body>
