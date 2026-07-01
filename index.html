@@ -124,22 +124,6 @@
               </div>
               <div class="mt-4 grid grid-cols-1 gap-3">
                 <div class="rounded-2xl bg-white p-3 ring-1 ring-slate-100"><p class="text-xs font-bold text-slate-400">親子提醒</p><p class="mt-1 text-sm leading-6 text-slate-600">{{ day.kid }}</p></div>
-                <div class="rounded-2xl bg-white p-3 ring-1 ring-slate-100">
-                  <p class="text-xs font-bold text-amber-600">刪減順序 / 備案</p>
-                  <p class="mt-1 text-sm leading-6 text-slate-600">{{ day.backup }}</p>
-                  <div class="mt-3 space-y-2">
-                    <div v-for="(cut, index) in day.cutOrder" :key="index" class="flex gap-3 rounded-2xl bg-amber-50 p-3">
-                      <div class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-amber-500 text-xs font-black text-white">{{ index + 1 }}</div>
-                      <div class="min-w-0 flex-1">
-                        <p class="text-sm font-bold text-slate-800">{{ cut.title }}</p>
-                        <p class="mt-1 text-xs leading-5 text-slate-500">{{ cut.desc }}</p>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="mt-3 rounded-2xl bg-cyan-50 p-3 text-sm leading-6 text-slate-700">
-                    <span class="font-black text-cyan-700">今日最低完成目標：</span>{{ day.minimumGoal }}
-                  </div>
-                </div>
                 <div class="rounded-2xl bg-white p-3 ring-1 ring-slate-100"><p class="text-xs font-bold text-slate-400">預算速查</p><p class="mt-1 text-sm leading-6 text-slate-600">{{ day.budget }}</p></div>
               </div>
               <div class="mt-4 rounded-2xl bg-white p-3 ring-1 ring-slate-100">
@@ -201,18 +185,28 @@
                   </div>
                 </div>
 
-                <p class="mt-3 text-xs leading-5 text-slate-400">小提醒：Google Maps 多點路線只當大方向；現場叫 Grab/Bolt 時，建議直接複製目的地名稱搜尋，避免司機跑錯分店。</p>
+                <p class="mt-3 text-xs leading-5 text-slate-400">SMART 小提醒：Google Maps 多點路線只看大方向；真正叫車時，請用「直接叫車地點」複製目的地名稱，避免司機跑錯分店。</p>
               </div>
             </div>
           </article>
         </div>
 
         <div v-if="activeTab === 'transport'" class="space-y-4">
-          <div class="mb-2"><h2 class="text-base font-bold text-slate-900">路線導覽</h2><p class="mt-1 text-xs text-slate-500">照日本版改成「出發基地 / 回住宿 / 包車大動線」查閱。</p></div>
+          <div class="mb-2"><h2 class="text-base font-bold text-slate-900">路線導覽</h2><p class="mt-1 text-xs text-slate-500">依現場情境選路線：先看「要去的地方」，再決定叫 Grab/Bolt、搭捷運或直接回住宿。</p></div>
           <div class="rounded-[1.7rem] bg-white p-4 shadow-sm ring-1 ring-slate-100">
             <p class="text-xs font-bold text-cyan-600">三段住宿基地</p>
             <h3 class="mt-1 font-black leading-6 text-slate-900">Sukhumvit 2 → Somerset Pattaya → Eastin Phayathai</h3>
-            <p class="mt-2 text-sm leading-6 text-slate-500">曼谷市區以 Grab/Bolt 與 BTS/MRT 彈性搭配；芭達雅多以 Grab/Bolt；7/4、7/6 用包車解決跨城與沿路景點。</p>
+            <p class="mt-2 text-sm leading-6 text-slate-500">出門前先確認今天住宿基地；移動時先按「要去的地方」確認定位，叫車時再複製地點名稱。小孩累、下雨或塞車時，直接切回住宿/百貨備案。</p>
+          </div>
+          <div class="rounded-[1.7rem] bg-white p-4 shadow-sm ring-1 ring-slate-100">
+            <p class="text-xs font-bold text-amber-600">SMART 路線使用法</p>
+            <div class="mt-3 grid grid-cols-1 gap-2 text-sm leading-6 text-slate-600">
+              <div class="rounded-2xl bg-amber-50 p-3"><span class="font-black text-amber-700">S｜Start</span>：先確認今天從哪個飯店出發。</div>
+              <div class="rounded-2xl bg-cyan-50 p-3"><span class="font-black text-cyan-700">M｜Map</span>：先按「要去的地方」看定位。</div>
+              <div class="rounded-2xl bg-emerald-50 p-3"><span class="font-black text-emerald-700">A｜Action</span>：叫車時複製地點名稱給 Grab / Bolt。</div>
+              <div class="rounded-2xl bg-slate-50 p-3"><span class="font-black text-slate-700">R｜Return</span>：小孩累、下雨、太熱就回住宿。</div>
+              <div class="rounded-2xl bg-rose-50 p-3"><span class="font-black text-rose-700">T｜Timing</span>：時間不夠就回住宿休息，不硬跑。</div>
+            </div>
           </div>
           <div class="grid grid-cols-3 gap-2 rounded-[1.5rem] bg-white p-2 shadow-sm ring-1 ring-slate-100">
             <button @click="routeMode='bangkok'" :class="routeMode==='bangkok' ? 'bg-cyan-600 text-white shadow-sm' : 'text-slate-500'" class="rounded-2xl px-2 py-3 text-xs font-bold transition active:scale-95">曼谷</button>
@@ -224,12 +218,12 @@
               <div class="flex items-center justify-between gap-3"><div class="rounded-2xl bg-white px-3 py-2 text-xs font-black text-cyan-700 shadow-sm">{{ route.start }}</div><div class="flex-1 border-t-2 border-dashed border-cyan-300"></div><div class="rounded-2xl bg-cyan-600 px-3 py-2 text-xs font-black text-white shadow-sm">{{ route.end }}</div></div>
               <div class="mt-3 flex items-center justify-center gap-2 text-xs font-bold text-slate-500"><span>{{ route.type }}</span><span>・</span><span>{{ route.time }}</span></div>
             </div>
-            <div class="p-4"><p class="text-xs font-bold text-cyan-600">{{ route.day }}</p><h3 class="mt-1 font-bold text-slate-900">{{ route.title }}</h3><p class="mt-3 text-sm leading-6 text-slate-600">{{ route.note }}</p><div class="mt-3 rounded-2xl bg-cyan-50 p-3 text-xs leading-5 text-cyan-800">建議：先用這顆確認目的地，再到 Grab/Bolt 貼上地點名稱叫車。</div><a :href="route.mapUrl" target="_blank" class="mt-3 block rounded-2xl bg-slate-900 px-4 py-3 text-center text-sm font-bold text-white shadow-sm active:scale-[0.99]">開啟這段路線</a></div>
+            <div class="p-4"><p class="text-xs font-bold text-cyan-600">{{ route.day }}</p><h3 class="mt-1 font-bold text-slate-900">{{ route.title }}</h3><p class="mt-3 text-sm leading-6 text-slate-600">{{ route.note }}</p><div class="mt-3 rounded-2xl bg-cyan-50 p-3 text-xs leading-5 text-cyan-800">SMART 用法：先按「要去的地方」確認定位，再到 Grab/Bolt 貼上地點名稱；若小孩累或下雨，直接改回住宿。</div><a :href="route.mapUrl" target="_blank" class="mt-3 block rounded-2xl bg-slate-900 px-4 py-3 text-center text-sm font-bold text-white shadow-sm active:scale-[0.99]">要去的地方</a></div>
           </article>
           <div class="rounded-[1.7rem] bg-white p-4 shadow-sm ring-1 ring-slate-100">
-            <h3 class="font-bold text-slate-900">每日大動線</h3>
+            <h3 class="font-bold text-slate-900">每日 SMART 大動線</h3>
             <div class="mt-3 space-y-3">
-              <div v-for="map in dayMaps" :key="map.day" class="rounded-2xl bg-slate-50 p-3"><p class="text-xs font-bold text-cyan-600">{{ map.day }}</p><p class="mt-1 text-sm font-bold text-slate-800">{{ map.title }}</p><div class="mt-3 flex flex-wrap items-center gap-2 text-xs leading-6 text-slate-600"><template v-for="(step, idx) in map.steps" :key="step"><span class="rounded-full bg-white px-3 py-1 font-semibold shadow-sm">{{ step }}</span><span v-if="idx < map.steps.length - 1" class="text-slate-300">→</span></template></div><p class="mt-2 text-xs leading-5 text-slate-500">{{ map.note }}</p><button @click="activeTab = 'trip'; openedDay = map.no" class="mt-3 w-full rounded-2xl bg-white px-4 py-3 text-center text-xs font-bold text-cyan-700 shadow-sm active:scale-[0.99]">打開當日友善地圖按鈕</button></div>
+              <div v-for="map in dayMaps" :key="map.day" class="rounded-2xl bg-slate-50 p-3"><p class="text-xs font-bold text-cyan-600">{{ map.day }}</p><p class="mt-1 text-sm font-bold text-slate-800">{{ map.title }}</p><div class="mt-3 flex flex-wrap items-center gap-2 text-xs leading-6 text-slate-600"><template v-for="(step, idx) in map.steps" :key="step"><span class="rounded-full bg-white px-3 py-1 font-semibold shadow-sm">{{ step }}</span><span v-if="idx < map.steps.length - 1" class="text-slate-300">→</span></template></div><p class="mt-2 text-xs leading-5 text-slate-500">{{ map.note }}</p><button @click="activeTab = 'trip'; openedDay = map.no" class="mt-3 w-full rounded-2xl bg-white px-4 py-3 text-center text-xs font-bold text-cyan-700 shadow-sm active:scale-[0.99]">查看當日三種地圖按鈕</button></div>
             </div>
           </div>
         </div>
@@ -383,13 +377,7 @@ createApp({ setup() {
       ],
       mapHotel:[
         {label:'回 Sukhumvit 2 飯店', desc:'小孩累、下雨、太晚時直接按這顆。', url:gSearch('66/1 Sukhumvit 2 Bangkok')}
-      ],
-      cutOrder:[
-        {title:'先刪象神廟', desc:'抵達日最怕太晚與塞車，象神可留到 7/6 包車回曼谷時補。'},
-        {title:'再刪排隊名店', desc:'Je Oh Chula 若排隊太久，改 Emsphere 或外送。'},
-        {title:'保留入住與補給', desc:'先買水、尿布、零食，讓後面幾天更穩。'}
-      ],
-      minimumGoal:'三組順利抵達飯店、完成入住、簡單吃飽，小孩能早點休息。'
+      ]
     },
     '2': {
       mapTip:'曼谷市區日景點較多，分成午餐主線、帶娃冷氣、大人逛街與回飯店，現場依體力切換。',
@@ -404,13 +392,7 @@ createApp({ setup() {
       ],
       mapHotel:[
         {label:'回 Sukhumvit 2 飯店', desc:'下午午睡、晚上小孩累或下雨時用。', url:gSearch('66/1 Sukhumvit 2 Bangkok')}
-      ],
-      cutOrder:[
-        {title:'先刪夜市', desc:'Jodd Fairs 是加分，不是必去；小孩累就取消。'},
-        {title:'再刪大人逛街第二段', desc:'美妝/潮流可分組，帶娃組不用硬跟。'},
-        {title:'保留午餐與冷氣點', desc:'Here Hai、CentralWorld / SEA LIFE 是今天最穩主線。'}
-      ],
-      minimumGoal:'完成一個合體午餐，下午至少有一個冷氣休息點，晚上不硬跑。'
+      ]
     },
     '3': {
       mapTip:'包車去芭達雅日用「完整包車路線＋單點叫車＋回飯店」三層設計，方便丟給司機也方便臨時刪點。',
@@ -425,13 +407,7 @@ createApp({ setup() {
       ],
       mapHotel:[
         {label:'回 Somerset Pattaya', desc:'包車日小孩累了，直接回飯店最重要。', url:gSearch('Somerset Pattaya')}
-      ],
-      cutOrder:[
-        {title:'先刪夜市', desc:'包車移動＋動物園已經很滿，晚上夜市不要硬排。'},
-        {title:'再刪晚餐遠距離餐廳', desc:'若動物園太累，晚餐改 Terminal 21 / Central Pattaya / 外送。'},
-        {title:'保留包車移動與入住', desc:'今天核心是順利到芭達雅，下午給小孩泳池休息。'}
-      ],
-      minimumGoal:'順利從曼谷移動到芭達雅，完成入住，下午讓小孩玩水或休息。'
+      ]
     },
     '4': {
       mapTip:'芭達雅親子日分成上午主景點、午餐、冷氣補貨、晚上夜市。下午一定要保留回飯店或百貨休息。',
@@ -447,13 +423,7 @@ createApp({ setup() {
       ],
       mapHotel:[
         {label:'回 Somerset Pattaya', desc:'下午午睡、泳池或外送時直接按。', url:gSearch('Somerset Pattaya')}
-      ],
-      cutOrder:[
-        {title:'先刪 Runway 夜市', desc:'白天玩完後小孩容易沒電，夜市可取消。'},
-        {title:'再刪午餐打卡餐廳', desc:'若小孩想睡，改 Central Pattaya 或回飯店外送。'},
-        {title:'保留上午主景點', desc:'今天完成 House of Benedict 就已經很成功。'}
-      ],
-      minimumGoal:'上午玩一個室內親子景點，中午吃飯，下午回飯店或百貨休息。'
+      ]
     },
     '5': {
       mapTip:'包車回曼谷日重點是退房、農莊、車上午睡、進曼谷。象神廟視 7/2 是否已去與孩子狀態決定。',
@@ -468,13 +438,7 @@ createApp({ setup() {
       ],
       mapHotel:[
         {label:'回 Eastin Grand Phayathai', desc:'回曼谷後小孩累、下雨、塞車時直接回飯店。', url:gSearch('Eastin Grand Hotel Phayathai')}
-      ],
-      cutOrder:[
-        {title:'先刪象神廟', desc:'如果 7/2 已經去過，或小孩車上睡太久，就直接回飯店。'},
-        {title:'再刪晚餐景觀餐廳', desc:'回曼谷後容易塞車，晚餐可改飯店附近或外送。'},
-        {title:'保留退房、農莊與入住', desc:'包車回程核心是順利回曼谷，不要變成趕景點。'}
-      ],
-      minimumGoal:'順利退房、回曼谷入住 Eastin，孩子在車上有休息。'
+      ]
     },
     '6': {
       mapTip:'購物日很容易失控，所以分成上午體驗、午餐購物、伴手禮、晚宴與回飯店；累了就縮短購物。',
@@ -490,13 +454,7 @@ createApp({ setup() {
       ],
       mapHotel:[
         {label:'回 Eastin Grand Phayathai', desc:'午休、放戰利品、孩子累了直接回。', url:gSearch('Eastin Grand Hotel Phayathai')}
-      ],
-      cutOrder:[
-        {title:'先刪 Big C 掃貨', desc:'如果孩子累，伴手禮可改機場或少量購買。'},
-        {title:'再刪 Museum of Siam', desc:'若早上起不來，直接從 ICONSIAM 午餐開始。'},
-        {title:'保留晚宴或家庭合體餐', desc:'最後完整晚餐比多跑景點更有記憶點。'}
-      ],
-      minimumGoal:'完成一個室內體驗或購物點，晚餐全家輕鬆合體。'
+      ]
     },
     '7': {
       mapTip:'回程日只分流，不排硬景點。每組按自己的路線，重點是提早到機場、行李不要出錯。',
@@ -511,13 +469,7 @@ createApp({ setup() {
       ],
       mapHotel:[
         {label:'回 Eastin Grand Phayathai', desc:'退房前後拿行李、集合、孩子休息用。', url:gSearch('Eastin Grand Hotel Phayathai')}
-      ],
-      cutOrder:[
-        {title:'先刪正式景點', desc:'回程日不要排大景點，避免趕飛機。'},
-        {title:'再刪遠距離餐廳', desc:'早餐或午餐以飯店附近、The Commons 或機場為主。'},
-        {title:'保留機場交通時間', desc:'三組家庭加小孩與行李，務必多抓緩衝。'}
-      ],
-      minimumGoal:'順利退房、拿好行李、各組提早到機場。'
+      ]
     }
   };
   days.forEach(day => {
@@ -525,9 +477,7 @@ createApp({ setup() {
     Object.assign(day, enhancedMaps[day.no] || {
       mapMain: day.maps || [{label:'今日大路線', desc:'開啟今日重要地點搜尋。', url:day.mapUrl}],
       mapTaxi: day.maps || [{label:'直接叫車地點', desc:'開啟今日重要地點搜尋。', url:day.mapUrl}],
-      mapHotel: [{label:'回住宿', desc:'小孩累或下雨時直接回住宿。', url:day.mapUrl}],
-      cutOrder: [{title:'先刪晚上行程', desc:'親子行程晚上保持彈性。'}, {title:'再刪下午第二景點', desc:'保留午睡與冷氣休息。'}, {title:'保留今日主軸', desc:'完成一個主軸就算成功。'}],
-      minimumGoal:'完成今日主軸，保留小孩休息時間。'
+      mapHotel: [{label:'回住宿', desc:'小孩累或下雨時直接回住宿。', url:day.mapUrl}]
     });
   });
   const routes = {
