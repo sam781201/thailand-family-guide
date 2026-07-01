@@ -4,9 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#0891b2" />
-  <title>2026 曼谷＋芭達雅親子行程｜泰國 Web App 3.1 現場操作完成版</title>
+  <title>2026 曼谷＋芭達雅親子行程</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
   <style>
     * { -webkit-tap-highlight-color: transparent; }
     body { font-family: -apple-system, BlinkMacSystemFont, "Noto Sans TC", "Microsoft JhengHei", "Segoe UI", sans-serif; }
@@ -14,6 +13,8 @@
     .glass { backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); }
     .safe-bottom { padding-bottom: env(safe-area-inset-bottom); }
     [v-cloak] { display: none; }
+    #fallback-app { display:none; }
+    body.app-fallback #fallback-app { display:block; }
     .line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
     @media print {
       body { background: #fff !important; }
@@ -33,7 +34,7 @@
       <header class="relative z-10 px-5 pb-4 pt-5 text-white">
         <div class="flex items-center justify-between">
           <div>
-            <p class="text-xs opacity-80">Thailand Family Web App 3.1</p>
+            <p class="text-xs opacity-80">Thailand Family Web App 3.1 Stable</p>
             <h1 class="mt-1 text-2xl font-bold tracking-tight">曼谷＋芭達雅</h1>
           </div>
           <button @click="jumpToday" class="rounded-full bg-white/20 px-3 py-2 text-sm font-semibold glass active:scale-95">今日</button>
@@ -408,7 +409,18 @@
   </main>
 </div>
 
+<div id="fallback-app" class="mx-auto max-w-md px-4 py-6">
+  <div class="rounded-[1.7rem] bg-white p-5 shadow-sm ring-1 ring-slate-100">
+    <p class="text-xs font-bold text-cyan-600">Thailand Family Web App</p>
+    <h2 class="mt-2 text-xl font-black text-slate-900">網頁正在載入中</h2>
+    <p class="mt-2 text-sm leading-6 text-slate-500">如果畫面一直沒有出現，請重新整理，或確認手機網路是否正常。這版已加入 Vue 備援來源，通常重新整理一次即可。</p>
+    <a href="https://sam781201.github.io/thailand-family-guide/?v=15" class="mt-4 block rounded-2xl bg-cyan-600 px-4 py-3 text-center text-sm font-bold text-white">重新整理新版</a>
+  </div>
+</div>
+
 <script>
+window.__startThaiApp = function(){
+if (!window.Vue) { document.body.classList.add('app-fallback'); return; }
 const { createApp, computed, ref, onMounted } = Vue;
 createApp({ setup() {
   const activeTab = ref('home');
@@ -851,6 +863,35 @@ createApp({ setup() {
   const jumpToday = ()=>{ openToday(); };
   return { activeTab, openedDay, guideSection, restaurantArea, expandedRestaurants, toggleRestaurant, days, todayStatus, todayWeather, weatherForDay, activeRestaurants, dayMaps, guideCards, playRules, rideGuides, spotGuides, backups, tasks, kidItems, spas, lineQuick, progressWidth, toggleDay, jumpToday, openToday, window };
 }}).mount('#app');
+document.body.classList.add('app-ready');
+};
+
+(function loadVueStable(){
+  const sources = [
+    'https://unpkg.com/vue@3/dist/vue.global.prod.js',
+    'https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.prod.js'
+  ];
+  let i = 0;
+  function failSafe(){
+    document.body.classList.add('app-fallback');
+  }
+  function loadNext(){
+    if (window.Vue) { window.__startThaiApp(); return; }
+    if (i >= sources.length) { failSafe(); return; }
+    const s = document.createElement('script');
+    s.src = sources[i++];
+    s.async = false;
+    s.onload = function(){ window.__startThaiApp(); };
+    s.onerror = loadNext;
+    document.head.appendChild(s);
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', loadNext);
+  } else {
+    loadNext();
+  }
+  setTimeout(function(){ if (!document.body.classList.contains('app-ready')) failSafe(); }, 6000);
+})();
 </script>
 </body>
 </html>
